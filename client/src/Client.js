@@ -1,12 +1,22 @@
 /* eslint-disable no-undef */
 function search(query, cb) {
-
     return fetch('api/food?q=${query}', {
         accept: 'application/json',
     }).then(checkStatus)
         .then(parseJSON)
         .then(cb);
+}
 
+function getAccounts(cb) {
+    fetch('api/account/', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
 }
 
 function addAccount(account, cb) {
@@ -38,5 +48,5 @@ function parseJSON(response) {
     return response.json();
 }
 
-const Client = {search};
+const Client = {search, getAccounts, addAccount};
 export default Client;

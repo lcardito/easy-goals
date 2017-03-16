@@ -4,11 +4,10 @@ import Client from './Client';
 const MATCHING_ITEM_LIMIT = 25;
 
 class FoodSearch extends React.Component {
-    state = {
-        foods: [],
-        showRemoveIcon: false,
-        searchValue: '',
-    };
+    constructor() {
+        super();
+        this.state = ({foods: [], showRemoveIcon: false, searchValue: ''});
+    }
 
     handleSearchChange = (e) => {
         const value = e.target.value;
@@ -73,13 +72,13 @@ class FoodSearch extends React.Component {
                                         type='text'
                                         placeholder='Search foods...'
                                         value={this.state.searchValue}
-                                        onChange={this.handleSearchChange}
+                                        onChange={this.handleSearchChange.bind(this)}
                                     />
                                     <i className='search icon'/>
                                 </div>
                                 <i
                                     className='remove icon'
-                                    onClick={this.handleSearchCancel}
+                                    onClick={this.handleSearchCancel.bind(this)}
                                     style={removeIconStyle}
                                 />
                             </div>
