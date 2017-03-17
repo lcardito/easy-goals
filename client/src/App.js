@@ -1,15 +1,24 @@
-import React from 'react';
-import AccountBox from './AccountBox';
-import AccountForm from './AccountForm';
+import React from "react";
+import AppMenu from "./AppMenu";
+import AccountBox from "./AccountBox";
 
 class App extends React.Component {
+
+    constructor(){
+        super();
+        this.state = {
+            activeItem: "dashboard"
+        };
+    }
+
+    handleMenuItemClick = (e, {name}) => this.setState({activeItem: name});
 
     render() {
         return (
             <div className='App'>
-                <div className='ui text container'>
-                    <AccountBox />
-                    <AccountForm />
+                <div className='ui container'>
+                    <AppMenu onMenuChange={this.handleMenuItemClick} />
+                    <AccountBox visible={this.state.activeItem === 'accounts'} />
                 </div>
             </div>
         );

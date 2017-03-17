@@ -4,6 +4,10 @@ import Client from './Client'
 class AccountForm extends React.Component {
 
     render() {
+        if(!this.props.visible){
+            return false;
+        }
+
         return (
             <form className="ui form" onSubmit={this._handleSubmit.bind(this)}>
                 {/*TODO this needs to be header and add padding */}

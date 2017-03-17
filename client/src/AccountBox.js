@@ -24,6 +24,9 @@ class AccountBox extends React.Component {
     }
 
     render(){
+        if(!this.props.visible) {
+            return false;
+        }
         return (
             <div>
                 <table className='ui selectable structured large table'>
