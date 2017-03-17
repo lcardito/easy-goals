@@ -7,7 +7,7 @@ class App extends React.Component {
     constructor(){
         super();
         this.state = {
-            activeItem: "dashboard"
+            activeItem: "accounts"
         };
     }
 
@@ -17,7 +17,9 @@ class App extends React.Component {
         return (
             <div className='App'>
                 <div className='ui container'>
-                    <AppMenu onMenuChange={this.handleMenuItemClick} />
+                    <AppMenu
+                        initialActiveItem={this.state.activeItem}
+                        onMenuChange={this.handleMenuItemClick} />
                     <AccountBox visible={this.state.activeItem === 'accounts'} />
                 </div>
             </div>

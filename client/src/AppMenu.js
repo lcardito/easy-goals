@@ -2,9 +2,13 @@ import React from 'react'
 import {Menu} from 'semantic-ui-react'
 
 class AppMenu extends React.Component {
-    state = {};
 
-    // handleItemClick = (e, {name}) => this.setState({activeItem: name});
+    constructor(props){
+        super(props);
+        this.state = {
+            activeItem: this.props.initialActiveItem
+        };
+    }
 
     render() {
         const {activeItem} = this.state;
