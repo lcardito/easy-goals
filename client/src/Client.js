@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 function search(query, cb) {
-    return fetch('api/food?q=${query}', {
+
+    return fetch(`api/food?q=${query}`, {
         accept: 'application/json',
     }).then(checkStatus)
         .then(parseJSON)
         .then(cb);
+
 }
 
 function getAccounts(cb) {
@@ -12,7 +14,7 @@ function getAccounts(cb) {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         }
     }).then(checkStatus)
         .then(parseJSON)
@@ -24,13 +26,13 @@ function addAccount(account, cb) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            name: account.name,
-            type: account.type,
-        })
-    });
+        body: JSON.stringify(account)
+    }).then(checkStatus);
+        //TODO should return account id?
+        // .then(parseJSON)
+        // .then(cb);
 }
 
 function checkStatus(response) {
@@ -40,7 +42,7 @@ function checkStatus(response) {
     const error = new Error(`HTTP Error ${response.statusText}`);
     error.status = response.statusText;
     error.response = response;
-    console.log(error); // eslint-disable-line no-console
+
     throw error;
 }
 

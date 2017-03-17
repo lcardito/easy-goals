@@ -2,6 +2,7 @@ import React from 'react';
 import Client from './Client';
 
 class AccountBox extends React.Component {
+
     constructor() {
         super();
         this.state = {
@@ -17,7 +18,8 @@ class AccountBox extends React.Component {
         Client.getAccounts((accounts) => {
             this.setState({
                 accounts: accounts
-            })
+            });
+
         })
     }
 
@@ -27,8 +29,9 @@ class AccountBox extends React.Component {
                 <table className='ui selectable structured large table'>
                     <thead>
                     <tr>
-                        <th className='eight wide'>Name</th>
+                        <th>Name</th>
                         <th>Type</th>
+                        <th>Balance</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,6 +40,7 @@ class AccountBox extends React.Component {
                             <tr key={idx}>
                                 <td>{account.name}</td>
                                 <td>{account.type}</td>
+                                <td>{account.balance}</td>
                             </tr>
                         )
                     })}

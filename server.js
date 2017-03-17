@@ -1,5 +1,6 @@
 const express = require('express');
-var bodyParser = require('body-parser');
+const util = require('util')
+const bodyParser = require('body-parser');
 
 var knex = require('knex')({
     client: 'mysql2',
@@ -38,7 +39,7 @@ app.get('/api/account', (req, res) => {
 
 app.post('/api/account', (req, res) => {
     //TODO store in DB
-    console.log('Storing account: ' + req.body.name)
+    console.log('Storing account: ' + util.inspect(req.body, false, null))
     accounts.push(req.body);
     res.send('OK');
 })

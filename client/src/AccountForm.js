@@ -1,17 +1,36 @@
 import React from 'react';
+import Client from './Client'
 
 class AccountForm extends React.Component {
 
     render() {
         return (
-            <form className="comment-form" onSubmit={this._handleSubmit.bind(this)}>
-                <label>New account</label>
-                <div className="comment-form-fields">
-                    <input placeholder="Name:" ref={c => this._name = c} />
-                    <input placeholder="Type:" ref={c => this._type = c} />
+            <form className="ui form" onSubmit={this._handleSubmit.bind(this)}>
+                {/*TODO this needs to be header and add padding */}
+                <h3 className="ui header">Add an account</h3>
+                <div className="equal width fields">
+                    <div className="field">
+                        <label>Account Name</label>
+                        <div className="ui input">
+                            <input placeholder="account name" ref={(c) => {this._name = c;}} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label>Account type</label>
+                        <div className="ui input">
+                            <input placeholder="account type" ref={c => this._type = c} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label>Account balance</label>
+                        <div className="ui input">
+                            <input placeholder="account starting balance" ref={c => this._balance = c} />
+                        </div>
+                    </div>
                 </div>
-                <div className="comment-form-actions">
-                    <button type="submit">Save account</button>
+
+                <div className="account-form-actions">
+                    <button className="button" type="submit">Save account</button>
                 </div>
             </form>
         );
@@ -20,25 +39,12 @@ class AccountForm extends React.Component {
     _handleSubmit(event) {
         event.preventDefault();
 
-        let name = this._name;
-        let type = this._type;
-
-        this._addAccount(name.value, type.value)
-    }
-
-    _addAccount(name, type) {
-        fetch('api/account/', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                type: type
-            })
-        });
-
+        let account = {
+            name: this._name.value,
+            type: this._type.value,
+            balance: this._balance.value
+        };
+        Client.addAccount(account);
     }
 }
 
