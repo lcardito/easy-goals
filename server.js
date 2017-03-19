@@ -40,8 +40,10 @@ app.get('/api/account', (req, res) => {
 app.post('/api/account', (req, res) => {
     //TODO store in DB
     console.log('Storing account: ' + util.inspect(req.body, false, null))
+    let account = req.body;
+    account.id = accounts.length;
     accounts.push(req.body);
-    res.send('OK');
+    res.json(account);
 })
 
 app.listen(app.get('port'), () => {

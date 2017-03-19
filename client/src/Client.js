@@ -29,11 +29,16 @@ function addAccount(account, cb) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(account)
-    }).then(checkStatus);
-        //TODO should return account id?
-        // .then(parseJSON)
-        // .then(cb);
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
 }
+
+// function deleteAccount(accountId, cb) {
+//     fetch(`api/account/{accountId}`, {
+//         method: 'DELETE'
+//     }).then(checkStatus);
+// }
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {

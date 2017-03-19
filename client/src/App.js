@@ -20,7 +20,9 @@ class App extends React.Component {
                     <AppMenu
                         initialActiveItem={this.state.activeItem}
                         onMenuChange={this.handleMenuItemClick} />
-                    <AccountBox visible={this.state.activeItem === 'accounts'} />
+                    <AccountBox
+                        visible={this.state.activeItem === 'accounts'}
+                    />
                 </div>
             </div>
         );
