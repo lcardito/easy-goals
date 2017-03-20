@@ -7,7 +7,7 @@ class AccountForm extends React.Component {
 
     constructor(props) {
         super(props);
-        let current = props.account ? props.account : {name: '', type: '', balance: 0};
+        let current = props.account.id >= 0 ? props.account : {name: '', type: '', balance: 0};
         this.state = {
             selectedAccount: current
         };
@@ -31,11 +31,11 @@ class AccountForm extends React.Component {
 
         if(this.state.selectedAccount.id >= 0){
             Client.editAccount(this.state.selectedAccount, (edited) => {
-                this.props.callback(edited, true);
+                this.props.submitCallback(edited, true);
             });
         } else {
             Client.addAccount(this.state.selectedAccount, (newAccount) => {
-                this.props.callback(newAccount, false);
+                this.props.submitCallback(newAccount, false);
             });
         }
     }

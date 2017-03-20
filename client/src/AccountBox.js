@@ -123,7 +123,7 @@ class AccountBox extends React.Component {
                         <Modal.Header>Add an account</Modal.Header>
                         <Modal.Content>
                             <AccountForm
-                                callback={this._handleForm}
+                                submitCallback={this._handleForm}
                                 cancelCallback={this._handleCancel}
                                 account={this.state.selectedAccount}
                             />
