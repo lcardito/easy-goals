@@ -47,7 +47,7 @@ class AccountBox extends React.Component {
             this.setState({
                 accounts: newAccounts
             });
-        } else if(newAccount.id) {
+        } else if (newAccount.id) {
             this.setState({
                 accounts: update(this.state.accounts, {$push: [newAccount]})
             })
@@ -77,6 +77,18 @@ class AccountBox extends React.Component {
             return false;
         }
 
+        let modal = <div>
+            <Button onClick={this._toggleForm}>Add an account</Button>
+            <Modal open={this.state.showForm}>
+                <Modal.Header>Add an account</Modal.Header>
+                <Modal.Content>
+                    <AccountForm
+                        callback={this._handleForm}
+                    />
+                </Modal.Content>
+            </Modal>
+        </div>;
+
         if (this.state.accounts.length === 0) {
             return (
                 <div>
@@ -85,17 +97,7 @@ class AccountBox extends React.Component {
                         content="You haven't setup an account yet."
                         icon="info"
                     />
-                    <div>
-                        <Button onClick={this._toggleForm}>Add an account</Button>
-                        <Modal open={this.state.showForm}>
-                            <Modal.Header>Add an account</Modal.Header>
-                            <Modal.Content>
-                                <AccountForm
-                                    callback={this._handleForm}
-                                />
-                            </Modal.Content>
-                        </Modal>
-                    </div>
+                    {modal}
                 </div>
             )
         }
@@ -105,18 +107,7 @@ class AccountBox extends React.Component {
                     accounts={this.state.accounts}
                     callback={this._editAccount}
                 />
-                <div>
-                    <Button onClick={this._toggleForm}>Add an account</Button>
-                    <Modal open={this.state.showForm}>
-                        <Modal.Header>Add an account</Modal.Header>
-                        <Modal.Content>
-                            <AccountForm
-                                account={this.state.selectedAccount}
-                                callback={this._handleForm}
-                            />
-                        </Modal.Content>
-                    </Modal>
-                </div>
+                {modal}
             </div>
         )
     }
