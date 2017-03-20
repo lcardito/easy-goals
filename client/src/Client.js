@@ -47,6 +47,7 @@ function editAccount(toEdit, cb) {
         .then(cb);
 }
 
+//TODO use this
 // function deleteAccount(accountId, cb) {
 //     fetch(`api/account/{accountId}`, {
 //         method: 'DELETE'
