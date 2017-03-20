@@ -8,34 +8,40 @@ class AppMenu extends React.Component {
         this.state = {
             activeItem: this.props.initialActiveItem
         };
+
+        this._onMenuChange = this._onMenuChange.bind(this);
+    }
+
+    _onMenuChange(e, object) {
+        e.preventDefault();
+        this.setState({
+           activeItem: object.name
+        });
+        this.props.onMenuChange(object.name);
     }
 
     render() {
-        const {activeItem} = this.state;
 
         return (
             <Menu>
                 <Menu.Item
                     name='dashboard'
-                    active={activeItem === 'dashboard'}
-                    onClick={this.props.onMenuChange}
-                >
+                    active={this.state.activeItem === 'dashboard'}
+                    onClick={this._onMenuChange.bind(this)}>
                     Dashboard
                 </Menu.Item>
 
                 <Menu.Item
                     name='accounts'
-                    active={activeItem === 'accounts'}
-                    onClick={this.props.onMenuChange}
-                >
+                    active={this.state.activeItem === 'accounts'}
+                    onClick={this._onMenuChange.bind(this)}>
                     Accounts
                 </Menu.Item>
 
                 <Menu.Item
                     name='goals'
-                    active={activeItem === 'goals'}
-                    onClick={this.props.onMenuChange}
-                >
+                    active={this.state.activeItem === 'goals'}
+                    onClick={this._onMenuChange.bind(this)}>
                     My Goals
                 </Menu.Item>
             </Menu>
