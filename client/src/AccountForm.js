@@ -76,7 +76,7 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                 </Form.Group>
-                <Button onClick={this.props.callback}>Cancel</Button>
+                <Button onClick={this.props.callback} type="button">Cancel</Button>
                 <Button onClick={this._handleSubmit} type='submit'>Submit</Button>
             </Form>
         );

@@ -1,7 +1,8 @@
 import React from 'react';
 import Client from './Client';
 import AccountForm from './AccountForm';
-import {Button, Message, Modal, Table} from 'semantic-ui-react';
+import AccountTable from './AccountTable';
+import {Button, Message, Modal} from 'semantic-ui-react';
 import update from 'immutability-helper';
 
 class AccountBox extends React.Component {
@@ -100,26 +101,10 @@ class AccountBox extends React.Component {
         }
         return (
             <div>
-                <Table celled selectable>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Name</Table.HeaderCell>
-                            <Table.HeaderCell>Type</Table.HeaderCell>
-                            <Table.HeaderCell>Balance</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {this.state.accounts.map((account, idx) => (
-                            <Table.Row
-                                onClick={() => this._editAccount(account)}
-                                key={idx}>
-                                <Table.Cell>{account.name}</Table.Cell>
-                                <Table.Cell>{account.type}</Table.Cell>
-                                <Table.Cell>{account.balance}</Table.Cell>
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table>
+                <AccountTable
+                    accounts={this.state.accounts}
+                    callback={this._editAccount}
+                />
                 <div>
                     <Button onClick={this._toggleForm}>Add an account</Button>
                     <Modal open={this.state.showForm}>
