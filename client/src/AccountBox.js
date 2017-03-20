@@ -42,22 +42,23 @@ class AccountBox extends React.Component {
     _handleForm(newAccount, updated) {
         if (updated && newAccount.id) {
             let accountIdx = this.state.accounts.indexOf(this.state.selectedAccount);
-            const newAccounts = update(this.state.accounts, {
-                [accountIdx]: {$set: newAccount}
-            });
+            const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
             this.setState({
-                accounts: newAccounts
+                accounts: newAccounts,
+                showForm: !this.state.showForm
             });
-        } else if (newAccount.id) {
+        } else if (newAccount) {
+            console.log('New account added ' + newAccount.id);
+
             this.setState({
-                accounts: update(this.state.accounts, {$push: [newAccount]})
-            })
+                accounts: update(this.state.accounts, {$push: [newAccount]}),
+                showForm: !this.state.showForm
+            });
         }
 
         this.setState({
-            selectedAccount: {},
-            showForm: !this.state.showForm
-        })
+            selectedAccount: {}
+        });
     }
 
     _toggleForm() {

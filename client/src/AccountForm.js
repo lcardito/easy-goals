@@ -19,11 +19,7 @@ class AccountForm extends React.Component {
     _updateAccount(event) {
         const value = event.target.value;
         const name = event.target.name;
-        let newAccount = update(this.state.selectedAccount, {
-            $merge: {
-                [name]: value
-            }
-        });
+        let newAccount = update(this.state.selectedAccount, {$merge: {[name]: value}});
 
         this.setState({
             selectedAccount: newAccount
@@ -39,6 +35,7 @@ class AccountForm extends React.Component {
             });
         } else {
             Client.addAccount(this.state.selectedAccount, (newAccount) => {
+                console.log('Client added ' + newAccount.id);
                 this.props.callback(newAccount, false);
             });
         }

@@ -9,6 +9,8 @@ class AccountTable extends React.Component {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell
+                            textAlign='center'>Id</Table.HeaderCell>
+                        <Table.HeaderCell
                             textAlign='center'>Name</Table.HeaderCell>
                         <Table.HeaderCell
                             textAlign='center'>Type</Table.HeaderCell>
@@ -22,6 +24,7 @@ class AccountTable extends React.Component {
                     {this.props.accounts.map((account, idx) => (
                         <Table.Row
                             key={idx}>
+                            <Table.Cell>{account.id}</Table.Cell>
                             <Table.Cell>{account.name}</Table.Cell>
                             <Table.Cell>{account.type}</Table.Cell>
                             <Table.Cell>{account.balance}</Table.Cell>

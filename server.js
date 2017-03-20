@@ -60,6 +60,8 @@ app.delete('/api/account/:accountId', (req, res) => {
     let id = req.params.accountId;
     console.log('Deleting account with id' + id);
     accounts.splice(id, 1);
+
+
     res.json({});
 });
 
