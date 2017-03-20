@@ -34,6 +34,19 @@ function addAccount(account, cb) {
         .then(cb);
 }
 
+function editAccount(toEdit, cb) {
+    fetch('api/account/', {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(toEdit)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 // function deleteAccount(accountId, cb) {
 //     fetch(`api/account/{accountId}`, {
 //         method: 'DELETE'
@@ -55,5 +68,5 @@ function parseJSON(response) {
     return response.json();
 }
 
-const Client = {search, getAccounts, addAccount};
+const Client = {search, getAccounts, addAccount, editAccount};
 export default Client;

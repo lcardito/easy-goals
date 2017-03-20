@@ -42,9 +42,17 @@ app.post('/api/account', (req, res) => {
     console.log('Storing account: ' + util.inspect(req.body, false, null))
     let account = req.body;
     account.id = accounts.length;
-    accounts.push(req.body);
+    accounts.push(account);
     res.json(account);
 })
+
+app.put('/api/account', (req, res) => {
+    //TODO store in DB
+    console.log('Editing account: ' + util.inspect(req.body, false, null))
+    let account = req.body;
+    accounts[account.id] = account;
+    res.json(account);
+});
 
 app.listen(app.get('port'), () => {
     console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console

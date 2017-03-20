@@ -1,50 +1,47 @@
 import React from 'react';
 import Client from './Client';
 import {Button, Form} from 'semantic-ui-react';
+import update from 'immutability-helper';
 
 class AccountForm extends React.Component {
 
     constructor(props) {
         super(props);
+        let current = props.account ? props.account : {name: '', type: '', balance: 0};
         this.state = {
-            selectedAccount: props.account
-        }
+            selectedAccount: current
+        };
+
+        this._updateAccount = this._updateAccount.bind(this);
+        this._handleSubmit = this._handleSubmit.bind(this);
     }
 
     _updateAccount(event) {
         const value = event.target.value;
         const name = event.target.name;
-        console.log(name + ":" + value);
-
         let newAccount = update(this.state.selectedAccount, {
             $merge: {
-                [name] : value
+                [name]: value
             }
         });
-
-        console.log(newAccount);
 
         this.setState({
             selectedAccount: newAccount
         });
-        console.log(this.state.selectedAccount);
     }
 
     _handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state.selectedAccount);
 
-        if(this.state.selectedAccount.id) {
-            //TODO update account
+        if(this.state.selectedAccount.id){
+            Client.editAccount(this.state.selectedAccount, (edited) => {
+                this.props.callback(edited, true);
+            });
         } else {
             Client.addAccount(this.state.selectedAccount, (newAccount) => {
-                this.setState({
-                    accounts: this.state.accounts.concat(newAccount),
-                    showForm: false
-                });
+                this.props.callback(newAccount, false);
             });
         }
-
     }
 
     render() {
@@ -79,12 +76,8 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                 </Form.Group>
-                <Button onClick={this._clearSelection}
-                        type='submit'>Cancel
-                </Button>
-                <Button onClick={this._handleSubmit}
-                        type='submit'>Submit
-                </Button>
+                <Button onClick={this.props.callback}>Cancel</Button>
+                <Button onClick={this._handleSubmit} type='submit'>Submit</Button>
             </Form>
         );
     }

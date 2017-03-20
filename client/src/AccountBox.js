@@ -1,6 +1,7 @@
 import React from 'react';
 import Client from './Client';
-import {Button, Message, Modal, Form, Table} from 'semantic-ui-react';
+import AccountForm from './AccountForm';
+import {Button, Message, Modal, Table} from 'semantic-ui-react';
 import update from 'immutability-helper';
 
 class AccountBox extends React.Component {
@@ -17,13 +18,10 @@ class AccountBox extends React.Component {
             }
         };
 
-        //TODO: bind all the function in here
         this._toggleForm = this._toggleForm.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._updateAccount = this._updateAccount.bind(this);
         this._editAccount = this._editAccount.bind(this);
         this._getAccounts = this._getAccounts.bind(this);
-        this._clearSelection = this._clearSelection.bind(this);
+        this._handleForm = this._handleForm.bind(this);
     }
 
     componentWillMount() {
@@ -39,19 +37,31 @@ class AccountBox extends React.Component {
         });
     }
 
-    _toggleForm() {
-        this.setState({showForm: !this.state.showForm})
+    _handleForm(newAccount, updated) {
+        if (updated && newAccount.id) {
+            let accountIdx = this.state.accounts.indexOf(this.state.selectedAccount);
+            const newAccounts = update(this.state.accounts, {
+                [accountIdx]: {$set: newAccount}
+            });
+            this.setState({
+                accounts: newAccounts
+            });
+        } else if(newAccount.id) {
+            this.setState({
+                accounts: update(this.state.accounts, {$push: [newAccount]})
+            })
+        }
+
+        this.setState({
+            selectedAccount: {},
+            showForm: !this.state.showForm
+        })
     }
 
-    _handleSubmit(event) {
-        event.preventDefault();
-
-        Client.addAccount(this.state.selectedAccount, (newAccount) => {
-            this.setState({
-                accounts: this.state.accounts.concat(newAccount),
-                showForm: false
-            });
-        });
+    _toggleForm() {
+        this.setState({
+            showForm: !this.state.showForm
+        })
     }
 
     _editAccount(account) {
@@ -61,81 +71,10 @@ class AccountBox extends React.Component {
         this._toggleForm();
     }
 
-    _updateAccount(event) {
-        const value = event.target.value;
-        const name = event.target.name;
-        let newAccount = update(this.state.selectedAccount, {
-            $merge: {
-                [name] : value
-            }
-        });
-
-        this.setState({
-            selectedAccount: newAccount
-        });
-    }
-
-    _clearSelection(e){
-        e.preventDefault();
-        this.setState({
-            selectedAccount: {
-                name: '',
-                type: '',
-                balance: 0
-            }
-        });
-        this._toggleForm();
-    }
-
     render() {
         if (!this.props.visible) {
             return false;
         }
-
-        let accountForm =
-            <div>
-                <Button onClick={this._toggleForm}>Add an account</Button>
-                <Modal open={this.state.showForm}>
-                    <Modal.Header>Add an account</Modal.Header>
-                    <Modal.Content>
-                        <Form>
-                            <Form.Group widths='equal'>
-                                <Form.Field>
-                                    <label>Account name</label>
-                                    <input placeholder="account name"
-                                           type="text"
-                                           name="name"
-                                           value={this.state.selectedAccount.name}
-                                           onChange={this._updateAccount}
-                                    />
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Account category</label>
-                                    <input placeholder="account category"
-                                           type="text"
-                                           value={this.state.selectedAccount.type}
-                                           name="type"
-                                           onChange={this._updateAccount}
-                                    />
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Initial amount</label>
-                                    <input placeholder="account balance"
-                                           type="text"
-                                           value={this.state.selectedAccount.balance}
-                                           name="balance"
-                                           onChange={this._updateAccount}
-                                    />
-                                </Form.Field>
-                            </Form.Group>
-                            <Button onClick={this._clearSelection}>Cancel</Button>
-                            <Button onClick={this._handleSubmit}
-                                    type='submit'>Submit
-                            </Button>
-                        </Form>
-                    </Modal.Content>
-                </Modal>
-            </div>;
 
         if (this.state.accounts.length === 0) {
             return (
@@ -145,7 +84,17 @@ class AccountBox extends React.Component {
                         content="You haven't setup an account yet."
                         icon="info"
                     />
-                    {accountForm}
+                    <div>
+                        <Button onClick={this._toggleForm}>Add an account</Button>
+                        <Modal open={this.state.showForm}>
+                            <Modal.Header>Add an account</Modal.Header>
+                            <Modal.Content>
+                                <AccountForm
+                                    callback={this._handleForm}
+                                />
+                            </Modal.Content>
+                        </Modal>
+                    </div>
                 </div>
             )
         }
@@ -171,7 +120,18 @@ class AccountBox extends React.Component {
                         ))}
                     </Table.Body>
                 </Table>
-                {accountForm}
+                <div>
+                    <Button onClick={this._toggleForm}>Add an account</Button>
+                    <Modal open={this.state.showForm}>
+                        <Modal.Header>Add an account</Modal.Header>
+                        <Modal.Content>
+                            <AccountForm
+                                account={this.state.selectedAccount}
+                                callback={this._handleForm}
+                            />
+                        </Modal.Content>
+                    </Modal>
+                </div>
             </div>
         )
     }
