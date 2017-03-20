@@ -2,20 +2,21 @@ const express = require('express');
 const util = require('util')
 const bodyParser = require('body-parser');
 
-var knex = require('knex')({
-    client: 'mysql2',
-    connection: {
-        host: 'db',
-        user: 'goals',
-        password: 'pwd',
-        database: 'goals'
-    }
-});
-
-knex.migrate.latest()
-    .then(function () {
-        console.log('DB migrated');
-    });
+//TODO plugin DB and migrations
+// var knex = require('knex')({
+//     client: 'mysql2',
+//     connection: {
+//         host: 'db',
+//         user: 'goals',
+//         password: 'pwd',
+//         database: 'goals'
+//     }
+// });
+//
+// knex.migrate.latest()
+//     .then(function () {
+//         console.log('DB migrated');
+//     });
 
 const app = express();
 app.set('port', (process.env.PORT || 3001));
@@ -52,6 +53,14 @@ app.put('/api/account', (req, res) => {
     let account = req.body;
     accounts[account.id] = account;
     res.json(account);
+});
+
+//TODO
+app.delete('/api/account/:accountId', (req, res) => {
+    let id = req.params.accountId;
+    console.log('Deleting account with id' + id);
+    accounts.splice(id, 1);
+    res.json({});
 });
 
 app.listen(app.get('port'), () => {

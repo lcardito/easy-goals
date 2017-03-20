@@ -31,11 +31,12 @@ class AccountTable extends React.Component {
                                         <Dropdown.Item
                                             icon='edit'
                                             text='Edit'
-                                            onClick={() => this.props.callback(account)}
+                                            onClick={() => this.props.editCallback(account)}
                                         />
                                         <Dropdown.Item
                                             icon='delete'
                                             text='Delete'
+                                            onClick={() => this.props.deleteCallback(account)}
                                         />
                                     </Dropdown.Menu>
                                 </Dropdown>

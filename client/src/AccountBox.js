@@ -23,6 +23,7 @@ class AccountBox extends React.Component {
         this._editAccount = this._editAccount.bind(this);
         this._getAccounts = this._getAccounts.bind(this);
         this._handleForm = this._handleForm.bind(this);
+        this._deleteAccount = this._deleteAccount.bind(this);
     }
 
     componentWillMount() {
@@ -71,6 +72,20 @@ class AccountBox extends React.Component {
         }, this._toggleForm);
     }
 
+    _deleteAccount(account) {
+        let accountIdx = this.state.accounts.indexOf(account);
+        Client.deleteAccount(accountIdx);
+
+        const newAccounts = update(this.state.accounts, {
+            $splice: [[accountIdx, 1]]
+        });
+
+        this.setState({
+            accounts: newAccounts
+        });
+
+    }
+
     render() {
         if (!this.props.visible) {
             return false;
@@ -102,7 +117,8 @@ class AccountBox extends React.Component {
             <div>
                 <AccountTable
                     accounts={this.state.accounts}
-                    callback={this._editAccount}
+                    editCallback={this._editAccount}
+                    deleteCallback={this._deleteAccount}
                 />
                 <div>
                     <Button onClick={this._toggleForm}>Add an account</Button>

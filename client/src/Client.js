@@ -47,12 +47,13 @@ function editAccount(toEdit, cb) {
         .then(cb);
 }
 
-//TODO use this
-// function deleteAccount(accountId, cb) {
-//     fetch(`api/account/{accountId}`, {
-//         method: 'DELETE'
-//     }).then(checkStatus);
-// }
+function deleteAccount(accountId, cb) {
+    console.log('Deleting account' + accountId);
+    fetch(`api/account/${accountId}`, {
+        method: 'DELETE'
+    }).then(checkStatus)
+        .then(cb);
+}
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
@@ -69,5 +70,5 @@ function parseJSON(response) {
     return response.json();
 }
 
-const Client = {search, getAccounts, addAccount, editAccount};
+const Client = {search, getAccounts, addAccount, editAccount, deleteAccount};
 export default Client;
