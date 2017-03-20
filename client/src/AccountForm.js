@@ -29,13 +29,12 @@ class AccountForm extends React.Component {
     _handleSubmit(event) {
         event.preventDefault();
 
-        if(this.state.selectedAccount.id){
+        if(this.state.selectedAccount.id >= 0){
             Client.editAccount(this.state.selectedAccount, (edited) => {
                 this.props.callback(edited, true);
             });
         } else {
             Client.addAccount(this.state.selectedAccount, (newAccount) => {
-                console.log('Client added ' + newAccount.id);
                 this.props.callback(newAccount, false);
             });
         }
@@ -73,7 +72,7 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                 </Form.Group>
-                <Button onClick={this.props.callback} type="button">Cancel</Button>
+                <Button onClick={this.props.cancelCallback} type="button">Cancel</Button>
                 <Button onClick={this._handleSubmit} type='submit'>Submit</Button>
             </Form>
         );

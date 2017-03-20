@@ -24,6 +24,8 @@ class AccountBox extends React.Component {
         this._getAccounts = this._getAccounts.bind(this);
         this._handleForm = this._handleForm.bind(this);
         this._deleteAccount = this._deleteAccount.bind(this);
+        this._getTable = this._getTable.bind(this);
+        this._handleCancel = this._handleCancel.bind(this);
     }
 
     componentWillMount() {
@@ -40,7 +42,7 @@ class AccountBox extends React.Component {
     }
 
     _handleForm(newAccount, updated) {
-        if (updated && newAccount.id) {
+        if (updated) {
             let accountIdx = this.state.accounts.indexOf(this.state.selectedAccount);
             const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
             this.setState({
@@ -48,8 +50,6 @@ class AccountBox extends React.Component {
                 showForm: !this.state.showForm
             });
         } else if (newAccount) {
-            console.log('New account added ' + newAccount.id);
-
             this.setState({
                 accounts: update(this.state.accounts, {$push: [newAccount]}),
                 showForm: !this.state.showForm
@@ -65,6 +65,12 @@ class AccountBox extends React.Component {
         this.setState({
             showForm: !this.state.showForm
         })
+    }
+
+    _handleCancel() {
+        this.setState({
+            selectedAccount: {}
+        }, this._toggleForm);
     }
 
     _editAccount(account) {
@@ -87,40 +93,30 @@ class AccountBox extends React.Component {
 
     }
 
+    _getTable(){
+        if (this.state.accounts.length === 0) {
+            return (<Message
+                header="No accounts"
+                content="You haven't setup an account yet."
+                icon="info"
+            />)
+        } else {
+            return (<AccountTable
+                accounts={this.state.accounts}
+                editCallback={this._editAccount}
+                deleteCallback={this._deleteAccount}
+            />)
+        }
+    }
+
     render() {
         if (!this.props.visible) {
             return false;
         }
 
-        if (this.state.accounts.length === 0) {
-            return (
-                <div>
-                    <Message
-                        header="No accounts"
-                        content="You haven't setup an account yet."
-                        icon="info"
-                    />
-                    <div>
-                        <Button onClick={this._toggleForm}>Add an account</Button>
-                        <Modal open={this.state.showForm}>
-                            <Modal.Header>Add an account</Modal.Header>
-                            <Modal.Content>
-                                <AccountForm
-                                    callback={this._handleForm}
-                                />
-                            </Modal.Content>
-                        </Modal>
-                    </div>
-                </div>
-            )
-        }
         return (
             <div>
-                <AccountTable
-                    accounts={this.state.accounts}
-                    editCallback={this._editAccount}
-                    deleteCallback={this._deleteAccount}
-                />
+                {this._getTable()}
                 <div>
                     <Button onClick={this._toggleForm}>Add an account</Button>
                     <Modal open={this.state.showForm}>
@@ -128,6 +124,7 @@ class AccountBox extends React.Component {
                         <Modal.Content>
                             <AccountForm
                                 callback={this._handleForm}
+                                cancelCallback={this._handleCancel}
                                 account={this.state.selectedAccount}
                             />
                         </Modal.Content>

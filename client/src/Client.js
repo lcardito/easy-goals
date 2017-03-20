@@ -48,7 +48,6 @@ function editAccount(toEdit, cb) {
 }
 
 function deleteAccount(accountId, cb) {
-    console.log('Deleting account' + accountId);
     fetch(`api/account/${accountId}`, {
         method: 'DELETE'
     }).then(checkStatus)
