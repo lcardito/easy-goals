@@ -24,6 +24,10 @@ body {
     font-weight: bold;
 }
 
+.segmentSmall {
+    padding: 0.1em!important;
+}
+
 .tableAccordion {
     margin-bottom: 1em;
 }

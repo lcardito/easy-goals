@@ -1,6 +1,7 @@
 import React from 'react';
 import Client from './Client';
 import AccountForm from './AccountForm';
+import AccountHeader from './AccountHeader';
 import {Accordion, Grid, Button, Segment, Container} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
@@ -83,22 +84,15 @@ class TableAccordion extends React.Component {
             return false;
         }
         return (
-            <Container fluid className="tableAccordion">
-                <Segment textAlign="center" clearing className="textBold">
-                    <Grid columns={3}>
-                        <Grid.Column>
-                            <Segment basic>Name</Segment>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Segment basic>Type</Segment>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Segment basic>Balance</Segment>
-                        </Grid.Column>
-                    </Grid>
+            <Container >
+                <Segment
+                    textAlign="center"
+                    className="segmentSmall textBold">
+                    <AccountHeader />
                 </Segment>
                 {this.state.accounts.map((account, idx) => (
                     <Accordion
+                        className="segmentSmall"
                         styled
                         fluid
                         key={idx}
