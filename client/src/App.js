@@ -1,6 +1,6 @@
 import React from "react";
 import AppMenu from "./AppMenu";
-import AccountBox from "./AccountBox";
+import TableAccordion from "./TableAccordion";
 
 class App extends React.Component {
 
@@ -20,7 +20,7 @@ class App extends React.Component {
                     <AppMenu
                         initialActiveItem={this.state.activeItem}
                         onMenuChange={this.handleMenuItemClick} />
-                    <AccountBox
+                    <TableAccordion
                         visible={this.state.activeItem === 'accounts'}
                     />
                 </div>

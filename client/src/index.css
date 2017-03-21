@@ -1,21 +1,33 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
 }
 
 .App {
-  margin-top: 7em;
+    margin-top: 7em;
 }
 
-.account-form{
-  margin-top: 5em;
+.account-form {
+    margin-top: 5em;
 }
 
-.account-form-actions{
+.account-form-actions {
     margin-top: 2em;
 }
 
 #food-search {
-  margin-top: 5em;
+    margin-top: 5em;
+}
+
+.textBold {
+    font-weight: bold;
+}
+
+.tableAccordion {
+    margin-bottom: 1em;
+}
+
+.addButton {
+    margin-top: 1em !important;
 }
