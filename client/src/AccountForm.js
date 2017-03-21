@@ -1,5 +1,4 @@
 import React from 'react';
-import Client from './Client';
 import {Button, Form} from 'semantic-ui-react';
 import update from 'immutability-helper';
 
@@ -13,7 +12,6 @@ class AccountForm extends React.Component {
         };
 
         this._updateAccount = this._updateAccount.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
     }
 
     _updateAccount(event) {
@@ -24,20 +22,6 @@ class AccountForm extends React.Component {
         this.setState({
             selectedAccount: newAccount
         });
-    }
-
-    _handleSubmit(event) {
-        event.preventDefault();
-
-        if(this.state.selectedAccount.id >= 0){
-            Client.editAccount(this.state.selectedAccount, (edited) => {
-                this.props.submitCallback(edited, true);
-            });
-        } else {
-            Client.addAccount(this.state.selectedAccount, (newAccount) => {
-                this.props.submitCallback(newAccount, false);
-            });
-        }
     }
 
     render() {
@@ -72,8 +56,15 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                 </Form.Group>
-                <Button onClick={this.props.cancelCallback} type="button">Cancel</Button>
-                <Button onClick={this._handleSubmit} type='submit'>Submit</Button>
+                <Button onClick={() => this.props.handleSubmit(this.state.selectedAccount)}
+                        color="blue"
+                        compact
+                        type='button'>Submit</Button>
+                <Button onClick={() => this.props.deleteAccount(this.state.selectedAccount)}
+                        color="red"
+                        compact
+                        type='button'>Delete</Button>
+
             </Form>
         );
     }

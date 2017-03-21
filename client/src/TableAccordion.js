@@ -1,6 +1,7 @@
 import React from 'react';
 import Client from './Client';
-import {Accordion, Grid, Form, Button, Segment, Container} from 'semantic-ui-react';
+import AccountForm from './AccountForm';
+import {Accordion, Grid, Button, Segment, Container} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -9,7 +10,6 @@ class TableAccordion extends React.Component {
     constructor() {
         super();
 
-        this._updateAccount = this._updateAccount.bind(this);
         this._getAccounts = this._getAccounts.bind(this);
         this._selectAccount = this._selectAccount.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
@@ -39,24 +39,12 @@ class TableAccordion extends React.Component {
         });
     }
 
-    _updateAccount(event) {
-        const value = event.target.value;
-        const name = event.target.name;
-        let newAccount = update(this.state.selectedAccount, {$merge: {[name]: value}});
-
-        this.setState({
-            selectedAccount: newAccount
-        });
-    }
-
     _selectAccount(account) {
         this.setState({selectedAccount: account});
     }
 
-    _handleSubmit(event) {
-        event.preventDefault();
-
-        Client.editAccount(this.state.selectedAccount, (edited) => {
+    _handleSubmit(account) {
+        Client.editAccount(account, (edited) => {
             let accountIdx = _.findIndex(this.state.accounts, (a) => {
                 return a.id === edited.id
             });
@@ -133,45 +121,11 @@ class TableAccordion extends React.Component {
                         </Accordion.Title>
                         <Accordion.Content>
                             <Segment>
-                                <Form>
-                                    <Form.Group widths='equal'>
-                                        <Form.Field>
-                                            <label>Account name</label>
-                                            <input placeholder="account name"
-                                                   type="text"
-                                                   name="name"
-                                                   value={this.state.selectedAccount.name}
-                                                   onChange={this._updateAccount}
-                                            />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label>Account category</label>
-                                            <input placeholder="account category"
-                                                   type="text"
-                                                   value={this.state.selectedAccount.type}
-                                                   name="type"
-                                                   onChange={this._updateAccount}
-                                            />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label>Initial amount</label>
-                                            <input placeholder="account balance"
-                                                   type="text"
-                                                   value={this.state.selectedAccount.balance}
-                                                   name="balance"
-                                                   onChange={this._updateAccount}
-                                            />
-                                        </Form.Field>
-                                    </Form.Group>
-                                    <Button onClick={this._handleSubmit}
-                                            color="blue"
-                                            compact
-                                            type='submit'>Submit</Button>
-                                    <Button onClick={this._deleteAccount}
-                                            color="red"
-                                            compact
-                                            type='button'>Delete</Button>
-                                </Form>
+                                <AccountForm
+                                    account={account}
+                                    handleSubmit={this._handleSubmit}
+                                    deleteAccount={this._deleteAccount}
+                                />
                             </Segment>
                         </Accordion.Content>
                     </Accordion>
