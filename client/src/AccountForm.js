@@ -6,9 +6,8 @@ class AccountForm extends React.Component {
 
     constructor(props) {
         super(props);
-        let current = props.account.id >= 0 ? props.account : {name: '', type: '', balance: 0};
         this.state = {
-            selectedAccount: current
+            selectedAccount: props.account
         };
 
         this._updateAccount = this._updateAccount.bind(this);
@@ -29,7 +28,7 @@ class AccountForm extends React.Component {
             <Form>
                 <Form.Group widths='equal'>
                     <Form.Field>
-                        <label>Account name</label>
+                        <label>Name</label>
                         <input placeholder="account name"
                                type="text"
                                name="name"
@@ -38,7 +37,7 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Account category</label>
+                        <label>Category</label>
                         <input placeholder="account category"
                                type="text"
                                value={this.state.selectedAccount.type}
@@ -47,7 +46,7 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Initial amount</label>
+                        <label>Amount</label>
                         <input placeholder="account balance"
                                type="text"
                                value={this.state.selectedAccount.balance}

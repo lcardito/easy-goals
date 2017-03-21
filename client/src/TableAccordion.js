@@ -45,23 +45,35 @@ class TableAccordion extends React.Component {
     }
 
     _handleSubmit(account) {
-        Client.editAccount(account, (edited) => {
-            let accountIdx = _.findIndex(this.state.accounts, (a) => {
-                return a.id === edited.id
+        if(account.id === -1) {
+            Client.addAccount(account, (newAccount) => {
+                let accountIdx = _.findIndex(this.state.accounts, (a) => {
+                    return a.id === -1;
+                });
+                const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
+                this.setState({
+                    accounts: newAccounts,
+                    selectedAccount: {}
+                });
             });
-            const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
-            this.setState({
-                accounts: newAccounts,
-                selectedAccount: {}
+        } else {
+            Client.editAccount(account, (edited) => {
+                let accountIdx = _.findIndex(this.state.accounts, (a) => {
+                    return a.id === edited.id
+                });
+                const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
+                this.setState({
+                    accounts: newAccounts,
+                    selectedAccount: {}
+                });
             });
-        });
+        }
     }
 
     _addAccount() {
-        Client.addAccount({name: 'changeMe', type: 'changeMe', balance: 0}, (newAccount) => {
-            this.setState({
-                accounts: update(this.state.accounts, {$push: [newAccount]})
-            });
+        let pendingAccount = {name: 'change me', type: 'change me', balance: 0, id: -1};
+        this.setState({
+            accounts: update(this.state.accounts, {$push: [pendingAccount]})
         });
     }
 
@@ -98,7 +110,6 @@ class TableAccordion extends React.Component {
                         fluid
                         key={idx}>
                         <Accordion.Title
-                            active={this.state.selectedAccount.id === account.id}
                             onClick={() => this._selectAccount(account)}
                             key={idx}>
                             <Grid columns={3}
@@ -116,13 +127,11 @@ class TableAccordion extends React.Component {
                             </Grid>
                         </Accordion.Title>
                         <Accordion.Content>
-                            <Segment>
                                 <AccountForm
                                     account={account}
                                     handleSubmit={this._handleSubmit}
                                     deleteAccount={this._deleteAccount}
                                 />
-                            </Segment>
                         </Accordion.Content>
                     </Accordion>
                 ))}
