@@ -56,14 +56,15 @@ class AccountForm extends React.Component {
                         />
                     </Form.Field>
                 </Form.Group>
-                <Button onClick={() => this.props.handleSubmit(this.state.selectedAccount)}
-                        color="blue"
-                        compact
-                        type='button'>Submit</Button>
                 <Button onClick={() => this.props.deleteAccount(this.state.selectedAccount)}
                         color="red"
                         compact
                         type='button'>Delete</Button>
+                <Button onClick={() => this.props.handleSubmit(this.state.selectedAccount)}
+                        color="green"
+                        compact
+                        type='button'>Save</Button>
+
 
             </Form>
         );

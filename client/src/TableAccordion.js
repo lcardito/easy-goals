@@ -51,7 +51,8 @@ class TableAccordion extends React.Component {
             });
             const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
             this.setState({
-                accounts: newAccounts
+                accounts: newAccounts,
+                selectedAccount: {}
             });
         });
     }
@@ -95,9 +96,10 @@ class TableAccordion extends React.Component {
                         className="segmentSmall"
                         styled
                         fluid
-                        key={idx}
-                        onTitleClick={() => this._selectAccount(account)}>
+                        key={idx}>
                         <Accordion.Title
+                            active={this.state.selectedAccount.id === account.id}
+                            onClick={() => this._selectAccount(account)}
                             key={idx}>
                             <Grid columns={3}
                                   divided='vertically'
