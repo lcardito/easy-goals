@@ -2,7 +2,7 @@ import React from 'react';
 import Client from './Client';
 import AccountForm from './AccountForm';
 import AccountHeader from './AccountHeader';
-import {Accordion, Grid, Button, Segment, Container} from 'semantic-ui-react';
+import {Accordion, Grid, Button, Segment, Container, Label} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -69,7 +69,8 @@ class TableAccordion extends React.Component {
     _addAccount() {
         let pendingAccount = {name: 'change me', type: 'change me', balance: 0, id: -1};
         this.setState({
-            accounts: update(this.state.accounts, {$push: [pendingAccount]})
+            accounts: update(this.state.accounts, {$push: [pendingAccount]}),
+            selectedAccount: pendingAccount
         });
     }
 
@@ -88,10 +89,19 @@ class TableAccordion extends React.Component {
         });
     }
 
+    _showRibbon = (account) => {
+        if (account.id === -1) {
+            return <Label as='div' color='yellow' ribbon>This account has NOT been saved</Label>;
+        } else {
+            return null;
+        }
+    };
+
     render() {
         if (!this.props.visible) {
             return false;
         }
+
         return (
             <Container >
                 <Segment
@@ -108,6 +118,7 @@ class TableAccordion extends React.Component {
                         <Accordion.Title
                             onClick={() => this._selectAccount(account)}
                             key={idx}>
+                            {this._showRibbon(account)}
                             <Grid columns={3}
                                   divided='vertically'
                                   textAlign="center">
