@@ -47,9 +47,7 @@ class TableAccordion extends React.Component {
     _handleSubmit(account) {
         if(account.id === -1) {
             Client.addAccount(account, (newAccount) => {
-                let accountIdx = _.findIndex(this.state.accounts, (a) => {
-                    return a.id === -1;
-                });
+                let accountIdx = _.findIndex(this.state.accounts, (a) => { return a.id === -1; });
                 const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
                 this.setState({
                     accounts: newAccounts,
@@ -58,9 +56,7 @@ class TableAccordion extends React.Component {
             });
         } else {
             Client.editAccount(account, (edited) => {
-                let accountIdx = _.findIndex(this.state.accounts, (a) => {
-                    return a.id === edited.id
-                });
+                let accountIdx = _.findIndex(this.state.accounts, (a) => { return a.id === edited.id });
                 const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
                 this.setState({
                     accounts: newAccounts,
