@@ -45,9 +45,11 @@ class TableAccordion extends React.Component {
     }
 
     _handleSubmit(account) {
-        if(account.id === -1) {
+        if (account.id === -1) {
             Client.addAccount(account, (newAccount) => {
-                let accountIdx = _.findIndex(this.state.accounts, (a) => { return a.id === -1; });
+                let accountIdx = _.findIndex(this.state.accounts, (a) => {
+                    return a.id === -1;
+                });
                 const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
                 this.setState({
                     accounts: newAccounts,
@@ -56,7 +58,9 @@ class TableAccordion extends React.Component {
             });
         } else {
             Client.editAccount(account, (edited) => {
-                let accountIdx = _.findIndex(this.state.accounts, (a) => { return a.id === edited.id });
+                let accountIdx = _.findIndex(this.state.accounts, (a) => {
+                    return a.id === edited.id
+                });
                 const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
                 this.setState({
                     accounts: newAccounts,
@@ -109,39 +113,41 @@ class TableAccordion extends React.Component {
                     className="segmentSmall textBold">
                     <AccountHeader />
                 </Segment>
-                {this.state.accounts.map((account, idx) => (
-                    <Accordion
-                        className="segmentSmall"
-                        styled
-                        fluid
-                        key={idx}>
-                        <Accordion.Title
-                            onClick={() => this._selectAccount(account)}
-                            key={idx}>
-                            {this._showRibbon(account)}
-                            <Grid columns={3}
-                                  divided='vertically'
-                                  textAlign="center">
-                                <Grid.Column>
-                                    <Segment basic>{account.name}</Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment basic>{account.type}</Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment basic>{account.balance}</Segment>
-                                </Grid.Column>
-                            </Grid>
-                        </Accordion.Title>
-                        <Accordion.Content>
+
+                <Accordion
+                    className="segmentSmall"
+                    styled
+                    fluid>
+                    {this.state.accounts.map((account, idx) => ([
+                            <Accordion.Title
+                                onClick={() => this._selectAccount(account)}
+                                key={idx}>
+                                {this._showRibbon(account)}
+                                <Grid columns={3}
+                                      divided='vertically'
+                                      textAlign="center">
+                                    <Grid.Column>
+                                        <Segment basic>{account.name}</Segment>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Segment basic>{account.type}</Segment>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Segment basic>{account.balance}</Segment>
+                                    </Grid.Column>
+                                </Grid>
+                            </Accordion.Title>,
+                            <Accordion.Content>
                                 <AccountForm
                                     account={account}
                                     handleSubmit={this._handleSubmit}
                                     deleteAccount={this._deleteAccount}
                                 />
-                        </Accordion.Content>
-                    </Accordion>
-                ))}
+                            </Accordion.Content>
+                        ]
+                    ))}
+                </Accordion>
+
                 <Button onClick={this._addAccount}
                         className="addButton">Add new</Button>
             </Container>
