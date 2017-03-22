@@ -2,7 +2,7 @@ import React from 'react';
 import Client from './Client';
 import AccountForm from './AccountForm';
 import AccountHeader from './AccountHeader';
-import {Accordion, Grid, Button, Segment, Container, Label} from 'semantic-ui-react';
+import {Accordion, Grid, Button, Segment, Container, Label, Message} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -93,63 +93,65 @@ class TableAccordion extends React.Component {
         });
     }
 
-    _showRibbon = (account) => {
-        if (account.id === -1) {
-            return <Label as='div' color='yellow' ribbon>This account has NOT been saved</Label>;
-        } else {
-            return null;
-        }
-    };
-
     render() {
         if (!this.props.visible) {
             return false;
         }
 
+        const header = <Segment
+            textAlign="center"
+            className="segmentSmall textBold">
+            <AccountHeader />
+        </Segment>;
+
+        const addAccountButton = <Button onClick={this._addAccount} className="addButton">Add new</Button>;
+
+        if (this.state.accounts.length === 0) {
+            return <div>
+                {header}
+                <Message>No Account set up yet. Created a new one!</Message>
+                {addAccountButton}
+            </div>
+        }
+
         return (
             <Container >
-                <Segment
-                    textAlign="center"
-                    className="segmentSmall textBold">
-                    <AccountHeader />
-                </Segment>
-
+                {header}
                 <Accordion
                     className="segmentSmall"
                     styled
                     fluid>
                     {this.state.accounts.map((account, idx) => ([
-                            <Accordion.Title
-                                onClick={() => this._selectAccount(account)}
-                                key={idx}>
-                                {this._showRibbon(account)}
-                                <Grid columns={3}
-                                      divided='vertically'
-                                      textAlign="center">
-                                    <Grid.Column>
-                                        <Segment basic>{account.name}</Segment>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Segment basic>{account.type}</Segment>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Segment basic>{account.balance}</Segment>
-                                    </Grid.Column>
-                                </Grid>
-                            </Accordion.Title>,
-                            <Accordion.Content>
-                                <AccountForm
-                                    account={account}
-                                    handleSubmit={this._handleSubmit}
-                                    deleteAccount={this._deleteAccount}
-                                />
-                            </Accordion.Content>
-                        ]
-                    ))}
+                        <Accordion.Title
+                            onClick={() => this._selectAccount(account)}
+                            key={idx}>
+                            {(account.id === -1)
+                                ? <Label as='div' color='yellow' ribbon>This account has NOT been saved</Label>
+                                : null}
+                            <Grid columns={3}
+                                  divided='vertically'
+                                  textAlign="center">
+                                <Grid.Column>
+                                    <Segment basic>{account.name}</Segment>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Segment basic>{account.type}</Segment>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Segment basic>{account.balance}</Segment>
+                                </Grid.Column>
+                            </Grid>
+                        </Accordion.Title>,
+                        <Accordion.Content>
+                            <AccountForm
+                                account={account}
+                                handleSubmit={this._handleSubmit}
+                                deleteAccount={this._deleteAccount}
+                            />
+                        </Accordion.Content>
+                    ]))}
                 </Accordion>
-
-                <Button onClick={this._addAccount}
-                        className="addButton">Add new</Button>
+                {addAccountButton}
             </Container>
         )
     }
