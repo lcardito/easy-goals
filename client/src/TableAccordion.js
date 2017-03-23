@@ -1,7 +1,7 @@
 import React from 'react';
 import Client from './Client';
 import AccountForm from './AccountForm';
-import AccountHeader from './AccountHeader';
+import AccordionHeader from './AccordionHeader';
 import {Accordion, Grid, Button, Segment, Container, Label, Message} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
@@ -98,17 +98,11 @@ class TableAccordion extends React.Component {
             return false;
         }
 
-        const header = <Segment
-            textAlign="center"
-            className="segmentSmall textBold">
-            <AccountHeader />
-        </Segment>;
-
         const addAccountButton = <Button onClick={this._addAccount} className="addButton">Add new</Button>;
 
         if (this.state.accounts.length === 0) {
             return <div>
-                {header}
+                <AccordionHeader headers={['Name', 'Type', 'Balance']}/>
                 <Message>No Account set up yet. Created a new one!</Message>
                 {addAccountButton}
             </div>
@@ -116,7 +110,7 @@ class TableAccordion extends React.Component {
 
         return (
             <Container >
-                {header}
+                <AccordionHeader headers={['Name', 'Type', 'Balance']}/>
                 <Accordion
                     className="segmentSmall"
                     styled
