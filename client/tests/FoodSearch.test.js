@@ -1,7 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import FoodSearch from '../src/FoodSearch';
-import Client from '../src/Client';
+import Client from '../src/main/Client';
 
 jest.mock('../src/Client');
 

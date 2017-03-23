@@ -32,22 +32,44 @@ app.get('/api/goals', (req, res) => {
 });
 
 var accounts = [];
+var goals = [];
 
 app.get('/api/account', (req, res) => {
     //TODO get it from DB
     res.json(accounts);
 });
 
+app.get('/api/goals', (req, res) => {
+    //TODO get it from DB
+    res.json(goals);
+});
+
+app.post('/api/goals', (req, res) => {
+    //TODO store in DB
+    console.log('Storing account: ' + util.inspect(req.body, false, null))
+    let goal = req.body;
+    goal.id = goals.length;
+    goal.push(goal);
+    res.json(goal);
+})
+
 app.post('/api/account', (req, res) => {
     //TODO store in DB
-
-
     console.log('Storing account: ' + util.inspect(req.body, false, null))
     let account = req.body;
     account.id = accounts.length;
     accounts.push(account);
     res.json(account);
 })
+
+app.put('/api/goals', (req, res) => {
+    //TODO store in DB
+    console.log('Editing account: ' + util.inspect(req.body, false, null))
+    let goal = req.body;
+    accounts[goal.id] = goal;
+    res.json(goal);
+});
+
 
 app.put('/api/account', (req, res) => {
     //TODO store in DB
@@ -57,7 +79,13 @@ app.put('/api/account', (req, res) => {
     res.json(account);
 });
 
-//TODO
+app.delete('/api/goals/:goalId', (req, res) => {
+    let id = req.params.goalId;
+    console.log('Deleting account with id' + id);
+    goals.splice(id, 1);
+    res.json({});
+});
+
 app.delete('/api/account/:accountId', (req, res) => {
     let id = req.params.accountId;
     console.log('Deleting account with id' + id);

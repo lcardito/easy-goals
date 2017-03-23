@@ -1,5 +1,5 @@
 import React from 'react';
-import Client from './Client';
+import Client from './main/Client';
 
 const MATCHING_ITEM_LIMIT = 25;
 

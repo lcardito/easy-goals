@@ -1,13 +1,14 @@
 import React from "react";
 import AppMenu from "./AppMenu";
-import TableAccordion from "./TableAccordion";
+import AccountsPage from "../account/AccountsPage";
+import GoalsPage from '../goal/GoalsPage';
 
 class App extends React.Component {
 
-    constructor(){
+    constructor() {
         super();
         this.state = {
-            activeItem: "accounts"
+            activeItem: "goals"
         };
     }
 
@@ -19,10 +20,12 @@ class App extends React.Component {
                 <div className='ui container'>
                     <AppMenu
                         initialActiveItem={this.state.activeItem}
-                        onMenuChange={this.handleMenuItemClick} />
-                    <TableAccordion
+                        onMenuChange={this.handleMenuItemClick}/>
+                    <AccountsPage
                         visible={this.state.activeItem === 'accounts'}
                     />
+                    <GoalsPage
+                        visible={this.state.activeItem === 'goals'}/>
                 </div>
             </div>
         );

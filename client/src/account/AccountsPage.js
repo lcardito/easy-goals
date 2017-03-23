@@ -1,12 +1,12 @@
 import React from 'react';
-import Client from './Client';
+import Client from '../main/Client';
 import AccountForm from './AccountForm';
-import AccordionHeader from './AccordionHeader';
+import AccordionHeader from '../AccordionHeader';
 import {Accordion, Grid, Button, Segment, Container, Label, Message} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
-class TableAccordion extends React.Component {
+class AccountsPage extends React.Component {
 
     constructor() {
         super();
@@ -152,4 +152,4 @@ class TableAccordion extends React.Component {
     }
 }
 
-export default TableAccordion;
+export default AccountsPage;

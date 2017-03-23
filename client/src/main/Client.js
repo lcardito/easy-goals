@@ -9,6 +9,18 @@ function search(query, cb) {
 
 }
 
+function getGoals(cb) {
+    fetch('api/goals/', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function getAccounts(cb) {
     fetch('api/account/', {
         method: 'GET',
@@ -69,5 +81,7 @@ function parseJSON(response) {
     return response.json();
 }
 
-const Client = {search, getAccounts, addAccount, editAccount, deleteAccount};
+const Client = {search, getAccounts, addAccount, editAccount, deleteAccount,
+                getGoals };
+
 export default Client;
