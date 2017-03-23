@@ -99,10 +99,11 @@ class TableAccordion extends React.Component {
         }
 
         const addAccountButton = <Button onClick={this._addAccount} className="addButton">Add new</Button>;
+        const headers = <AccordionHeader headers={['Name', 'Type', 'Balance']}/>;
 
         if (this.state.accounts.length === 0) {
             return <div>
-                <AccordionHeader headers={['Name', 'Type', 'Balance']}/>
+                {headers}
                 <Message>No Account set up yet. Created a new one!</Message>
                 {addAccountButton}
             </div>
@@ -110,7 +111,7 @@ class TableAccordion extends React.Component {
 
         return (
             <Container >
-                <AccordionHeader headers={['Name', 'Type', 'Balance']}/>
+                {headers}
                 <Accordion
                     className="segmentSmall"
                     styled
