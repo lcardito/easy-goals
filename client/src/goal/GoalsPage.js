@@ -7,7 +7,6 @@ import _ from 'lodash';
 import {Message} from 'semantic-ui-react';
 
 class GoalsPage extends React.Component {
-
     constructor() {
         super();
 
@@ -17,6 +16,7 @@ class GoalsPage extends React.Component {
             selectedGoal: {
                 label: '',
                 cost: 0,
+                category: '',
                 date: '',
                 id: -1
             }
@@ -48,6 +48,7 @@ class GoalsPage extends React.Component {
             selectedGoal: {
                 label: '',
                 cost: 0,
+                category: '',
                 date: '',
                 id: -1
             }
@@ -99,8 +100,8 @@ class GoalsPage extends React.Component {
 
         if (!this.state.showForm) {
             const headers = [
-                {key: 'id', value: 'Id'},
                 {key: 'label', value: 'Label'},
+                {key: 'category', value: 'Category'},
                 {key: 'cost', value: 'Cost'},
                 {key: 'date', value: 'Due Date'}
             ];
@@ -122,6 +123,7 @@ class GoalsPage extends React.Component {
                     <GenericForm
                         fields={[
                             {key: 'label', value: 'Label'},
+                            {key: 'category', value: 'Category'},
                             {key: 'cost', value: 'Cost'},
                             {key: 'date', value: 'Due Date'}
                         ]}
