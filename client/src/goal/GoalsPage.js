@@ -1,6 +1,6 @@
 import React from 'react';
 import Client from '../main/Client';
-import GoalTable from '../goal/GoalTable';
+import SortableTable from '../main/SortableTable';
 import {Form} from 'semantic-ui-react'
 import update from 'immutability-helper';
 import _ from 'lodash';
@@ -40,7 +40,7 @@ class GoalsPage extends React.Component {
         });
     }
 
-    resetState(goals){
+    resetState(goals) {
         this.setState({
             goals: goals,
             showForm: false,
@@ -61,7 +61,9 @@ class GoalsPage extends React.Component {
             });
         } else {
             Client.editGoal(this.state.selectedGoal, (savedGoal) => {
-                let goalIdx = _.findIndex(this.state.goals, (a) => { return a.id === savedGoal.id });
+                let goalIdx = _.findIndex(this.state.goals, (a) => {
+                    return a.id === savedGoal.id
+                });
                 this.resetState(update(this.state.goals, {[goalIdx]: {$set: savedGoal}}));
             });
         }
@@ -96,15 +98,34 @@ class GoalsPage extends React.Component {
         }
 
         if (!this.state.showForm) {
+            const headers = [
+                {
+                    key: 'id',
+                    value: 'Id'
+                },
+                {
+                    key: 'label',
+                    value: 'Label'
+                },
+                {
+                    key: 'cost',
+                    value: 'Cost'
+                },
+                {
+                    key: 'date',
+                    value: 'Due Date'
+                }
+            ];
             return <div>
-                <GoalTable
+                <SortableTable
                     editCallback={this._editGoal}
                     addNewCallback={() => this.setState({showForm: true})}
-                    goals={this.state.goals}/>
+                    headers={headers}
+                    items={this.state.goals}/>
             </div>
         } else {
             let deleteButton = null;
-            if(this.state.selectedGoal.id !== -1) {
+            if (this.state.selectedGoal.id !== -1) {
                 deleteButton = <Form.Button
                     type="button"
                     onClick={this._deleteGoal}
@@ -133,7 +154,7 @@ class GoalsPage extends React.Component {
                     <Form.Group>
                         <Form.Button color="green" type="submit">Save</Form.Button>
                         <Form.Button type="button"
-                                     onClick={() => this.setState({showForm: false})}>Cancel</Form.Button>
+                                     onClick={() => this.setState({showForm: false, selectedGoal: {}})}>Cancel</Form.Button>
                         {deleteButton}
                     </Form.Group>
                 </Form>

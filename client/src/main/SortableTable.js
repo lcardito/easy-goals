@@ -2,12 +2,13 @@ import React from 'react'
 import {Table, Button, Icon} from 'semantic-ui-react';
 import _ from 'lodash';
 
-class GoalTable extends React.Component {
+class SortableTable extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            goals: props.goals
+            headers: props.headers,
+            items: props.items
         };
 
         this._sortBy = this._sortBy.bind(this);
@@ -15,14 +16,15 @@ class GoalTable extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            goals: nextProps.goals
+            headers: nextProps.headers,
+            items: nextProps.items
         })
     }
 
     _sortBy(prop) {
         this.sortingOrder = (this.sortingOrder === 'asc') ? 'desc' : 'asc';
         this.setState({
-            goals: _.orderBy(this.state.goals, [prop], [this.sortingOrder])
+            items: _.orderBy(this.state.items, [prop], [this.sortingOrder])
         })
     }
 
@@ -34,38 +36,31 @@ class GoalTable extends React.Component {
                    selectable>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell
-                            onClick={() => this._sortBy('label')}>Name</Table.HeaderCell>
-                        <Table.HeaderCell
-                            onClick={() => this._sortBy('cost')}>Cost</Table.HeaderCell>
-                        <Table.HeaderCell
-                            onClick={() => this._sortBy('date')}>Due date</Table.HeaderCell>
+                        {this.state.headers.map((h, idx) => (
+                            <Table.HeaderCell
+                                key={idx}
+                                onClick={() => this._sortBy(h.key)}>{h.value}</Table.HeaderCell>
+                        ))}
                     </Table.Row>
                 </Table.Header>
-
                 <Table.Body>
-                    {this.state.goals.map((goal, idx) => (
-                        <Table.Row
-                            key={idx} onClick={() => this.props.editCallback(goal)}>
-                            <Table.Cell>
-                                {goal.label}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {goal.cost}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {goal.date}
-                            </Table.Cell>
+                    {this.state.items.map((item, itemIdx) => (
+                        <Table.Row key={itemIdx} onClick={() => this.props.editCallback(item)}>
+                            {this.state.headers.map((h, idx) => (
+                                <Table.Cell key={idx}>
+                                    {item[h.key]}
+                                </Table.Cell>
+                            ))}
                         </Table.Row>
                     ))}
                 </Table.Body>
                 <Table.Footer fullWidth>
                     <Table.Row>
-                        <Table.HeaderCell colSpan='3'>
+                        <Table.HeaderCell colSpan={this.props.headers.length}>
                             <Button
                                 onClick={() => this.props.addNewCallback()}
                                 floated='left' icon size='tiny' labelPosition='left' primary>
-                                <Icon name="add circle"/>Add New Goal
+                                <Icon name="add circle"/>Add New
                             </Button>
                         </Table.HeaderCell>
                     </Table.Row>
@@ -75,4 +70,4 @@ class GoalTable extends React.Component {
     }
 }
 
-export default GoalTable;
+export default SortableTable;
