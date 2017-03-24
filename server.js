@@ -80,7 +80,7 @@ app.put('/api/account', (req, res) => {
 
 app.delete('/api/goals/:goalId', (req, res) => {
     let id = req.params.goalId;
-    console.log('Deleting account with id' + id);
+    console.log('Deleting goal with id' + id);
     goals.splice(id, 1);
     res.json({});
 });

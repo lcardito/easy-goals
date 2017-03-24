@@ -40,47 +40,38 @@ class GoalsPage extends React.Component {
         });
     }
 
+    resetState(goals){
+        this.setState({
+            goals: goals,
+            showForm: false,
+            selectedGoal: {
+                label: '',
+                cost: 0,
+                date: '',
+                id: -1
+            }
+        });
+    }
+
     _saveGoal(e) {
         e.preventDefault();
         if (this.state.selectedGoal.id === -1) {
             Client.addGoal(this.state.selectedGoal, (savedGoal) => {
-                this.setState({
-                    goals: update(this.state.goals, {$push: [savedGoal]}),
-                    showForm: false,
-                    selectedGoal: {
-                        label: '',
-                        cost: 0,
-                        date: '',
-                        id: -1
-                    }
-                });
+                this.resetState(update(this.state.goals, {$push: [savedGoal]}));
             });
         } else {
             Client.editGoal(this.state.selectedGoal, (savedGoal) => {
-                let goalIdx = _.findIndex(this.state.goals, (a) => {
-                    return a.id === savedGoal.id
-                });
-                this.setState({
-                    goals: update(this.state.goals, {[goalIdx]: {$set: savedGoal}}),
-                    showForm: false,
-                    selectedGoal: {
-                        label: '',
-                        cost: 0,
-                        date: '',
-                        id: -1
-                    }
-                });
+                let goalIdx = _.findIndex(this.state.goals, (a) => { return a.id === savedGoal.id });
+                this.resetState(update(this.state.goals, {[goalIdx]: {$set: savedGoal}}));
             });
         }
     }
 
     _updateGoal(event) {
-        const value = event.target.value;
-        const name = event.target.name;
-        let newGoal = update(this.state.selectedGoal, {$merge: {[name]: value}});
-
         this.setState({
-            selectedGoal: newGoal
+            selectedGoal: update(this.state.selectedGoal, {
+                $merge: {[event.target.name]: event.target.value}
+            })
         });
     }
 
@@ -93,15 +84,10 @@ class GoalsPage extends React.Component {
 
     _deleteGoal() {
         Client.deleteGoal(this.state.selectedGoal.id);
-
         let goalIdx = _.findIndex(this.state.goals, (g) => {
             return g.id === this.state.selectedGoal.id
         });
-
-        this.setState({
-            goals: update(this.state.goals, {$splice: [[goalIdx, 1]]}),
-            showForm: false
-        })
+        this.resetState(update(this.state.goals, {$splice: [[goalIdx, 1]]}));
     }
 
     render() {
