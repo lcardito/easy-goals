@@ -27,20 +27,18 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-app.get('/api/goals', (req, res) => {
-
-});
-
 var accounts = [];
 var goals = [];
 
 app.get('/api/account', (req, res) => {
     //TODO get it from DB
+    console.log('Current accounts: ' + util.inspect(goals, false, null))
     res.json(accounts);
 });
 
 app.get('/api/goals', (req, res) => {
     //TODO get it from DB
+    console.log('Current goals: ' + util.inspect(goals, false, null))
     res.json(goals);
 });
 
@@ -49,7 +47,8 @@ app.post('/api/goals', (req, res) => {
     console.log('Storing account: ' + util.inspect(req.body, false, null))
     let goal = req.body;
     goal.id = goals.length;
-    goal.push(goal);
+    goals.push(goal);
+    console.log('Returnig json ' + util.inspect(goal, false, null));
     res.json(goal);
 })
 

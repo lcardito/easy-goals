@@ -33,6 +33,19 @@ function getAccounts(cb) {
         .then(cb);
 }
 
+function addGoal(goal, cb) {
+    fetch('api/goals/', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goal)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function addAccount(account, cb) {
     fetch('api/account/', {
         method: 'POST',
@@ -81,7 +94,9 @@ function parseJSON(response) {
     return response.json();
 }
 
-const Client = {search, getAccounts, addAccount, editAccount, deleteAccount,
-                getGoals };
+const Client = {
+    search, getAccounts, addAccount, editAccount, deleteAccount,
+    getGoals, addGoal
+};
 
 export default Client;
