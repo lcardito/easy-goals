@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form} from 'semantic-ui-react';
+import {Form, Confirm} from 'semantic-ui-react';
 import update from 'immutability-helper';
 
 class GenericForm extends React.Component {
@@ -8,7 +8,8 @@ class GenericForm extends React.Component {
         this.state = {
             fields: props.fields,
             item: props.item,
-            editing: props.editing
+            editing: props.editing,
+            confirmOpen: false
         };
 
         this._updateItem = this._updateItem.bind(this);
@@ -40,32 +41,41 @@ class GenericForm extends React.Component {
         if (this.state.editing) {
             deleteButton = <Form.Button
                 type="button"
-                onClick={() => this.props.deleteCallback(this.state.item)}
+                onClick={() => this.setState({confirmOpen: true})}
                 color="red">Delete</Form.Button>
         }
         return (
-            <Form
-                className='attached fluid segment'
-                onSubmit={this._submitForm.bind(this)}>
-                <Form.Group widths='equal'>
-                    {this.state.fields.map((field, idx) => (
-                        <Form.Input
-                            key={idx}
-                            label={field.value}
-                            name={field.key}
-                            type={field.key === 'date' ? 'date' : 'text'}
-                            value={this.state.item[field.key]}
-                            onChange={this._updateItem}
-                        />
-                    ))}
-                </Form.Group>
-                <Form.Group>
-                    <Form.Button color="green" type="submit">Save</Form.Button>
-                    <Form.Button type="button"
-                                 onClick={() => this.props.cancelCallback()}>Cancel</Form.Button>
-                    {deleteButton}
-                </Form.Group>
-            </Form>
+            <div>
+                <Form
+                    className='attached fluid segment'
+                    onSubmit={this._submitForm.bind(this)}>
+                    <Form.Group widths='equal'>
+                        {this.state.fields.map((field, idx) => (
+                            <Form.Input
+                                key={idx}
+                                label={field.value}
+                                name={field.key}
+                                type={field.key === 'date' ? 'date' : 'text'}
+                                value={this.state.item[field.key]}
+                                onChange={this._updateItem}
+                            />
+                        ))}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Button color="green" type="submit">Save</Form.Button>
+                        <Form.Button type="button"
+                                     onClick={() => this.props.cancelCallback()}>Cancel</Form.Button>
+                        {deleteButton}
+                    </Form.Group>
+                </Form>
+                <Confirm
+                    open={this.state.confirmOpen}
+                    header='This operation can NOT be reverted'
+                    content='Are you sure you want to delete this?'
+                    onCancel={() => this.setState({confirmOpen: false})}
+                    onConfirm={() => this.props.deleteCallback(this.state.item)}
+                />
+            </div>
         )
     }
 }
