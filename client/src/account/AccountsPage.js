@@ -79,11 +79,10 @@ class AccountsPage extends React.Component {
     }
 
     _deleteAccount(account) {
+        Client.deleteAccount(account.id);
         let accountIdx = _.findIndex(this.state.accounts, (a) => {
             return a.id === account.id
         });
-        Client.deleteAccount(account.id);
-
         const newAccounts = update(this.state.accounts, {
             $splice: [[accountIdx, 1]]
         });

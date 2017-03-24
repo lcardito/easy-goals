@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table} from 'semantic-ui-react';
+import {Table, Button, Icon} from 'semantic-ui-react';
 import _ from 'lodash';
 
 class GoalTable extends React.Component {
@@ -13,7 +13,7 @@ class GoalTable extends React.Component {
         this._sortBy = this._sortBy.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         this.setState({
             goals: nextProps.goals
         })
@@ -30,7 +30,8 @@ class GoalTable extends React.Component {
         return (
             <Table celled
                    padded
-                   sortable>
+                   sortable
+                   selectable>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell
@@ -45,7 +46,7 @@ class GoalTable extends React.Component {
                 <Table.Body>
                     {this.state.goals.map((goal, idx) => (
                         <Table.Row
-                            key={idx}>
+                            key={idx} onClick={() => this.props.editCallback(goal)}>
                             <Table.Cell>
                                 {goal.label}
                             </Table.Cell>
@@ -58,6 +59,17 @@ class GoalTable extends React.Component {
                         </Table.Row>
                     ))}
                 </Table.Body>
+                <Table.Footer fullWidth>
+                    <Table.Row>
+                        <Table.HeaderCell colSpan='3'>
+                            <Button
+                                onClick={() => this.props.addNewCallback()}
+                                floated='left' icon size='tiny' labelPosition='left' primary>
+                                <Icon name="add circle"/>Add New Goal
+                            </Button>
+                        </Table.HeaderCell>
+                    </Table.Row>
+                </Table.Footer>
             </Table>
         )
     }

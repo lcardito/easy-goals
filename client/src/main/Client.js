@@ -59,6 +59,19 @@ function addAccount(account, cb) {
         .then(cb);
 }
 
+function editGoal(toEdit, cb) {
+    fetch('api/goals/', {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(toEdit)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function editAccount(toEdit, cb) {
     fetch('api/account/', {
         method: 'PUT',
@@ -69,6 +82,13 @@ function editAccount(toEdit, cb) {
         body: JSON.stringify(toEdit)
     }).then(checkStatus)
         .then(parseJSON)
+        .then(cb);
+}
+
+function deleteGoal(goalId, cb) {
+    fetch(`api/goals/${goalId}`, {
+        method: 'DELETE'
+    }).then(checkStatus)
         .then(cb);
 }
 
@@ -96,7 +116,7 @@ function parseJSON(response) {
 
 const Client = {
     search, getAccounts, addAccount, editAccount, deleteAccount,
-    getGoals, addGoal
+    getGoals, addGoal, editGoal, deleteGoal
 };
 
 export default Client;

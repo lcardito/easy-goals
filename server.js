@@ -63,9 +63,9 @@ app.post('/api/account', (req, res) => {
 
 app.put('/api/goals', (req, res) => {
     //TODO store in DB
-    console.log('Editing account: ' + util.inspect(req.body, false, null))
+    console.log('Editing goal: ' + util.inspect(req.body, false, null))
     let goal = req.body;
-    accounts[goal.id] = goal;
+    goals[goal.id] = goal;
     res.json(goal);
 });
 
