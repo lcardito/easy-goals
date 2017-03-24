@@ -1,6 +1,6 @@
 import React from "react";
 import AppMenu from "./AppMenu";
-import AccountsPage from "../account/AccountsPage";
+import AccountsPage2 from "../account/AccountsPage";
 import GoalsPage from '../goal/GoalsPage';
 
 class App extends React.Component {
@@ -21,7 +21,7 @@ class App extends React.Component {
                     <AppMenu
                         initialActiveItem={this.state.activeItem}
                         onMenuChange={this.handleMenuItemClick}/>
-                    <AccountsPage
+                    <AccountsPage2
                         visible={this.state.activeItem === 'accounts'}
                     />
                     <GoalsPage

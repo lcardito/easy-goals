@@ -1,8 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
-import AccountForm from './AccountForm';
-import AccordionHeader from '../AccordionHeader';
-import {Accordion, Grid, Button, Segment, Container, Label, Message} from 'semantic-ui-react';
+import SortableTable from '../main/SortableTable';
+import GenericForm from '../main/GenericForm';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -11,85 +10,85 @@ class AccountsPage extends React.Component {
     constructor() {
         super();
 
-        this._getAccounts = this._getAccounts.bind(this);
-        this._selectAccount = this._selectAccount.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._addAccount = this._addAccount.bind(this);
-        this._deleteAccount = this._deleteAccount.bind(this);
-
         this.state = {
+            accounts: [],
+            showForm: false,
             selectedAccount: {
                 name: '',
                 type: '',
-                balance: 0
-            },
-            accounts: []
+                balance: 0,
+                id: -1
+            }
         };
+
+        this._getAccounts = this._getAccounts.bind(this);
+        this._saveAccount = this._saveAccount.bind(this);
+        this._updateAccount = this._updateAccount.bind(this);
+        this._editAccount = this._editAccount.bind(this);
+        this._deleteAccount = this._deleteAccount.bind(this);
     }
 
     componentWillMount() {
-        this._getAccounts();
+        Client.getAccounts((serverAccounts) => {
+            this._getAccounts(serverAccounts);
+        })
     }
 
-    _getAccounts() {
-        Client.getAccounts((accounts) => {
-            this.setState({
-                accounts: accounts
-            });
-
+    _getAccounts(serverAccounts) {
+        this.setState({
+            accounts: serverAccounts
         });
     }
 
-    _selectAccount(account) {
-        this.setState({selectedAccount: account});
+    resetState(accounts) {
+        this.setState({
+            accounts: accounts.length ? accounts : this.state.accounts,
+            showForm: false,
+            selectedAccount: {
+                name: '',
+                type: '',
+                balance: 0,
+                id: -1
+            }
+        });
     }
 
-    _handleSubmit(account) {
+    _saveAccount(account) {
         if (account.id === -1) {
-            Client.addAccount(account, (newAccount) => {
-                let accountIdx = _.findIndex(this.state.accounts, (a) => {
-                    return a.id === -1;
-                });
-                const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: newAccount}});
-                this.setState({
-                    accounts: newAccounts,
-                    selectedAccount: {}
-                });
+            Client.addAccount(account, (savedAccount) => {
+                this.resetState(update(this.state.accounts, {$push: [savedAccount]}));
             });
         } else {
-            Client.editAccount(account, (edited) => {
+            Client.editAccount(account, (savedAccount) => {
                 let accountIdx = _.findIndex(this.state.accounts, (a) => {
-                    return a.id === edited.id
+                    return a.id === savedAccount.id
                 });
-                const newAccounts = update(this.state.accounts, {[accountIdx]: {$set: edited}});
-                this.setState({
-                    accounts: newAccounts,
-                    selectedAccount: {}
-                });
+                this.resetState(update(this.state.accounts, {[accountIdx]: {$set: savedAccount}}));
             });
         }
     }
 
-    _addAccount() {
-        let pendingAccount = {name: 'change me', type: 'change me', balance: 0, id: -1};
+    _updateAccount(event) {
         this.setState({
-            accounts: update(this.state.accounts, {$push: [pendingAccount]}),
-            selectedAccount: pendingAccount
+            selectedAccount: update(this.state.selectedAccount, {
+                $merge: {[event.target.name]: event.target.value}
+            })
         });
     }
 
-    _deleteAccount(account) {
-        Client.deleteAccount(account.id);
-        let accountIdx = _.findIndex(this.state.accounts, (a) => {
-            return a.id === account.id
-        });
-        const newAccounts = update(this.state.accounts, {
-            $splice: [[accountIdx, 1]]
-        });
-
+    _editAccount(account) {
         this.setState({
-            accounts: newAccounts
+            selectedAccount: account,
+            showForm: true
         });
+    };
+
+    _deleteAccount() {
+        Client.deleteAccount(this.state.selectedAccount.id);
+        let accountIdx = _.findIndex(this.state.accounts, (g) => {
+            return g.id === this.state.selectedAccount.id
+        });
+        this.resetState(update(this.state.accounts, {$splice: [[accountIdx, 1]]}));
     }
 
     render() {
@@ -97,57 +96,34 @@ class AccountsPage extends React.Component {
             return false;
         }
 
-        const addAccountButton = <Button onClick={this._addAccount} className="addButton">Add new</Button>;
-        const headers = <AccordionHeader headers={['Name', 'Type', 'Balance']}/>;
-
-        if (this.state.accounts.length === 0) {
-            return <div>
-                {headers}
-                <Message>No Account set up yet. Created a new one!</Message>
-                {addAccountButton}
-            </div>
+        if (!this.state.showForm) {
+            const headers = [
+                {key: 'name', value: 'Name'},
+                {key: 'type', value: 'Type'},
+                {key: 'balance', value: 'Balance'}
+            ];
+            return (
+                <SortableTable
+                    editCallback={this._editAccount}
+                    addNewCallback={() => this.setState({showForm: true})}
+                    headers={headers}
+                    items={this.state.accounts}/>
+            )
+        } else {
+            return (
+                <GenericForm
+                    fields={[
+                        {key: 'name', value: 'Name'},
+                        {key: 'type', value: 'Type'},
+                        {key: 'balance', value: 'Balance'}
+                    ]}
+                    item={this.state.selectedAccount}
+                    submitCallback={this._saveAccount}
+                    cancelCallback={() => this.resetState([])}
+                    editing={this.state.selectedAccount.id !== -1}
+                />
+            )
         }
-
-        return (
-            <Container >
-                {headers}
-                <Accordion
-                    className="segmentSmall"
-                    styled
-                    fluid>
-                    {this.state.accounts.map((account, idx) => ([
-                        <Accordion.Title
-                            onClick={() => this._selectAccount(account)}
-                            key={idx}>
-                            {(account.id === -1)
-                                ? <Label as='div' color='yellow' ribbon>This account has NOT been saved</Label>
-                                : null}
-                            <Grid columns={3}
-                                  divided='vertically'
-                                  textAlign="center">
-                                <Grid.Column>
-                                    <Segment basic>{account.name}</Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment basic>{account.type}</Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment basic>{account.balance}</Segment>
-                                </Grid.Column>
-                            </Grid>
-                        </Accordion.Title>,
-                        <Accordion.Content>
-                            <AccountForm
-                                account={account}
-                                handleSubmit={this._handleSubmit}
-                                deleteAccount={this._deleteAccount}
-                            />
-                        </Accordion.Content>
-                    ]))}
-                </Accordion>
-                {addAccountButton}
-            </Container>
-        )
     }
 }
 
