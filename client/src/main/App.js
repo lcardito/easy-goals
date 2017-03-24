@@ -1,14 +1,15 @@
 import React from "react";
 import AppMenu from "./AppMenu";
-import AccountsPage2 from "../account/AccountsPage";
+import AccountsPage from "../account/AccountsPage";
 import GoalsPage from '../goal/GoalsPage';
+import DashboardPage from '../dashboard/DashboardPage';
 
 class App extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            activeItem: "goals"
+            activeItem: "dashboard"
         };
     }
 
@@ -18,14 +19,10 @@ class App extends React.Component {
         return (
             <div className='App'>
                 <div className='ui container'>
-                    <AppMenu
-                        initialActiveItem={this.state.activeItem}
-                        onMenuChange={this.handleMenuItemClick}/>
-                    <AccountsPage2
-                        visible={this.state.activeItem === 'accounts'}
-                    />
-                    <GoalsPage
-                        visible={this.state.activeItem === 'goals'}/>
+                    <AppMenu initialActiveItem={this.state.activeItem} onMenuChange={this.handleMenuItemClick}/>
+                    <AccountsPage visible={this.state.activeItem === 'accounts'}/>
+                    <GoalsPage visible={this.state.activeItem === 'goals'}/>
+                    <DashboardPage visible={this.state.activeItem === 'dashboard'}/>
                 </div>
             </div>
         );

@@ -110,7 +110,8 @@ class GoalsPage extends React.Component {
                     editCallback={this._editGoal}
                     addNewCallback={() => this.setState({showForm: true})}
                     headers={headers}
-                    items={this.state.goals}/>
+                    items={this.state.goals}
+                    editable={true}/>
             )
         } else {
             return (

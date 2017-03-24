@@ -7,7 +7,6 @@ import _ from 'lodash';
 import {Message} from 'semantic-ui-react';
 
 class AccountsPage extends React.Component {
-
     constructor() {
         super();
 
@@ -98,17 +97,18 @@ class AccountsPage extends React.Component {
         }
 
         if (!this.state.showForm) {
-            const headers = [
-                {key: 'name', value: 'Name'},
-                {key: 'type', value: 'Type'},
-                {key: 'balance', value: 'Balance'}
-            ];
             return (
                 <SortableTable
                     editCallback={this._editAccount}
                     addNewCallback={() => this.setState({showForm: true})}
-                    headers={headers}
-                    items={this.state.accounts}/>
+                    headers={[
+                        {key: 'name', value: 'Name'},
+                        {key: 'type', value: 'Type'},
+                        {key: 'balance', value: 'Balance'}
+                    ]}
+                    items={this.state.accounts}
+                    editable={true}
+                />
             )
         } else {
             return (

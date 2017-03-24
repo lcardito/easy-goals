@@ -7,8 +7,9 @@ class SortableTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            headers: props.headers,
-            items: props.items
+            headers: props.headers ? props.headers : [],
+            items: props.items ? props.items : [],
+            editable: props.editable ? props.editable : false
         };
 
         this._sortBy = this._sortBy.bind(this);
@@ -17,7 +18,8 @@ class SortableTable extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             headers: nextProps.headers,
-            items: nextProps.items
+            items: nextProps.items,
+            editable: nextProps.editable
         })
     }
 
@@ -33,7 +35,7 @@ class SortableTable extends React.Component {
             <Table celled
                    padded
                    sortable
-                   selectable>
+                   selectable={this.state.editable}>
                 <Table.Header>
                     <Table.Row>
                         {this.state.headers.map((h, idx) => (
@@ -54,6 +56,7 @@ class SortableTable extends React.Component {
                         </Table.Row>
                     ))}
                 </Table.Body>
+                {this.state.editable &&
                 <Table.Footer fullWidth>
                     <Table.Row>
                         <Table.HeaderCell colSpan={this.props.headers.length}>
@@ -65,6 +68,7 @@ class SortableTable extends React.Component {
                         </Table.HeaderCell>
                     </Table.Row>
                 </Table.Footer>
+                }
             </Table>
         )
     }
