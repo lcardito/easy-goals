@@ -15,7 +15,7 @@ class AccountsPage extends React.Component {
             showForm: false,
             selectedAccount: {
                 name: '',
-                type: '',
+                category: '',
                 balance: 0,
                 id: -1
             }
@@ -46,7 +46,7 @@ class AccountsPage extends React.Component {
             showForm: false,
             selectedAccount: {
                 name: '',
-                type: '',
+                category: '',
                 balance: 0,
                 id: -1
             }
@@ -103,7 +103,7 @@ class AccountsPage extends React.Component {
                     addNewCallback={() => this.setState({showForm: true})}
                     headers={[
                         {key: 'name', value: 'Name'},
-                        {key: 'type', value: 'Type'},
+                        {key: 'category', value: 'Category'},
                         {key: 'balance', value: 'Balance'}
                     ]}
                     items={this.state.accounts}
@@ -121,7 +121,7 @@ class AccountsPage extends React.Component {
                     <GenericForm
                         fields={[
                             {key: 'name', value: 'Name'},
-                            {key: 'type', value: 'Type'},
+                            {key: 'category', value: 'Category'},
                             {key: 'balance', value: 'Balance'}
                         ]}
                         item={this.state.selectedAccount}

@@ -9,6 +9,18 @@ function search(query, cb) {
 
 }
 
+function getMonthly(cb) {
+    fetch('api/monthly/', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function getGoals(cb) {
     fetch('api/goals/', {
         method: 'GET',
@@ -116,7 +128,7 @@ function parseJSON(response) {
 
 const Client = {
     search, getAccounts, addAccount, editAccount, deleteAccount,
-    getGoals, addGoal, editGoal, deleteGoal
+    getGoals, addGoal, editGoal, deleteGoal, getMonthly
 };
 
 export default Client;
