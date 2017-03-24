@@ -48,7 +48,7 @@ function calculateBalance(goals, monthlySaving) {
     var balance = 0;
     goals.some((g) => {
         var end = moment(g.date, 'YYYY-MM-DD');
-        var monthsTillNextGoal = moment.duration(end.diff(someDate)).asMonths();
+        var monthsTillNextGoal = _.round(moment.duration(end.diff(someDate)).asMonths());
         balance = (monthlySaving * monthsTillNextGoal) + balance - g.cost;
 
         someDate = moment(g.date, 'YYYY-MM-DD');
@@ -92,7 +92,7 @@ app.get('/api/monthly', (req, res) => {
 
 app.get('/api/account', (req, res) => {
     //TODO get it from DB
-    console.log('Current accounts: ' + util.inspect(goals, false, null))
+    console.log('Current accounts: ' + util.inspect(accounts, false, null))
     res.json(accounts);
 });
 
