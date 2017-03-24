@@ -30,7 +30,7 @@ class GenericForm extends React.Component {
         });
     }
 
-    _submitForm(e){
+    _submitForm(e) {
         e.preventDefault();
         this.props.submitCallback(this.state.item);
     }
@@ -40,12 +40,14 @@ class GenericForm extends React.Component {
         if (this.state.editing) {
             deleteButton = <Form.Button
                 type="button"
-                onClick={() => this.deleteCallback(this.state.item)}
+                onClick={() => this.props.deleteCallback(this.state.item)}
                 color="red">Delete</Form.Button>
         }
         return (
-            <Form onSubmit={this._submitForm.bind(this)}>
-                <Form.Group inline>
+            <Form
+                className='attached fluid segment'
+                onSubmit={this._submitForm.bind(this)}>
+                <Form.Group widths='equal'>
                     {this.state.fields.map((field, idx) => (
                         <Form.Input
                             key={idx}

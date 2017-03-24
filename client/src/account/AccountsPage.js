@@ -4,6 +4,7 @@ import SortableTable from '../main/SortableTable';
 import GenericForm from '../main/GenericForm';
 import update from 'immutability-helper';
 import _ from 'lodash';
+import {Message} from 'semantic-ui-react';
 
 class AccountsPage extends React.Component {
 
@@ -42,7 +43,7 @@ class AccountsPage extends React.Component {
 
     resetState(accounts) {
         this.setState({
-            accounts: accounts.length ? accounts : this.state.accounts,
+            accounts: accounts ? accounts : this.state.accounts,
             showForm: false,
             selectedAccount: {
                 name: '',
@@ -83,10 +84,10 @@ class AccountsPage extends React.Component {
         });
     };
 
-    _deleteAccount() {
-        Client.deleteAccount(this.state.selectedAccount.id);
+    _deleteAccount(account) {
+        Client.deleteAccount(account.id);
         let accountIdx = _.findIndex(this.state.accounts, (g) => {
-            return g.id === this.state.selectedAccount.id
+            return g.id === account.id
         });
         this.resetState(update(this.state.accounts, {$splice: [[accountIdx, 1]]}));
     }
@@ -111,17 +112,25 @@ class AccountsPage extends React.Component {
             )
         } else {
             return (
-                <GenericForm
-                    fields={[
-                        {key: 'name', value: 'Name'},
-                        {key: 'type', value: 'Type'},
-                        {key: 'balance', value: 'Balance'}
-                    ]}
-                    item={this.state.selectedAccount}
-                    submitCallback={this._saveAccount}
-                    cancelCallback={() => this.resetState([])}
-                    editing={this.state.selectedAccount.id !== -1}
-                />
+                <div>
+                    <Message
+                        attached
+                        header='Add/Edit an account'
+                        content='Fill out the form below to add/edit a new account'
+                    />
+                    <GenericForm
+                        fields={[
+                            {key: 'name', value: 'Name'},
+                            {key: 'type', value: 'Type'},
+                            {key: 'balance', value: 'Balance'}
+                        ]}
+                        item={this.state.selectedAccount}
+                        submitCallback={this._saveAccount}
+                        cancelCallback={() => this.resetState()}
+                        deleteCallback={this._deleteAccount}
+                        editing={this.state.selectedAccount.id !== -1}
+                    />
+                </div>
             )
         }
     }
