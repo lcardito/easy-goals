@@ -1,7 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import {Form} from 'semantic-ui-react'
+import GenericForm from '../main/GenericForm';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -42,7 +42,7 @@ class GoalsPage extends React.Component {
 
     resetState(goals) {
         this.setState({
-            goals: goals,
+            goals: goals.length ? goals : this.state.goals,
             showForm: false,
             selectedGoal: {
                 label: '',
@@ -53,14 +53,13 @@ class GoalsPage extends React.Component {
         });
     }
 
-    _saveGoal(e) {
-        e.preventDefault();
-        if (this.state.selectedGoal.id === -1) {
-            Client.addGoal(this.state.selectedGoal, (savedGoal) => {
+    _saveGoal(goal) {
+        if (goal.id === -1) {
+            Client.addGoal(goal, (savedGoal) => {
                 this.resetState(update(this.state.goals, {$push: [savedGoal]}));
             });
         } else {
-            Client.editGoal(this.state.selectedGoal, (savedGoal) => {
+            Client.editGoal(goal, (savedGoal) => {
                 let goalIdx = _.findIndex(this.state.goals, (a) => {
                     return a.id === savedGoal.id
                 });
@@ -99,65 +98,31 @@ class GoalsPage extends React.Component {
 
         if (!this.state.showForm) {
             const headers = [
-                {
-                    key: 'id',
-                    value: 'Id'
-                },
-                {
-                    key: 'label',
-                    value: 'Label'
-                },
-                {
-                    key: 'cost',
-                    value: 'Cost'
-                },
-                {
-                    key: 'date',
-                    value: 'Due Date'
-                }
+                {key: 'id', value: 'Id'},
+                {key: 'label', value: 'Label'},
+                {key: 'cost', value: 'Cost'},
+                {key: 'date', value: 'Due Date'}
             ];
-            return <div>
+            return (
                 <SortableTable
                     editCallback={this._editGoal}
                     addNewCallback={() => this.setState({showForm: true})}
                     headers={headers}
                     items={this.state.goals}/>
-            </div>
+            )
         } else {
-            let deleteButton = null;
-            if (this.state.selectedGoal.id !== -1) {
-                deleteButton = <Form.Button
-                    type="button"
-                    onClick={this._deleteGoal}
-                    color="red">Delete</Form.Button>
-            }
             return (
-                <Form onSubmit={this._saveGoal.bind(this)}>
-                    <Form.Group inline>
-                        <Form.Input label='Label'
-                                    name="label"
-                                    value={this.state.selectedGoal.label}
-                                    onChange={this._updateGoal}
-                                    placeholder='What are you saving for?'/>
-                        <Form.Input label='Cost'
-                                    name="cost"
-                                    value={this.state.selectedGoal.cost}
-                                    onChange={this._updateGoal}
-                                    placeholder='How much will it cost?'/>
-                        <Form.Input type="date"
-                                    name="date"
-                                    label='Due date'
-                                    value={this.state.selectedGoal.date}
-                                    onChange={this._updateGoal}
-                                    placeholder='When?'/>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Button color="green" type="submit">Save</Form.Button>
-                        <Form.Button type="button"
-                                     onClick={() => this.setState({showForm: false, selectedGoal: {}})}>Cancel</Form.Button>
-                        {deleteButton}
-                    </Form.Group>
-                </Form>
+                <GenericForm
+                    fields={[
+                        {key: 'label', value: 'Label'},
+                        {key: 'cost', value: 'Cost'},
+                        {key: 'date', value: 'Due Date'}
+                    ]}
+                    item={this.state.selectedGoal}
+                    submitCallback={this._saveGoal}
+                    cancelCallback={() => this.resetState([])}
+                    editing={this.state.selectedGoal.id !== -1}
+                />
             )
         }
     }
