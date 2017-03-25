@@ -1,6 +1,6 @@
 import React from "react";
 import AppMenu from "./AppMenu";
-import AccountsPage from "../account/AccountsPage";
+import BucketsPage from "../account/BucketsPage";
 import GoalsPage from '../goal/GoalsPage';
 import DashboardPage from '../dashboard/DashboardPage';
 
@@ -9,7 +9,7 @@ class App extends React.Component {
     constructor() {
         super();
         this.state = {
-            activeItem: "accounts"
+            activeItem: "buckets"
         };
     }
 
@@ -20,7 +20,7 @@ class App extends React.Component {
             <div className='App'>
                 <div className='ui container'>
                     <AppMenu initialActiveItem={this.state.activeItem} onMenuChange={this.handleMenuItemClick}/>
-                    <AccountsPage visible={this.state.activeItem === 'accounts'}/>
+                    <BucketsPage visible={this.state.activeItem === 'buckets'}/>
                     <GoalsPage visible={this.state.activeItem === 'goals'}/>
                     <DashboardPage visible={this.state.activeItem === 'dashboard'}/>
                 </div>

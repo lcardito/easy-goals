@@ -33,7 +33,7 @@ class DashboardPage extends React.Component {
             <SortableTable
                 headers={[
                     {key: 'category', value: 'Goal category'},
-                    {key: 'balance', value: 'Account Balance'},
+                    {key: 'balance', value: 'Bucket Balance'},
                     {key: 'monthly', value: 'Due Monthly Saving'}
                 ]}
                 items={this.state.monthly}

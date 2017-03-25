@@ -33,8 +33,8 @@ function getGoals(cb) {
         .then(cb);
 }
 
-function getAccounts(cb) {
-    fetch('api/account/', {
+function getBuckets(cb) {
+    fetch('api/bucket/', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -58,14 +58,14 @@ function addGoal(goal, cb) {
         .then(cb);
 }
 
-function addAccount(account, cb) {
-    fetch('api/account/', {
+function addBucket(bucket, cb) {
+    fetch('api/bucket/', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(account)
+        body: JSON.stringify(bucket)
     }).then(checkStatus)
         .then(parseJSON)
         .then(cb);
@@ -84,8 +84,8 @@ function editGoal(toEdit, cb) {
         .then(cb);
 }
 
-function editAccount(toEdit, cb) {
-    fetch('api/account/', {
+function editBucket(toEdit, cb) {
+    fetch('api/bucket/', {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -104,8 +104,8 @@ function deleteGoal(goalId, cb) {
         .then(cb);
 }
 
-function deleteAccount(accountId, cb) {
-    fetch(`api/account/${accountId}`, {
+function deleteBucket(bucketId, cb) {
+    fetch(`api/bucket/${bucketId}`, {
         method: 'DELETE'
     }).then(checkStatus)
         .then(cb);
@@ -127,7 +127,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getAccounts, addAccount, editAccount, deleteAccount,
+    search, getBuckets, addBucket, editBucket, deleteBucket,
     getGoals, addGoal, editGoal, deleteGoal, getMonthly
 };
 

@@ -29,8 +29,9 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-var accounts = [{name: 'HSBC', category: 'Other', balance: '100', id: 0},
-    {name: 'HSBC', category: 'Vechicles', balance: '1000', id: 1}];
+var buckets = [{name: 'HSBC', category: 'Other', balance: 0, id: 0},
+    {name: 'HSBC', category: 'Vechicles', balance: 0, id: 1}];
+
 var goals = [{id: 0, category: 'Vechicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
     {id: 1, category: 'Vechicles', label: 'Car - Maintanaince', cost: 300, date: '2017-06-30'},
     {id: 2, category: 'Vechicles', label: 'AA', cost: 111, date: '2018-02-28'},
@@ -65,9 +66,9 @@ app.get('/api/monthly', (req, res) => {
     res.json(monthly);
 })
 
-app.get('/api/account', (req, res) => {
+app.get('/api/bucket', (req, res) => {
     //TODO get it from DB
-    console.log('Get accounts: ' + accounts.length);
+    console.log('Get buckets: ' + buckets.length);
 
     const categories = [...new Set(goals.map(item => item.category))];
 
@@ -88,13 +89,13 @@ app.get('/api/account', (req, res) => {
             monthlySaving = monthlySaving + 1;
         }
 
-        var account = accounts.filter((a) => a.category === c)[0];
-        if (account) {
-            account.monthly = monthlySaving;
+        var bucket = buckets.filter((a) => a.category === c)[0];
+        if (bucket) {
+            bucket.monthly = monthlySaving;
         }
     });
 
-    res.json(accounts);
+    res.json(buckets);
 });
 
 app.get('/api/goals', (req, res) => {
@@ -105,7 +106,7 @@ app.get('/api/goals', (req, res) => {
 
 app.post('/api/goals', (req, res) => {
     //TODO store in DB
-    console.log('Storing account: ' + util.inspect(req.body, false, null))
+    console.log('Storing bucket: ' + util.inspect(req.body, false, null))
     let goal = req.body;
     goal.id = goals.length;
     goals.push(goal);
@@ -113,13 +114,13 @@ app.post('/api/goals', (req, res) => {
     res.json(goal);
 })
 
-app.post('/api/account', (req, res) => {
+app.post('/api/bucket', (req, res) => {
     //TODO store in DB
-    console.log('Storing account: ' + util.inspect(req.body, false, null))
-    let account = req.body;
-    account.id = accounts.length;
-    accounts.push(account);
-    res.json(account);
+    console.log('Storing bucket: ' + util.inspect(req.body, false, null))
+    let bucket = req.body;
+    bucket.id = buckets.length;
+    buckets.push(bucket);
+    res.json(bucket);
 })
 
 app.put('/api/goals', (req, res) => {
@@ -131,12 +132,12 @@ app.put('/api/goals', (req, res) => {
 });
 
 
-app.put('/api/account', (req, res) => {
+app.put('/api/bucket', (req, res) => {
     //TODO store in DB
-    console.log('Editing account: ' + util.inspect(req.body, false, null))
-    let account = req.body;
-    accounts[account.id] = account;
-    res.json(account);
+    console.log('Editing bucket: ' + util.inspect(req.body, false, null))
+    let bucket = req.body;
+    buckets[bucket.id] = bucket;
+    res.json(bucket);
 });
 
 app.delete('/api/goals/:goalId', (req, res) => {
@@ -146,10 +147,10 @@ app.delete('/api/goals/:goalId', (req, res) => {
     res.json({});
 });
 
-app.delete('/api/account/:accountId', (req, res) => {
-    let id = req.params.accountId;
-    console.log('Deleting account with id' + id);
-    accounts.splice(id, 1);
+app.delete('/api/bucket/:bucketId', (req, res) => {
+    let id = req.params.bucketId;
+    console.log('Deleting bucket with id' + id);
+    buckets.splice(id, 1);
     res.json({});
 });
 

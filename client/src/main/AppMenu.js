@@ -32,10 +32,10 @@ class AppMenu extends React.Component {
                 </Menu.Item>
 
                 <Menu.Item
-                    name='accounts'
-                    active={this.state.activeItem === 'accounts'}
+                    name='buckets'
+                    active={this.state.activeItem === 'buckets'}
                     onClick={this._onMenuChange.bind(this)}>
-                    Accounts
+                    Buckets
                 </Menu.Item>
 
                 <Menu.Item
