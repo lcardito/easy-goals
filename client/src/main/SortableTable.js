@@ -47,7 +47,9 @@ class SortableTable extends React.Component {
                 </Table.Header>
                 <Table.Body>
                     {this.state.items.map((item, itemIdx) => (
-                        <Table.Row key={itemIdx} onClick={() => this.props.editCallback(item)}>
+                        <Table.Row
+                            key={itemIdx}
+                            onClick={() => this.props.editCallback(item)}>
                             {this.state.headers.map((h, idx) => (
                                 <Table.Cell key={idx}>
                                     {item[h.key]}

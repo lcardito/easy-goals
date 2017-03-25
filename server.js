@@ -29,18 +29,16 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-var accounts = [
-    { name: 'HSBC', category: 'Other', balance: '100', id: 0 },
-    { name: 'HSBC', category: 'Vechicles', balance: '1000', id: 1 }
-];
-var goals = [
-    {id: 0, category: 'Vechicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
+var accounts = [{name: 'HSBC', category: 'Other', balance: '100', id: 0},
+    {name: 'HSBC', category: 'Vechicles', balance: '1000', id: 1}];
+var goals = [{id: 0, category: 'Vechicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
     {id: 1, category: 'Vechicles', label: 'Car - Maintanaince', cost: 300, date: '2017-06-30'},
     {id: 2, category: 'Vechicles', label: 'AA', cost: 111, date: '2018-02-28'},
     {id: 3, category: 'Vechicles', label: 'Car - Road Tax', cost: 130, date: '2017-07-30'},
     {id: 4, category: 'Vechicles', label: 'Car - MOT', cost: 90, date: '2017-09-30'},
     {id: 5, category: 'Vechicles', label: 'Car - Insurance', cost: 565, date: '2017-10-30'},
-    {id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}
+    {id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'},
+    {id: 7, category: 'Allowance', label: 'Dinner', cost: 30, date: '2017-10-30'}
 ];
 
 function calculateBalance(goals, monthlySaving) {
@@ -64,6 +62,13 @@ app.get('/api/monthly', (req, res) => {
     console.log('Calculate monthly saving for the categories');
 
     var monthly = [];
+    res.json(monthly);
+})
+
+app.get('/api/account', (req, res) => {
+    //TODO get it from DB
+    console.log('Get accounts: ' + accounts.length);
+
     const categories = [...new Set(goals.map(item => item.category))];
 
     categories.forEach((c) => {
@@ -83,22 +88,18 @@ app.get('/api/monthly', (req, res) => {
             monthlySaving = monthlySaving + 1;
         }
 
-        var accountBalance = accounts.filter((a) => a.category === c)[0].balance;
-        monthly.push({category: c, balance: accountBalance, monthly: monthlySaving});
+        var account = accounts.filter((a) => a.category === c)[0];
+        if (account) {
+            account.monthly = monthlySaving;
+        }
     });
 
-    res.json(monthly);
-})
-
-app.get('/api/account', (req, res) => {
-    //TODO get it from DB
-    console.log('Current accounts: ' + util.inspect(accounts, false, null))
     res.json(accounts);
 });
 
 app.get('/api/goals', (req, res) => {
     //TODO get it from DB
-    console.log('Current goals: ' + util.inspect(goals, false, null))
+    console.log('Getting goals: ' + goals.length);
     res.json(goals);
 });
 

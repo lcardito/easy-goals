@@ -10,15 +10,18 @@ class AccountsPage extends React.Component {
     constructor() {
         super();
 
+        this.defaultAccount = {
+            name: '',
+            category: '',
+            balance: 0,
+            monthly: 0,
+            id: -1
+        };
+
         this.state = {
             accounts: [],
             showForm: false,
-            selectedAccount: {
-                name: '',
-                category: '',
-                balance: 0,
-                id: -1
-            }
+            selectedAccount: this.defaultAccount
         };
 
         this._getAccounts = this._getAccounts.bind(this);
@@ -44,12 +47,7 @@ class AccountsPage extends React.Component {
         this.setState({
             accounts: accounts ? accounts : this.state.accounts,
             showForm: false,
-            selectedAccount: {
-                name: '',
-                category: '',
-                balance: 0,
-                id: -1
-            }
+            selectedAccount: this.defaultAccount
         });
     }
 
@@ -104,7 +102,8 @@ class AccountsPage extends React.Component {
                     headers={[
                         {key: 'name', value: 'Name'},
                         {key: 'category', value: 'Category'},
-                        {key: 'balance', value: 'Balance'}
+                        {key: 'balance', value: 'Balance'},
+                        {key: 'monthly', value: 'Monthly Due'}
                     ]}
                     items={this.state.accounts}
                     editable={true}
@@ -114,7 +113,7 @@ class AccountsPage extends React.Component {
             return (
                 <div>
                     <Message
-                        attached
+                        attached={true}
                         header='Add/Edit an account'
                         content='Fill out the form below to add/edit a new account'
                     />
