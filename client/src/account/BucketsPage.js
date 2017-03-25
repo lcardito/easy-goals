@@ -11,7 +11,6 @@ class BucketsPage extends React.Component {
         super();
 
         this.defaultBucket = {
-            name: '',
             category: '',
             balance: 0,
             monthly: 0,
@@ -100,7 +99,6 @@ class BucketsPage extends React.Component {
                     editCallback={this._editBucket}
                     addNewCallback={() => this.setState({showForm: true})}
                     headers={[
-                        {key: 'name', value: 'Name'},
                         {key: 'category', value: 'Category'},
                         {key: 'balance', value: 'Balance'},
                         {key: 'monthly', value: 'Monthly Due'}
@@ -119,7 +117,6 @@ class BucketsPage extends React.Component {
                     />
                     <GenericForm
                         fields={[
-                            {key: 'name', value: 'Name'},
                             {key: 'category', value: 'Category'},
                             {key: 'balance', value: 'Balance'}
                         ]}

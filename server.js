@@ -29,8 +29,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-var buckets = [{name: 'HSBC', category: 'Other', balance: 0, id: 0},
-    {name: 'HSBC', category: 'Vechicles', balance: 0, id: 1}];
+var buckets = [{category: 'Other', balance: 0, id: 0},
+    {category: 'Vechicles', balance: 0, id: 1}];
 
 var goals = [{id: 0, category: 'Vechicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
     {id: 1, category: 'Vechicles', label: 'Car - Maintanaince', cost: 300, date: '2017-06-30'},

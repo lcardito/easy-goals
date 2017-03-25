@@ -25,24 +25,16 @@ class AppMenu extends React.Component {
         return (
             <Menu>
                 <Menu.Item
-                    name='dashboard'
-                    active={this.state.activeItem === 'dashboard'}
+                    name='goals'
+                    active={this.state.activeItem === 'goals'}
                     onClick={this._onMenuChange.bind(this)}>
-                    Dashboard
+                    My Goals
                 </Menu.Item>
-
                 <Menu.Item
                     name='buckets'
                     active={this.state.activeItem === 'buckets'}
                     onClick={this._onMenuChange.bind(this)}>
                     Buckets
-                </Menu.Item>
-
-                <Menu.Item
-                    name='goals'
-                    active={this.state.activeItem === 'goals'}
-                    onClick={this._onMenuChange.bind(this)}>
-                    My Goals
                 </Menu.Item>
             </Menu>
         )
