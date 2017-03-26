@@ -5,6 +5,7 @@ import GenericForm from '../main/GenericForm';
 import update from 'immutability-helper';
 import _ from 'lodash';
 import {Message} from 'semantic-ui-react';
+import moment from 'moment';
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -19,14 +20,15 @@ class BucketsPage extends React.Component {
 
         this.state = {
             buckets: [],
-            showForm: false,
+            tracks: [],
+            showBucket: false,
             selectedBucket: this.defaultBucket
         };
 
         this._getBuckets = this._getBuckets.bind(this);
         this._saveBucket = this._saveBucket.bind(this);
         this._updateBucket = this._updateBucket.bind(this);
-        this._editBucket = this._editBucket.bind(this);
+        this._showBucket = this._showBucket.bind(this);
         this._deleteBucket = this._deleteBucket.bind(this);
     }
 
@@ -45,7 +47,7 @@ class BucketsPage extends React.Component {
     resetState(buckets) {
         this.setState({
             buckets: buckets ? buckets : this.state.buckets,
-            showForm: false,
+            showBucket: false,
             selectedBucket: this.defaultBucket
         });
     }
@@ -73,10 +75,15 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _editBucket(bucket) {
-        this.setState({
-            selectedBucket: bucket,
-            showForm: true
+    _showBucket(bucket) {
+        Client.getTrack(bucket.category, (serverTracks) => {
+            _.each(serverTracks, (t) => {
+                t.paymentDate = moment(t.paymentDate).format('MMMM, YYYY');
+            });
+            this.setState({
+                tracks: serverTracks,
+                showBucket: true
+            });
         });
     };
 
@@ -93,40 +100,33 @@ class BucketsPage extends React.Component {
             return false;
         }
 
-        if (!this.state.showForm) {
+        if (!this.state.showBucket) {
             return (
                 <SortableTable
-                    editCallback={this._editBucket}
-                    addNewCallback={() => this.setState({showForm: true})}
+                    editCallback={this._showBucket}
                     headers={[
                         {key: 'category', value: 'Category'},
                         {key: 'balance', value: 'Balance'},
-                        {key: 'monthly', value: 'Monthly Due'}
+                        {key: 'monthly', value: 'This Month Due'},
+                        {key: 'createdDate', value: 'Created'}
                     ]}
                     items={this.state.buckets}
-                    editable={true}
+                    editable={false}
                 />
             )
         } else {
             return (
-                <div>
-                    <Message
-                        attached={true}
-                        header='Add/Edit an bucket'
-                        content='Fill out the form below to add/edit a new bucket'
-                    />
-                    <GenericForm
-                        fields={[
-                            {key: 'category', value: 'Category'},
-                            {key: 'balance', value: 'Balance'}
-                        ]}
-                        item={this.state.selectedBucket}
-                        submitCallback={this._saveBucket}
-                        cancelCallback={() => this.resetState()}
-                        deleteCallback={this._deleteBucket}
-                        editing={this.state.selectedBucket.id !== -1}
-                    />
-                </div>
+                <SortableTable
+                    editable={false}
+                    headers={[
+                        {key: 'goalName', value: 'Goal Name'},
+                        {key: 'paymentDate', value: 'Payment Date'},
+                        {key: 'goalCost', value: 'Goal Cost'},
+                        {key: 'balanceBefore', value: 'Balance Before'},
+                        {key: 'balanceAfter', value: 'Balance After'}
+                    ]}
+                    items={this.state.tracks}
+                />
             )
         }
     }

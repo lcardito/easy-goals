@@ -35,6 +35,7 @@ class SortableTable extends React.Component {
             <Table celled
                    padded
                    sortable
+                   size='small'
                    selectable={this.state.editable}>
                 <Table.Header>
                     <Table.Row>

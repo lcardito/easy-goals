@@ -98,7 +98,7 @@ class GoalsPage extends React.Component {
             return false;
         }
 
-        if (!this.state.showForm) {
+        if (!this.state.showBucket) {
             const headers = [
                 {key: 'label', value: 'Label'},
                 {key: 'category', value: 'Category'},
