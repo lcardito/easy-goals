@@ -24,6 +24,13 @@ describe('budget module', () => {
             assert.equal(budget.calculateMonthlySaving(bucket, goals), 0);
         });
 
+        it('should should use start balance to calculate monthly savings', () => {
+            const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
+            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
+
+            assert.equal(budget.calculateMonthlySaving(bucket, goals), 43);
+        });
+
         it('should return the round up monthly payment for only one goal', () => {
             const bucket = {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0};
             const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
