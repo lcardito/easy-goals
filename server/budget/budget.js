@@ -1,26 +1,31 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const getInitialSavings = function (goals, bucket) {
-    let lastDueDate = moment(goals.slice(-1)[0].date, 'YYYY-MM-DD');
-    let startSavingDate = moment(bucket.createdDate, 'YYYY-MM-DD');
+const DATE_FORMAT = 'YYYY-MM-DD';
 
-    let months = moment.duration(lastDueDate.diff(startSavingDate)).asMonths();
+function getInitialSavings(startingDate, goals) {
+    let lastDueDate = moment(goals.slice(-1)[0].date, DATE_FORMAT);
+    let startSavingDate = moment(startingDate, DATE_FORMAT);
 
-    return _.round(_.sumBy(goals, 'cost') / months);
-};
+    let months = Math.floor(moment.duration(lastDueDate.diff(startSavingDate)).asMonths());
+    return Math.ceil(_.sumBy(goals, 'cost') / months);
+}
 
 exports.calculateMonthlySaving = function (bucket, goals) {
-    let byDate = _.orderBy(goals, ['date'], ['asc']);
-
-    let monthlySaving = getInitialSavings(byDate, bucket);
-    let startSavingDate = moment(bucket.createdDate);
     let balance = bucket.balance;
 
-    for (let i = 0; i < byDate.length; i++) {
-        let g = byDate[i];
+    if (balance >= _.sumBy(goals, 'cost')) {
+        return 0;
+    }
 
-        let nextGoalDate = moment(g.date, 'YYYY-MM-DD');
+    let startSavingDate = moment(bucket.createdDate);
+    let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
+    let monthlySaving = getInitialSavings(bucket.createdDate, goalsByDate);
+
+    for (let i = 0; i < goalsByDate.length; i++) {
+        let g = goalsByDate[i];
+        let nextGoalDate = moment(g.date, DATE_FORMAT);
+
         let monthsTillNextGoal = _.round(moment.duration(nextGoalDate.diff(startSavingDate)).asMonths());
         balance = ((monthlySaving * monthsTillNextGoal) + balance) - g.cost;
 
@@ -31,7 +36,7 @@ exports.calculateMonthlySaving = function (bucket, goals) {
             startSavingDate = moment(bucket.createdDate);
             continue;
         }
-        startSavingDate = moment(g.date, 'YYYY-MM-DD');
+        startSavingDate = moment(g.date, DATE_FORMAT);
     }
     return monthlySaving;
 };
