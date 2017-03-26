@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const _ = require('lodash');
 const Moment = require('moment');
 const MomentRange = require('moment-range');
-const budget = require('./budget');
+const budget = require('./budget/budget');
 
 const moment = MomentRange.extendMoment(Moment);
 
@@ -80,14 +80,11 @@ app.get('/api/bucket', (req, res) => {
     const categories = [...new Set(goals.map(item => item.category))];
 
     categories.forEach((c) => {
-        let goalsByDate = _.orderBy(goals, ['date'], ['asc']).filter((g) => g.category === c);
+        let goalsForCategory = goals.filter((g) => g.category === c);
         let bucket = buckets.filter((a) => a.category === c)[0];
-        let monthlySaving = budget.getInitialSavings(goalsByDate, bucket);
-
-        monthlySaving = budget.calculateMonthlySaving(bucket, goalsByDate, monthlySaving);
 
         if (bucket) {
-            bucket.monthly = monthlySaving;
+            bucket.monthly = budget.calculateMonthlySaving(bucket, goalsForCategory);
         }
     });
 
