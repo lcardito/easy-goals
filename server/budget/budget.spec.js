@@ -33,7 +33,8 @@ describe('budget module', () => {
             const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
 
             const report = budget.buildReport(bucket, goals);
-            assert.lengthOf(report, 8);
+            assert.lengthOf(report, 8, util.inspect(report, false, null));
+            assert.equal(report[0].payIn, 43);
             assert.equal(_.sumBy(report, 'payIn'), 301);
         });
     });
@@ -91,6 +92,25 @@ describe('budget module', () => {
             assert.equal(firstPayments[1].name, 'Car - Maintenance');
 
             assert.lengthOf(payOuts[1].payments, 1);
+        });
+
+        it('Should never fail a payment', () => {
+            const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
+
+            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
+                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, date: '2017-06-30'},
+                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'},
+                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, date: '2017-07-30'},
+                {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, date: '2017-09-30'},
+                {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, date: '2017-10-30'}
+            ];
+
+            const report = budget.buildReport(bucket, goals);
+
+            report.forEach((r) => {
+                assert.isTrue(r.balance > 0);
+            });
+
         });
 
         it('build report will return monthly payment value', () => {

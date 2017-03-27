@@ -39,23 +39,28 @@ exports.buildReport = function (bucket, goals) {
                 && moment(g.date).isSame(month, 'year')
         });
 
+        currentReport.date = date;
+        currentReport.payIn = isLast ? 0 : monthlySaving;
+
+        let tempBalance = bucket.balance + currentReport.payIn;
         if (goalsInMonth) {
             currentReport.payments = goalsInMonth.map((g) => {
                 return {name: g.label, cost: g.cost}
             });
+
+            tempBalance = bucket.balance + currentReport.payIn - _.sumBy(currentReport.payments, 'cost');
+
+            if (tempBalance < 0) {
+                mIdx = 0;
+                continue;
+            }
+
+            let nextGoals = goals.filter((g) => {
+                return moment(g.date).isAfter(moment(date), 'month');
+            });
+            monthlySaving = getInitialSavings(date, nextGoals, bucket.balance);
+
         }
-        currentReport.date = date;
-        currentReport.payIn = isLast ? 0 : monthlySaving;
-
-        let totalPayOut = (currentReport.payments) ? _.sumBy(currentReport.payments, 'cost') : 0;
-
-        let tempBalance = bucket.balance + currentReport.payIn - totalPayOut;
-
-        if (tempBalance < 0) {
-            mIdx = 0;
-            continue;
-        }
-
         bucket.balance = tempBalance;
         currentReport.balance = bucket.balance;
 
