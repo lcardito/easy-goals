@@ -2,13 +2,14 @@
 
 const budget = require('./budget');
 const util = require("util");
+const _ = require("lodash");
 const expect = require('chai').expect;
 const assert = require('chai').assert;
 
 describe('budget module', () => {
 
     it('should export calculateMonthlySaving', () => {
-        expect(budget.calculateMonthlySaving).to.be.a('function');
+        assert.isFunction(budget.calculateMonthlySaving);
     });
 
     it('should export report', () => {
@@ -16,8 +17,7 @@ describe('budget module', () => {
     });
 
     it('should have private function', () => {
-        //noinspection BadExpressionStatementJS
-        expect(budget.getInitialSavings).to.be.undefined;
+        assert.isUndefined(budget.getInitialSavings);
     });
 
     describe('calculateMonthlySaving', () => {
@@ -58,21 +58,44 @@ describe('budget module', () => {
             let firstPayment = budget.monthlyReport[0];
             assert.equal(firstPayment.date, '2017-03-25');
             assert.equal(firstPayment.payIn, 200);
-            assert.equal(firstPayment.payOut, 0);
+            assert.equal( _.sumBy(firstPayment.payments, 'cost'), 0);
             assert.equal(firstPayment.balance, 200);
 
             let secondPayment = budget.monthlyReport[1];
             assert.equal(secondPayment.date, '2017-04-25');
             assert.equal(secondPayment.payIn, 200);
-            assert.equal(secondPayment.payOut, 0);
+            assert.equal( _.sumBy(secondPayment.payments, 'cost'), 0);
             assert.equal(secondPayment.balance, 400);
 
             let lastPayment = budget.monthlyReport[2];
             assert.equal(lastPayment.date, '2017-05-25');
             assert.equal(lastPayment.payIn, 0);
-            assert.equal(lastPayment.payOut, 400);
+            assert.equal( _.sumBy(lastPayment.payments, 'cost'), 400);
             assert.equal(lastPayment.balance, 0);
         });
+
+        it('should collapse goal payments on same date', () => {
+            const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
+            let goals = [
+                {id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
+                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, date: '2017-06-30'},
+                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'}
+            ];
+
+            assert.equal(budget.calculateMonthlySaving(bucket, goals), 100);
+
+            let payOuts = _.filter(budget.monthlyReport, (r) => {
+                return (r.payments && r.payments.length !== 0);
+            });
+
+            assert.lengthOf(payOuts, 2, util.inspect(payOuts, false, null));
+            let firstPayments = payOuts[0].payments;
+            assert.lengthOf(firstPayments, 2);
+            assert.equal(firstPayments[0].name, 'Bike - MOT');
+            assert.equal(firstPayments[1].name, 'Car - Maintenance');
+
+            assert.lengthOf(payOuts[1].payments, 1);
+        })
 
     });
 });

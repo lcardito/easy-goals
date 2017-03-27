@@ -39,7 +39,7 @@ let buckets = [
 ];
 
 let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
-    {id: 1, category: 'Vehicles', label: 'Car - Maintanaince', cost: 300, date: '2017-06-30'},
+    {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, date: '2017-06-30'},
     {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'},
     {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, date: '2017-07-30'},
     {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, date: '2017-09-30'},
@@ -85,6 +85,7 @@ app.get('/api/bucket', (req, res) => {
 
         if (bucket) {
             bucket.monthly = budget.calculateMonthlySaving(bucket, goalsForCategory);
+            bucket.report = budget.monthlyReport;
         }
     });
 

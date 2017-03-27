@@ -15,6 +15,7 @@ class BucketsPage extends React.Component {
             category: '',
             balance: 0,
             monthly: 0,
+            report: [],
             id: -1
         };
 
@@ -76,14 +77,9 @@ class BucketsPage extends React.Component {
     }
 
     _showBucket(bucket) {
-        Client.getTrack(bucket.category, (serverTracks) => {
-            _.each(serverTracks, (t) => {
-                t.paymentDate = moment(t.paymentDate).format('MMMM, YYYY');
-            });
-            this.setState({
-                tracks: serverTracks,
-                showBucket: true
-            });
+        this.setState({
+            selectedBucket: bucket,
+            showBucket: true
         });
     };
 
@@ -111,7 +107,7 @@ class BucketsPage extends React.Component {
                         {key: 'createdDate', value: 'Created'}
                     ]}
                     items={this.state.buckets}
-                    editable={false}
+                    editable={true}
                 />
             )
         } else {
@@ -119,13 +115,12 @@ class BucketsPage extends React.Component {
                 <SortableTable
                     editable={false}
                     headers={[
-                        {key: 'goalName', value: 'Goal Name'},
-                        {key: 'paymentDate', value: 'Payment Date'},
-                        {key: 'goalCost', value: 'Goal Cost'},
-                        {key: 'balanceBefore', value: 'Balance Before'},
-                        {key: 'balanceAfter', value: 'Balance After'}
+                        {key: 'date', value: 'Date'},
+                        {key: 'payIn', value: 'Payment In'},
+                        {key: 'payOut', value: 'Goal Cost'},
+                        {key: 'balance', value: 'Bucket Balance'},
                     ]}
-                    items={this.state.tracks}
+                    items={this.state.selectedBucket.report}
                 />
             )
         }
