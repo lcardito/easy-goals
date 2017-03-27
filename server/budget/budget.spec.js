@@ -3,17 +3,12 @@
 const budget = require('./budget');
 const util = require("util");
 const _ = require("lodash");
-const expect = require('chai').expect;
 const assert = require('chai').assert;
 
 describe('budget module', () => {
 
     it('should export calculateMonthlySaving', () => {
-        assert.isFunction(budget.calculateMonthlySaving);
-    });
-
-    it('should export report', () => {
-        assert.isArray(budget.monthlyReport);
+        assert.isFunction(budget.buildReport);
     });
 
     it('should have private function', () => {
@@ -22,27 +17,25 @@ describe('budget module', () => {
 
     describe('calculateMonthlySaving', () => {
 
-        it('should return 0 for a bucket with enough balance', () => {
+        it('should return no payment in if balance covers the goal', () => {
             const bucket = {category: 'Other', balance: 400, createdDate: '2017-03-25', id: 0};
             const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
 
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 0);
+            const report = budget.buildReport(bucket, goals);
+            assert.lengthOf(report, 8);
+            report.forEach((r) => {
+                assert.equal(r.payIn, 0);
+            });
         });
 
         it('should should use start balance to calculate monthly savings', () => {
             const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
             const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
 
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 43);
+            const report = budget.buildReport(bucket, goals);
+            assert.lengthOf(report, 8);
+            assert.equal(_.sumBy(report, 'payIn'), 301);
         });
-
-        it('should return the round up monthly payment for only one goal', () => {
-            const bucket = {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
-
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 58);
-        });
-
     });
 
     describe('monthly report', () => {
@@ -51,23 +44,23 @@ describe('budget module', () => {
             const bucket = {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0};
             const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-05-30'}];
 
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 200);
+            const report = budget.buildReport(bucket, goals);
 
-            assert.lengthOf(budget.monthlyReport, 3, util.inspect(budget.monthlyReport, false, null));
+            assert.lengthOf(report, 3, util.inspect(report, false, null));
 
-            let firstPayment = budget.monthlyReport[0];
+            let firstPayment = report[0];
             assert.equal(firstPayment.date, '2017-03-25');
             assert.equal(firstPayment.payIn, 200);
             assert.equal( _.sumBy(firstPayment.payments, 'cost'), 0);
             assert.equal(firstPayment.balance, 200);
 
-            let secondPayment = budget.monthlyReport[1];
+            let secondPayment = report[1];
             assert.equal(secondPayment.date, '2017-04-25');
             assert.equal(secondPayment.payIn, 200);
             assert.equal( _.sumBy(secondPayment.payments, 'cost'), 0);
             assert.equal(secondPayment.balance, 400);
 
-            let lastPayment = budget.monthlyReport[2];
+            let lastPayment = report[2];
             assert.equal(lastPayment.date, '2017-05-25');
             assert.equal(lastPayment.payIn, 0);
             assert.equal( _.sumBy(lastPayment.payments, 'cost'), 400);
@@ -85,9 +78,9 @@ describe('budget module', () => {
                 {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, date: '2017-10-30'}
             ];
 
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 155);
+            const report = budget.buildReport(bucket, goals);
 
-            let payOuts = _.filter(budget.monthlyReport, (r) => {
+            let payOuts = _.filter(report, (r) => {
                 return (r.payments && r.payments.length !== 0);
             });
 
@@ -98,7 +91,15 @@ describe('budget module', () => {
             assert.equal(firstPayments[1].name, 'Car - Maintenance');
 
             assert.lengthOf(payOuts[1].payments, 1);
-        })
+        });
+
+        it('build report will return monthly payment value', () => {
+            const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
+            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
+
+            let report = budget.buildReport(bucket, goals);
+            assert.equal(report[0].payIn, 43);
+        });
 
     });
 });

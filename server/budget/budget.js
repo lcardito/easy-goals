@@ -5,8 +5,6 @@ const moment = MomentRange.extendMoment(Moment);
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-exports.monthlyReport = [];
-
 function getInitialSavings(startingDate, goals, initialBalance) {
     let totalCost = _.sumBy(goals, 'cost');
     if (initialBalance >= totalCost) {
@@ -20,41 +18,12 @@ function getInitialSavings(startingDate, goals, initialBalance) {
     return Math.ceil((totalCost - initialBalance) / months);
 }
 
-exports.calculateMonthlySaving = function (bucket, goals) {
-    let balance = bucket.balance;
-    this.monthlyReport = [];
-
-    let startSavingDate = moment(bucket.createdDate);
-    let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
-    let monthlySaving = getInitialSavings(bucket.createdDate, goalsByDate, balance);
-
-    for (let goalIdx = 0; goalIdx < goalsByDate.length; goalIdx++) {
-        let g = goalsByDate[goalIdx];
-        let nextGoalDate = moment(g.date, DATE_FORMAT);
-
-        let monthsTillNextGoal = _.round(moment.duration(nextGoalDate.diff(startSavingDate)).asMonths());
-        balance = ((monthlySaving * monthsTillNextGoal) + balance) - g.cost;
-
-        if (balance < 0) {
-            goalIdx = 0;
-            monthlySaving = monthlySaving + 1;
-            balance = bucket.balance;
-            startSavingDate = moment(bucket.createdDate);
-            continue;
-        }
-
-        startSavingDate = moment(g.date, DATE_FORMAT);
-    }
-
-    this.buildReport(bucket, goals, monthlySaving);
-
-    return monthlySaving;
-};
-
-exports.buildReport = function (bucket, goals, monthlySaving) {
+exports.buildReport = function (bucket, goals) {
     "use strict";
 
+    let monthlySaving = getInitialSavings(bucket.createdDate, goals, bucket.balance);
     let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
+    let report = [];
 
     let monthsIn = Array.from(moment.range(moment(bucket.createdDate), moment(goalsByDate.slice(-1)[0].date, DATE_FORMAT)).by('month'));
     for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
@@ -77,15 +46,21 @@ exports.buildReport = function (bucket, goals, monthlySaving) {
         }
         currentReport.date = date;
         currentReport.payIn = isLast ? 0 : monthlySaving;
+
         let totalPayOut = (currentReport.payments) ? _.sumBy(currentReport.payments, 'cost') : 0;
 
-        if(!isLast) {
-            bucket.balance += monthlySaving;
+        let tempBalance = bucket.balance + currentReport.payIn - totalPayOut;
+
+        if (tempBalance < 0) {
+            mIdx = 0;
+            continue;
         }
-        bucket.balance = bucket.balance - totalPayOut;
+
+        bucket.balance = tempBalance;
         currentReport.balance = bucket.balance;
 
-        this.monthlyReport.push(currentReport);
+        report.push(currentReport);
     }
 
+    return report;
 };

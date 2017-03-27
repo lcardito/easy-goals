@@ -84,8 +84,7 @@ app.get('/api/bucket', (req, res) => {
         let bucket = buckets.filter((a) => a.category === c)[0];
 
         if (bucket) {
-            bucket.monthly = budget.calculateMonthlySaving(bucket, goalsForCategory);
-            bucket.report = budget.monthlyReport;
+            bucket.monthly = budget.buildReport(bucket, goalsForCategory);
         }
     });
 
