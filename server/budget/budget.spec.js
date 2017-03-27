@@ -106,8 +106,6 @@ describe('budget module', () => {
             ];
 
             const report = budget.buildReport(bucket, goals);
-            console.log(util.inspect(report, false, null));
-
             report.forEach((r) => {
                 assert.isTrue(r.balance >= 0, util.inspect(r, false, null));
             });
