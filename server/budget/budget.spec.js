@@ -76,19 +76,22 @@ describe('budget module', () => {
 
         it('should collapse goal payments on same date', () => {
             const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
-            let goals = [
-                {id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
+
+            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
                 {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, date: '2017-06-30'},
-                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'}
+                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'},
+                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, date: '2017-07-30'},
+                {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, date: '2017-09-30'},
+                {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, date: '2017-10-30'}
             ];
 
-            assert.equal(budget.calculateMonthlySaving(bucket, goals), 100);
+            assert.equal(budget.calculateMonthlySaving(bucket, goals), 155);
 
             let payOuts = _.filter(budget.monthlyReport, (r) => {
                 return (r.payments && r.payments.length !== 0);
             });
 
-            assert.lengthOf(payOuts, 2, util.inspect(payOuts, false, null));
+            assert.lengthOf(payOuts, 5, util.inspect(payOuts, true, null));
             let firstPayments = payOuts[0].payments;
             assert.lengthOf(firstPayments, 2);
             assert.equal(firstPayments[0].name, 'Bike - MOT');

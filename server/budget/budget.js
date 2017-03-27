@@ -43,44 +43,49 @@ exports.calculateMonthlySaving = function (bucket, goals) {
             continue;
         }
 
-        let monthsIn = Array.from(moment.range(startSavingDate, nextGoalDate).by('month'));
-        for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
-            let month = monthsIn[mIdx - 1];
-
-            let currentIdx = _.findIndex(this.monthlyReport, ['date', month.format(DATE_FORMAT)]);
-            let currentReport = {};
-
-            if (currentIdx === -1) {
-                currentReport.payments = [];
-                buildReport(currentReport, month, mIdx);
-
-                this.monthlyReport.push(currentReport);
-            } else {
-                currentReport = this.monthlyReport[currentIdx];
-                buildReport(currentReport, month, mIdx);
-
-                this.monthlyReport.splice(currentIdx, 1, currentReport);
-            }
-        }
-
-        function buildReport(currentReport, month, mIdx) {
-            let isLast = (goalIdx === goalsByDate.length - 1 && month.isSame(g.date, 'month'));
-            let date = month.format(DATE_FORMAT);
-
-            if (month.isSame(g.date, 'month')) {
-                currentReport.payments.push({
-                    name: g.label,
-                    cost: g.cost
-                });
-            }
-            currentReport.date = date;
-            currentReport.payIn = isLast ? 0 : monthlySaving;
-            let totalPayOut = (currentReport.payments) ? _.sumBy(currentReport.payments, 'cost') : 0;
-            currentReport.balance = isLast ? balance : (mIdx * monthlySaving) - totalPayOut;
-        }
-
         startSavingDate = moment(g.date, DATE_FORMAT);
     }
 
+    this.buildReport(bucket, goals, monthlySaving);
+
     return monthlySaving;
+};
+
+exports.buildReport = function (bucket, goals, monthlySaving) {
+    "use strict";
+
+    let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
+
+    let monthsIn = Array.from(moment.range(moment(bucket.createdDate), moment(goalsByDate.slice(-1)[0].date, DATE_FORMAT)).by('month'));
+    for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
+        let month = monthsIn[mIdx - 1];
+        let isLast = mIdx === monthsIn.length;
+
+        let currentReport = {};
+
+        let date = month.format(DATE_FORMAT);
+
+        let goalsInMonth = _.filter(goals, (g) => {
+            return moment(g.date).isSame(month, 'month')
+                && moment(g.date).isSame(month, 'year')
+        });
+
+        if (goalsInMonth) {
+            currentReport.payments = goalsInMonth.map((g) => {
+                return {name: g.label, cost: g.cost}
+            });
+        }
+        currentReport.date = date;
+        currentReport.payIn = isLast ? 0 : monthlySaving;
+        let totalPayOut = (currentReport.payments) ? _.sumBy(currentReport.payments, 'cost') : 0;
+
+        if(!isLast) {
+            bucket.balance += monthlySaving;
+        }
+        bucket.balance = bucket.balance - totalPayOut;
+        currentReport.balance = bucket.balance;
+
+        this.monthlyReport.push(currentReport);
+    }
+
 };

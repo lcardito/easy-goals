@@ -117,7 +117,6 @@ class BucketsPage extends React.Component {
                     headers={[
                         {key: 'date', value: 'Date'},
                         {key: 'payIn', value: 'Payment In'},
-                        {key: 'payOut', value: 'Goal Cost'},
                         {key: 'balance', value: 'Bucket Balance'},
                     ]}
                     items={this.state.selectedBucket.report}
