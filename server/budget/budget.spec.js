@@ -69,9 +69,9 @@ describe('budget module', () => {
 
             let lastPayment = budget.monthlyReport[2];
             assert.equal(lastPayment.date, '2017-05-25');
-            assert.equal(lastPayment.payIn, 200);
+            assert.equal(lastPayment.payIn, 0);
             assert.equal(lastPayment.payOut, 400);
-            assert.equal(lastPayment.balance, 200);
+            assert.equal(lastPayment.balance, 0);
         });
 
     });

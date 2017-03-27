@@ -48,14 +48,14 @@ exports.calculateMonthlySaving = function (bucket, goals) {
         let range = moment.range(startSavingDate, nextGoalDate);
         let j = 1;
         for (let month of range.by('month')) {
+            let isLast = (i === goalsByDate.length - 1 && month.isSame(g.date, 'month'));
             let date = month.format(DATE_FORMAT);
 
             let currentReport = {};
             currentReport.date = date;
-            currentReport.payIn = monthlySaving;
-            currentReport.payOut = (month.isSame(g.date, 'month')) ? g.cost : 0;
-            currentReport.balance = (j * monthlySaving) - currentReport.payOut;
-            j++;
+            currentReport.payIn = isLast ? 0 : monthlySaving;
+            currentReport.payOut = month.isSame(g.date, 'month') ? g.cost : 0;
+            currentReport.balance = isLast ? balance : (j * monthlySaving) - currentReport.payOut;
 
             let currentIdx = _.findIndex(this.monthlyReport, ['date', date]);
             if (currentIdx !== -1) {
@@ -63,6 +63,8 @@ exports.calculateMonthlySaving = function (bucket, goals) {
             } else {
                 this.monthlyReport.push(currentReport);
             }
+
+            j++;
         }
 
         startSavingDate = moment(g.date, DATE_FORMAT);
