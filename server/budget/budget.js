@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const Moment = require('moment');
 const MomentRange = require('moment-range');
+var util = require("util");
 const moment = MomentRange.extendMoment(Moment);
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -48,7 +49,7 @@ exports.buildReport = function (bucket, goals) {
                 return {name: g.label, cost: g.cost}
             });
 
-            tempBalance = bucket.balance + currentReport.payIn - _.sumBy(currentReport.payments, 'cost');
+            tempBalance = tempBalance - _.sumBy(currentReport.payments, 'cost');
 
             if (tempBalance < 0) {
                 mIdx = 0;
@@ -58,8 +59,7 @@ exports.buildReport = function (bucket, goals) {
             let nextGoals = goals.filter((g) => {
                 return moment(g.date).isAfter(moment(date), 'month');
             });
-            monthlySaving = getInitialSavings(date, nextGoals, bucket.balance);
-
+            monthlySaving = getInitialSavings(moment(date).add(1, 'month'), nextGoals, tempBalance);
         }
         bucket.balance = tempBalance;
         currentReport.balance = bucket.balance;

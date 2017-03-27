@@ -35,7 +35,7 @@ describe('budget module', () => {
             const report = budget.buildReport(bucket, goals);
             assert.lengthOf(report, 8, util.inspect(report, false, null));
             assert.equal(report[0].payIn, 43);
-            assert.equal(_.sumBy(report, 'payIn'), 301);
+            assert.equal(_.sumBy(report, 'payIn'), 300);
         });
     });
 
@@ -106,9 +106,10 @@ describe('budget module', () => {
             ];
 
             const report = budget.buildReport(bucket, goals);
+            console.log(util.inspect(report, false, null));
 
             report.forEach((r) => {
-                assert.isTrue(r.balance > 0);
+                assert.isTrue(r.balance >= 0, util.inspect(r, false, null));
             });
 
         });
