@@ -120,5 +120,15 @@ describe('budget module', () => {
             assert.equal(report[0].payIn, 43);
         });
 
+        it('should not cache stuff', () => {
+            const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
+            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}];
+
+            let report = budget.buildReport(bucket, goals);
+            assert.equal(report[0].payIn, 43);
+
+            report = budget.buildReport(bucket, goals);
+            assert.equal(report[0].payIn, 43);
+        });
     });
 });

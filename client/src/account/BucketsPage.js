@@ -21,7 +21,6 @@ class BucketsPage extends React.Component {
 
         this.state = {
             buckets: [],
-            tracks: [],
             showBucket: false,
             selectedBucket: this.defaultBucket
         };

@@ -21,10 +21,11 @@ function calculateMonthlySavings(startingDate, goals, initialBalance) {
 exports.buildReport = function (bucket, goals) {
     "use strict";
 
-    let monthlySaving = calculateMonthlySavings(bucket.createdDate, goals, bucket.balance);
+    let startingBalance = bucket.balance;
+    let monthlySaving = calculateMonthlySavings(bucket.createdDate, goals, startingBalance);
     let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
-    let report = [];
 
+    let report = [];
     let monthsIn = Array.from(moment.range(moment(bucket.createdDate), moment(goalsByDate.slice(-1)[0].date, DATE_FORMAT)).by('month'));
     for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
         let currentMonth = monthsIn[mIdx - 1];
@@ -40,7 +41,7 @@ exports.buildReport = function (bucket, goals) {
                 && moment(g.date).isSame(currentMonth, 'year')
         });
 
-        let tempBalance = bucket.balance + current.payIn;
+        let tempBalance = startingBalance + current.payIn;
         if (goalsInMonth) {
             current.payments = goalsInMonth.map((g) => {
                 return {name: g.label, cost: g.cost}
@@ -58,7 +59,7 @@ exports.buildReport = function (bucket, goals) {
             });
             monthlySaving = calculateMonthlySavings(currentMonth.add(1, 'month'), nextGoals, tempBalance);
         }
-        bucket.balance = tempBalance;
+        startingBalance = tempBalance;
         current.balance = tempBalance;
 
         report.push(current);

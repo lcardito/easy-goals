@@ -78,16 +78,25 @@ app.get('/api/bucket', (req, res) => {
     console.log('Get buckets: ' + buckets.length);
 
     const categories = [...new Set(goals.map(item => item.category))];
+    let now = moment();
 
     categories.forEach((c) => {
         let goalsForCategory = goals.filter((g) => g.category === c);
         let bucket = buckets.filter((a) => a.category === c)[0];
 
         if (bucket) {
-            bucket.monthly = budget.buildReport(bucket, goalsForCategory);
+            let report = budget.buildReport(util._extend({}, bucket), goalsForCategory);
+            const current = _.find(report, (r) => {
+                return moment(r.date).isSame(now, 'month')
+                    && moment(r.date).isSame(now, 'year');
+            });
+
+            bucket.report = report;
+            bucket.balance = current.balance;
+            bucket.monthly = current.payIn;
         }
     });
-
+    // console.log(util.inspect(buckets, false, null));
     res.json(buckets);
 });
 
@@ -150,3 +159,5 @@ app.delete('/api/bucket/:bucketId', (req, res) => {
 app.listen(app.get('port'), () => {
     console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
 });
+
+module.exports = app;
