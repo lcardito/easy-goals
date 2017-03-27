@@ -33,12 +33,12 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-let buckets = [
+const buckets = [
     {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0},
     {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 1}
 ];
 
-let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
+const goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date: '2017-06-30'},
     {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, date: '2017-06-30'},
     {id: 2, category: 'Vehicles', label: 'AA', cost: 111, date: '2018-02-28'},
     {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, date: '2017-07-30'},
@@ -58,46 +58,33 @@ let payments = [
     }
 ];
 
-app.get('/api/track/:trackCategory', (req, res) => {
-    let cat = req.params.trackCategory;
-    console.log('Getting tracks for category' + cat);
-
-    res.json(_.find(payments, ['category', cat]).tracks);
-});
-
-app.get('/api/monthly', (req, res) => {
-    console.log('Calculate monthly saving for the categories');
-
-    let monthly = [];
-    res.json(monthly);
-});
-
-
 app.get('/api/bucket', (req, res) => {
     //TODO get it from DB
     console.log('Get buckets: ' + buckets.length);
 
     const categories = [...new Set(goals.map(item => item.category))];
     let now = moment();
+    let response = [];
 
     categories.forEach((c) => {
         let goalsForCategory = goals.filter((g) => g.category === c);
         let bucket = buckets.filter((a) => a.category === c)[0];
 
         if (bucket) {
-            let report = budget.buildReport(util._extend({}, bucket), goalsForCategory);
+            let responseBucket = util._extend({}, bucket);
+            const report = budget.buildReport(responseBucket, goalsForCategory);
             const current = _.find(report, (r) => {
                 return moment(r.date).isSame(now, 'month')
                     && moment(r.date).isSame(now, 'year');
             });
 
-            bucket.report = report;
-            bucket.balance = current.balance;
-            bucket.monthly = current.payIn;
+            responseBucket.report = report;
+            responseBucket.balance = current.balance;
+            responseBucket.monthly = current.payIn;
+            response.push(responseBucket);
         }
     });
-    // console.log(util.inspect(buckets, false, null));
-    res.json(buckets);
+    res.json(response);
 });
 
 app.get('/api/goals', (req, res) => {

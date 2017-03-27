@@ -14,7 +14,7 @@ describe('loading express', function () {
             .get('/api/bucket')
             .expect(200)
             .then(response => {
-                assert.equal(response.body[0].balance, 58, util.inspect(response.body, false, null));
+                assert.equal(response.body[0].balance, 184, util.inspect(response.body, false, null));
             });
     });
 
@@ -23,7 +23,7 @@ describe('loading express', function () {
             .get('/api/bucket')
             .expect(200)
             .then(response => {
-                assert.equal(response.body[0].balance, 58, util.inspect(response.body, false, null));
+                assert.equal(response.body[0].balance, 184);
             });
     });
 });
