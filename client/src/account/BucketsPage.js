@@ -1,8 +1,6 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import update from 'immutability-helper';
-import _ from 'lodash';
 import {Button} from "semantic-ui-react";
 import TableAccordion from "../TableAccordion";
 
@@ -25,10 +23,7 @@ class BucketsPage extends React.Component {
         };
 
         this._getBuckets = this._getBuckets.bind(this);
-        this._saveBucket = this._saveBucket.bind(this);
-        this._updateBucket = this._updateBucket.bind(this);
         this._showBucket = this._showBucket.bind(this);
-        this._deleteBucket = this._deleteBucket.bind(this);
     }
 
     componentWillMount() {
@@ -51,43 +46,12 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _saveBucket(bucket) {
-        if (bucket.id === -1) {
-            Client.addBucket(bucket, (savedBucket) => {
-                this.resetState(update(this.state.buckets, {$push: [savedBucket]}));
-            });
-        } else {
-            Client.editBucket(bucket, (savedBucket) => {
-                let bucketIdx = _.findIndex(this.state.buckets, (a) => {
-                    return a.id === savedBucket.id
-                });
-                this.resetState(update(this.state.buckets, {[bucketIdx]: {$set: savedBucket}}));
-            });
-        }
-    }
-
-    _updateBucket(event) {
-        this.setState({
-            selectedBucket: update(this.state.selectedBucket, {
-                $merge: {[event.target.name]: event.target.value}
-            })
-        });
-    }
-
     _showBucket(bucket) {
         this.setState({
             selectedBucket: bucket,
             showBucket: true
         });
     };
-
-    _deleteBucket(bucket) {
-        Client.deleteBucket(bucket.id);
-        let bucketIdx = _.findIndex(this.state.buckets, (g) => {
-            return g.id === bucket.id
-        });
-        this.resetState(update(this.state.buckets, {$splice: [[bucketIdx, 1]]}));
-    }
 
     render() {
         if (!this.props.visible) {
@@ -121,8 +85,8 @@ class BucketsPage extends React.Component {
                         items={this.state.selectedBucket.report}
                     />
                     <Button className="marginTopButton"
-                        type="button"
-                        onClick={() => this.setState({showBucket: false})}>Back</Button>
+                            type="button"
+                            onClick={() => this.setState({showBucket: false})}>Back</Button>
                 </div>
             )
         }
@@ -130,3 +94,11 @@ class BucketsPage extends React.Component {
 }
 
 export default BucketsPage;
+
+BucketsPage.propTypes = {
+    visible: React.PropTypes.bool
+};
+
+BucketsPage.defaultProps = {
+    visible: false
+};

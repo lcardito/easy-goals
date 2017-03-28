@@ -1,24 +1,11 @@
 /* eslint-disable no-undef */
 function search(query, cb) {
-
     return fetch(`api/food?q=${query}`, {
         accept: 'application/json',
     }).then(checkStatus)
         .then(parseJSON)
         .then(cb);
 
-}
-
-function getMonthly(cb) {
-    fetch('api/monthly/', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }).then(checkStatus)
-        .then(parseJSON)
-        .then(cb);
 }
 
 function getGoals(cb) {
@@ -58,19 +45,6 @@ function addGoal(goal, cb) {
         .then(cb);
 }
 
-function addBucket(bucket, cb) {
-    fetch('api/bucket/', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(bucket)
-    }).then(checkStatus)
-        .then(parseJSON)
-        .then(cb);
-}
-
 function editGoal(toEdit, cb) {
     fetch('api/goals/', {
         method: 'PUT',
@@ -84,28 +58,8 @@ function editGoal(toEdit, cb) {
         .then(cb);
 }
 
-function editBucket(toEdit, cb) {
-    fetch('api/bucket/', {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(toEdit)
-    }).then(checkStatus)
-        .then(parseJSON)
-        .then(cb);
-}
-
 function deleteGoal(goalId, cb) {
     fetch(`api/goals/${goalId}`, {
-        method: 'DELETE'
-    }).then(checkStatus)
-        .then(cb);
-}
-
-function deleteBucket(bucketId, cb) {
-    fetch(`api/bucket/${bucketId}`, {
         method: 'DELETE'
     }).then(checkStatus)
         .then(cb);
@@ -127,8 +81,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, addBucket, editBucket, deleteBucket,
-    getGoals, addGoal, editGoal, deleteGoal, getMonthly
+    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal
 };
 
 export default Client;

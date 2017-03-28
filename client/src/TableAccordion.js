@@ -1,5 +1,6 @@
 import React from 'react';
-import {Accordion, Grid, List} from 'semantic-ui-react';
+import {Accordion, Grid} from 'semantic-ui-react';
+import {Message} from "semantic-ui-react";
 
 class TableAccordion extends React.Component {
 
@@ -38,7 +39,7 @@ class TableAccordion extends React.Component {
                     fluid>
                     {this.state.items.map((item, idx) => ([
                         <Accordion.Title
-                            className="attached rowBoxed"
+                            className={idx % 2 !== 0 ? 'stripedRow attached rowBoxed' : 'attached rowBoxed'}
                             key={idx}>
                             <Grid
                                 className="attached"
@@ -54,16 +55,23 @@ class TableAccordion extends React.Component {
                         </Accordion.Title>,
                         <Accordion.Content
                             className="rowBoxed">
-
                             {item.payments.length > 0 &&
-                            <List as='ul'>
-                                {item.payments.map((p) => ([
-                                    <List.Item as="li">{p.name} - {p.cost}</List.Item>
-                                ]))}
-                            </List>
+                            <div>
+                                <Message size='small' floating>Payments at this date:</Message>
+                                <Grid
+                                    columns={3}
+                                    className='attached' celled>
+                                    {item.payments.map((p, idx) => (
+                                        <Grid.Row key={idx}>
+                                            <Grid.Column textAlign="center">{p.name}</Grid.Column>
+                                            <Grid.Column textAlign="center">{p.cost}</Grid.Column>
+                                        </Grid.Row>
+                                    ))}
+                                </Grid>
+                            </div>
                             }
                             {item.payments.length === 0 &&
-                            <div>No Payment found in this period</div>
+                            <Message size='small' floating>No expected payments</Message>
                             }
                         </Accordion.Content>
                     ]))}
@@ -74,3 +82,8 @@ class TableAccordion extends React.Component {
 }
 
 export default TableAccordion;
+
+TableAccordion.propTypes = {
+    headers: React.PropTypes.array,
+    items: React.PropTypes.array
+};

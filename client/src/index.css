@@ -58,3 +58,7 @@ body {
     margin: 0 0 !important;
     background-color: rgba(211, 211, 211, .1);
 }
+
+.stripedRow {
+    background-color: rgba(0,0,50,.02);
+}

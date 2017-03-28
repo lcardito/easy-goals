@@ -1,6 +1,5 @@
 import React from 'react';
 import SortableTable from '../main/SortableTable';
-import Client from '../main/Client';
 
 class DashboardPage extends React.Component {
 
@@ -10,19 +9,9 @@ class DashboardPage extends React.Component {
             monthly: []
         };
 
-        this._getMonthly = this._getMonthly.bind(this);
     }
 
     componentWillMount() {
-        Client.getMonthly((serverMonthly) => {
-            this._getMonthly(serverMonthly);
-        })
-    }
-
-    _getMonthly(serverMonthly) {
-        this.setState({
-            monthly: serverMonthly
-        });
     }
 
     render() {
