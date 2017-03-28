@@ -1,5 +1,5 @@
 import React from 'react';
-import {Accordion, Grid} from 'semantic-ui-react';
+import {Accordion, Grid, Container, Header, Table} from 'semantic-ui-react';
 import {Message} from "semantic-ui-react";
 
 class TableAccordion extends React.Component {
@@ -24,7 +24,7 @@ class TableAccordion extends React.Component {
             <div>
                 <Grid
                     className="textBold noMargin"
-                    celled
+                    celled={true}
                     columns={this.props.headers.length}>
                     {this.state.headers.map((h, idx) => (
                         <Grid.Column
@@ -56,19 +56,17 @@ class TableAccordion extends React.Component {
                         <Accordion.Content
                             className="rowBoxed">
                             {item.payments.length > 0 &&
-                            <div>
-                                <Message size='small' floating>Payments at this date:</Message>
-                                <Grid
-                                    columns={3}
-                                    className='attached' celled>
+                            <Container text fluid>
+                                <Header as='h4'>Payments at this date</Header>
+                                <Table celled size='small'>
                                     {item.payments.map((p, idx) => (
-                                        <Grid.Row key={idx}>
-                                            <Grid.Column textAlign="center">{p.name}</Grid.Column>
-                                            <Grid.Column textAlign="center">{p.cost}</Grid.Column>
-                                        </Grid.Row>
+                                        <Table.Row>
+                                            <Table.Cell>{p.name}</Table.Cell>
+                                            <Table.Cell>{p.cost}</Table.Cell>
+                                        </Table.Row>
                                     ))}
-                                </Grid>
-                            </div>
+                                </Table>
+                            </Container>
                             }
                             {item.payments.length === 0 &&
                             <Message size='small' floating>No expected payments</Message>
