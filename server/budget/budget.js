@@ -4,6 +4,7 @@ const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
 
 const DATE_FORMAT = 'YYYY-MM-DD';
+const BALANCE_THRESHOLD = 5;
 
 function calculateMonthlySavings(startingDate, goals, initialBalance) {
     let totalCost = _.sumBy(goals, 'cost');
@@ -22,11 +23,13 @@ exports.buildReport = (bucket, goals) => {
     "use strict";
 
     let startingBalance = bucket.balance;
-    let monthlySaving = calculateMonthlySavings(bucket.createdDate, goals, startingBalance);
     let goalsByDate = _.orderBy(goals, ['date'], ['asc']);
+    let monthlySaving = calculateMonthlySavings(bucket.createdDate, goalsByDate, startingBalance);
 
     let report = [];
-    let monthsIn = Array.from(moment.range(moment(bucket.createdDate), moment(goalsByDate.slice(-1)[0].date, DATE_FORMAT)).by('month'));
+    let monthsIn = Array.from(moment.range(moment(bucket.createdDate),
+        moment(goalsByDate.slice(-1)[0].date, DATE_FORMAT)).by('month'));
+
     for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
         let currentMonth = monthsIn[mIdx - 1];
         let isLast = mIdx === monthsIn.length;
@@ -35,6 +38,7 @@ exports.buildReport = (bucket, goals) => {
             date: currentMonth.format(DATE_FORMAT),
             payIn: isLast ? 0 : monthlySaving
         };
+        let payments = [];
 
         let goalsInMonth = goals.filter((g) => {
             return moment(g.date).isSame(currentMonth, 'month')
@@ -42,25 +46,32 @@ exports.buildReport = (bucket, goals) => {
         });
 
         let tempBalance = startingBalance + current.payIn;
-        if (goalsInMonth) {
-            current.payments = goalsInMonth.map((g) => {
+        if (goalsInMonth.length > 0) {
+            payments = goalsInMonth.map((g) => {
                 return {name: g.label, cost: g.cost}
             });
 
-            tempBalance = tempBalance - _.sumBy(current.payments, 'cost');
+            tempBalance = tempBalance - _.sumBy(payments, 'cost');
 
             if (tempBalance < 0) {
                 mIdx = 0;
+                monthlySaving += 1;
+                report = [];
+                startingBalance = bucket.balance;
                 continue;
             }
+        }
 
+        if (tempBalance < BALANCE_THRESHOLD) {
             let nextGoals = goals.filter((g) => {
                 return moment(g.date).isAfter(currentMonth, 'month');
             });
             monthlySaving = calculateMonthlySavings(currentMonth.add(1, 'month'), nextGoals, tempBalance);
         }
+
         startingBalance = tempBalance;
         current.balance = tempBalance;
+        current.payments = payments;
 
         report.push(current);
     }
