@@ -35,3 +35,20 @@ body {
 .addButton {
     margin-top: 1em !important;
 }
+
+.attached {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.boxed {
+    border: 1px solid rgba(34, 36, 38, .1);
+}
+
+.rowBoxed {
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+}
+
+.cellBoxed {
+    border-right: 1px solid rgba(34, 36, 38, .1);
+}

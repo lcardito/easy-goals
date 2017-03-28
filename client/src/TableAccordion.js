@@ -25,27 +25,35 @@ class TableAccordion extends React.Component {
                     celled
                     columns={this.props.headers.length}>
                     {this.state.headers.map((h, idx) => (
-                        <Grid.Column key={idx}>
+                        <Grid.Column
+                            key={idx}>
                             {h.value}
                         </Grid.Column>
                     ))}
                 </Grid>
-                <Accordion fluid>
+                <Accordion
+                    className="boxed"
+                    exclusive={true}
+                    fluid>
                     {this.state.items.map((item, idx) => ([
                         <Accordion.Title
+                            className="attached rowBoxed"
                             key={idx}>
                             <Grid
-                                celled
+                                className="attached"
                                 columns={this.state.headers.length}>
                                 {this.state.headers.map((h, idx) => (
-                                    <Grid.Column key={idx}>
+                                    <Grid.Column
+                                        className="cellBoxed"
+                                        key={idx}>
                                         {item[h.key]}
                                     </Grid.Column>
                                 ))}
                             </Grid>
                         </Accordion.Title>,
-                        <Accordion.Content>
-                            This is the content
+                        <Accordion.Content
+                            className="rowBoxed">
+                            Content
                         </Accordion.Content>
                     ]))}
                 </Accordion>
