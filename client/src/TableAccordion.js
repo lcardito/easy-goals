@@ -1,6 +1,5 @@
 import React from 'react';
 import {Accordion, Grid, Container, Header, Table} from 'semantic-ui-react';
-import {Message} from "semantic-ui-react";
 
 class TableAccordion extends React.Component {
 
@@ -69,7 +68,9 @@ class TableAccordion extends React.Component {
                             </Container>
                             }
                             {item.payments.length === 0 &&
-                            <Message size='small' floating>No expected payments</Message>
+                            <Container text fluid>
+                                <Header as='h4'>No expected payments</Header>
+                            </Container>
                             }
                         </Accordion.Content>
                     ]))}
