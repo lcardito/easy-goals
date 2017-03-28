@@ -9,18 +9,6 @@ function search(query, cb) {
 
 }
 
-function getTrack(category, cb) {
-    fetch(`api/track/${category}`, {
-       method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }).then(checkStatus)
-        .then(parseJSON)
-        .then(cb);
-}
-
 function getMonthly(cb) {
     fetch('api/monthly/', {
         method: 'GET',
@@ -140,7 +128,7 @@ function parseJSON(response) {
 
 const Client = {
     search, getBuckets, addBucket, editBucket, deleteBucket,
-    getGoals, addGoal, editGoal, deleteGoal, getMonthly, getTrack
+    getGoals, addGoal, editGoal, deleteGoal, getMonthly
 };
 
 export default Client;

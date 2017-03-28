@@ -1,5 +1,5 @@
 import React from 'react';
-import {Accordion, Grid, Button, Segment} from 'semantic-ui-react';
+import {Accordion, Grid, List} from 'semantic-ui-react';
 
 class TableAccordion extends React.Component {
 
@@ -53,7 +53,17 @@ class TableAccordion extends React.Component {
                         </Accordion.Title>,
                         <Accordion.Content
                             className="rowBoxed">
-                            Content
+
+                            {item.payments.length > 0 &&
+                            <List as='ul'>
+                                {item.payments.map((p) => ([
+                                    <List.Item as="li">{p.name} - {p.cost}</List.Item>
+                                ]))}
+                            </List>
+                            }
+                            {item.payments.length === 0 &&
+                            <div>No Payment found in this period</div>
+                            }
                         </Accordion.Content>
                     ]))}
                 </Accordion>
