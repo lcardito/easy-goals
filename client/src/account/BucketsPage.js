@@ -1,11 +1,10 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import GenericForm from '../main/GenericForm';
 import update from 'immutability-helper';
 import _ from 'lodash';
-import {Message} from 'semantic-ui-react';
-import moment from 'moment';
+import {Button} from "semantic-ui-react";
+import TableAccordion from "../TableAccordion";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -111,15 +110,18 @@ class BucketsPage extends React.Component {
             )
         } else {
             return (
-                <SortableTable
-                    editable={false}
-                    headers={[
-                        {key: 'date', value: 'Date'},
-                        {key: 'payIn', value: 'Payment In'},
-                        {key: 'balance', value: 'Bucket Balance'},
-                    ]}
-                    items={this.state.selectedBucket.report}
-                />
+                <div>
+                    <TableAccordion
+                        editable={false}
+                        headers={[
+                            {key: 'date', value: 'Date'},
+                            {key: 'payIn', value: 'Payment In'},
+                            {key: 'balance', value: 'Bucket Balance'},
+                        ]}
+                        items={this.state.selectedBucket.report}
+                    />
+                    <Button type="button" onClick={() => this.setState({showBucket: false})}>Back</Button>
+                </div>
             )
         }
     }
