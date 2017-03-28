@@ -105,7 +105,7 @@ class BucketsPage extends React.Component {
                         {key: 'createdDate', value: 'Created'}
                     ]}
                     items={this.state.buckets}
-                    editable={true}
+                    editable={false}
                 />
             )
         } else {
@@ -120,7 +120,9 @@ class BucketsPage extends React.Component {
                         ]}
                         items={this.state.selectedBucket.report}
                     />
-                    <Button type="button" onClick={() => this.setState({showBucket: false})}>Back</Button>
+                    <Button className="marginTopButton"
+                        type="button"
+                        onClick={() => this.setState({showBucket: false})}>Back</Button>
                 </div>
             )
         }

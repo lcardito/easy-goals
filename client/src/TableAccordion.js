@@ -22,6 +22,7 @@ class TableAccordion extends React.Component {
         return (
             <div>
                 <Grid
+                    className="textBold noMargin"
                     celled
                     columns={this.props.headers.length}>
                     {this.state.headers.map((h, idx) => (
@@ -41,10 +42,10 @@ class TableAccordion extends React.Component {
                             key={idx}>
                             <Grid
                                 className="attached"
+                                celled='internally'
                                 columns={this.state.headers.length}>
                                 {this.state.headers.map((h, idx) => (
                                     <Grid.Column
-                                        className="cellBoxed"
                                         key={idx}>
                                         {item[h.key]}
                                     </Grid.Column>

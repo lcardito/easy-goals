@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    font-size: .9em !important;
 }
 
 .App {
@@ -32,7 +33,7 @@ body {
     margin-bottom: 1em;
 }
 
-.addButton {
+.marginTopButton {
     margin-top: 1em !important;
 }
 
@@ -51,4 +52,9 @@ body {
 
 .cellBoxed {
     border-right: 1px solid rgba(34, 36, 38, .1);
+}
+
+.noMargin {
+    margin: 0 0 !important;
+    background-color: rgba(211, 211, 211, .1);
 }
