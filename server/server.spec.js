@@ -94,4 +94,19 @@ describe('integration tests', function () {
                 assert.equal(response.body[0].balance, 147);
             });
     });
+
+    it('should add bucket for the goal if its category does not exists', (done) => {
+        request(server)
+            .post('/api/goals')
+            .send({category: 'NewCategory', label: 'Bike exhaust', cost: 500, dueDate: '2017-06-30'})
+            .expect(200)
+            .then(response => {
+                assert.equal(response.body[0].id, 7, util.inspect(response, false, null));
+
+                knex('bucket').where({category: 'NewCategory'}).select().then((result) => {
+                    assert.lengthOf(result, 1);
+                    done();
+                })
+            });
+    })
 });

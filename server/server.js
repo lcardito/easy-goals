@@ -70,9 +70,19 @@ app.post('/api/goals', (req, res) => {
 
     knex('goal').insert(goal).then((savedId) => {
         "use strict";
-        goal.id = savedId;
 
-        res.json([goal]);
+        knex('bucket').where({category: goal.category}).select().then((result) => {
+            if (result.length === 0) {
+                return knex('bucket').insert({
+                    category: goal.category,
+                    balance: 0,
+                    createdDate: moment().format('YYYY-MM-DD')
+                })
+            }
+        }).then(() => {
+            goal.id = savedId;
+            res.json([goal]);
+        });
     });
 });
 
