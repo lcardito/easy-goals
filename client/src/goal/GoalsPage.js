@@ -17,8 +17,7 @@ class GoalsPage extends React.Component {
                 label: '',
                 cost: 0,
                 category: '',
-                dueDate: '',
-                id: -1
+                dueDate: ''
             }
         };
 
@@ -49,19 +48,19 @@ class GoalsPage extends React.Component {
                 label: '',
                 cost: 0,
                 category: '',
-                dueDate: '',
-                id: -1
+                dueDate: ''
             }
         });
     }
 
     _saveGoal(goal) {
-        if (goal.id === -1) {
+        if (!goal.id) {
             Client.addGoal(goal, (savedGoal) => {
-                this.resetState(update(this.state.goals, {$push: [savedGoal]}));
+                this.resetState(update(this.state.goals, {$push: [savedGoal[0]]}));
             });
         } else {
-            Client.editGoal(goal, (savedGoal) => {
+            Client.editGoal(goal, (savedGoals) => {
+                let savedGoal = savedGoals[0];
                 let goalIdx = _.findIndex(this.state.goals, (a) => {
                     return a.id === savedGoal.id
                 });
@@ -131,7 +130,7 @@ class GoalsPage extends React.Component {
                         submitCallback={this._saveGoal}
                         cancelCallback={() => this.resetState()}
                         deleteCallback={this._deleteGoal}
-                        editing={this.state.selectedGoal.id !== -1}
+                        editing={this.state.selectedGoal.id}
                     />
                 </div>
             )

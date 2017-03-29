@@ -13,6 +13,7 @@ class GenericForm extends React.Component {
         };
 
         this._updateItem = this._updateItem.bind(this);
+        this._submitForm = this._submitForm.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -55,7 +56,7 @@ class GenericForm extends React.Component {
                                 key={idx}
                                 label={field.value}
                                 name={field.key}
-                                type={field.key === 'date' ? 'date' : 'text'}
+                                type={field.key.toLowerCase().indexOf('date') !== -1 ? 'date' : 'text'}
                                 value={this.state.item[field.key]}
                                 onChange={this._updateItem}
                             />
