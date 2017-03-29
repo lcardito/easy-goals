@@ -98,7 +98,7 @@ class GoalsPage extends React.Component {
             return false;
         }
 
-        if (!this.state.showBucket) {
+        if (!this.state.showForm) {
             const headers = [
                 {key: 'label', value: 'Label'},
                 {key: 'category', value: 'Category'},
@@ -141,3 +141,11 @@ class GoalsPage extends React.Component {
 }
 
 export default GoalsPage;
+
+GoalsPage.propTypes = {
+    visible: React.PropTypes.bool
+};
+
+GoalsPage.defaultProps = {
+    visible: false
+};
