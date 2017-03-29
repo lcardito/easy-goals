@@ -1,5 +1,6 @@
 import React from 'react';
 import {Accordion, Grid, Container, Header, Table} from 'semantic-ui-react';
+import moment from "moment";
 
 class TableAccordion extends React.Component {
 
@@ -44,12 +45,18 @@ class TableAccordion extends React.Component {
                                 className="attached"
                                 celled='internally'
                                 columns={this.state.headers.length}>
-                                {this.state.headers.map((h, idx) => (
-                                    <Grid.Column
+                                {this.state.headers.map((h, idx) => {
+                                    let itemValue = item[h.key];
+
+                                    if (h.key.toLowerCase().indexOf('date') !== -1) {
+                                        itemValue = moment(itemValue).format('MMMM YYYY');
+                                    }
+
+                                    return <Grid.Column
                                         key={idx}>
-                                        {item[h.key]}
+                                        {itemValue}
                                     </Grid.Column>
-                                ))}
+                                })}
                             </Grid>
                         </Accordion.Title>,
                         <Accordion.Content

@@ -1,6 +1,7 @@
 import React from 'react'
 import {Table, Button, Icon} from 'semantic-ui-react';
 import _ from 'lodash';
+import moment from "moment";
 
 class SortableTable extends React.Component {
 
@@ -21,7 +22,7 @@ class SortableTable extends React.Component {
             headers: nextProps.headers,
             items: nextProps.items,
             editable: nextProps.editable,
-            sortingBy:''
+            sortingBy: ''
         })
     }
 
@@ -38,14 +39,13 @@ class SortableTable extends React.Component {
             <Table celled
                    padded
                    sortable
-                   size='small'
                    striped
                    selectable={this.state.editable}>
                 <Table.Header>
                     <Table.Row>
                         {this.state.headers.map((h, idx) => {
                             let iconName = 'sort';
-                            if(this.state.sortingBy === h.key) {
+                            if (this.state.sortingBy === h.key) {
                                 iconName = this.sortingOrder === 'asc' ? 'sort ascending' : 'sort descending'
                             }
 
@@ -60,11 +60,16 @@ class SortableTable extends React.Component {
                         <Table.Row
                             key={itemIdx}
                             onClick={() => this.props.editCallback(item)}>
-                            {this.state.headers.map((h, idx) => (
-                                <Table.Cell key={idx}>
-                                    {item[h.key]}
+                            {this.state.headers.map((h, idx) => {
+                                let itemValue = item[h.key];
+
+                                if (h.key.toLowerCase().indexOf('date') !== -1) {
+                                    itemValue = moment(itemValue).format('MMMM YYYY');
+                                }
+                                return <Table.Cell key={idx}>
+                                    {itemValue}
                                 </Table.Cell>
-                            ))}
+                            })}
                         </Table.Row>
                     ))}
                 </Table.Body>
