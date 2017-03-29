@@ -15,12 +15,23 @@ describe('integration tests', function () {
         });
     });
 
-    it('should run migrations', (done) => {
+    it('should run buckets migrations', (done) => {
         knex('bucket').select().then((allBuckets) => {
             "use strict";
 
             assert.isDefined(allBuckets);
-            assert.lengthOf(allBuckets, 1);
+            assert.lengthOf(allBuckets, 2);
+
+            done();
+        });
+    });
+
+    it('should run goal migrations', (done) => {
+        knex('goal').select().then((allGoals) => {
+            "use strict";
+
+            assert.isDefined(allGoals);
+            assert.lengthOf(allGoals, 7);
 
             done();
         });
