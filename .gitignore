@@ -4,3 +4,4 @@ npm-debug.logx
 .idea/
 client/client.iml
 migrations/migrations.iml
+dev.db

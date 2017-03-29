@@ -19,6 +19,24 @@ module.exports = {
         useNullAsDefault: true
     },
 
+    dev: {
+        client: 'sqlite3',
+        connection: {
+            database: 'goals',
+            user: 'goals',
+            password: 'pwd',
+            filename: './dev.db'
+        },
+        migrations: {
+            tableName: 'knex_migrations'
+        },
+        seeds: {
+            directory: './migrations/seeds/'
+        },
+        useNullAsDefault: true
+    },
+
+
     production: {
         client: 'mysql2',
         connection: {
