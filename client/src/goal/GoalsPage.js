@@ -117,7 +117,6 @@ class GoalsPage extends React.Component {
             return (
                 <div>
                     <Message
-                        attached={true}
                         header='Add/Edit a goal'
                         content='Fill out the form below to add/edit a new goal'
                     />

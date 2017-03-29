@@ -47,7 +47,7 @@ class GenericForm extends React.Component {
         return (
             <div>
                 <Form
-                    className='attached fluid segment'
+                    className='segment'
                     onSubmit={this._submitForm.bind(this)}>
                     <Form.Group widths='equal'>
                         {this.state.fields.map((field, idx) => (
