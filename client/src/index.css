@@ -26,7 +26,7 @@ body {
 }
 
 .segmentSmall {
-    padding: 0.1em!important;
+    padding: 0.1em !important;
 }
 
 .tableAccordion {
@@ -44,10 +44,13 @@ body {
 
 .boxed {
     border: 1px solid rgba(34, 36, 38, .1);
+    border-collapse: separate !important;
+    border-radius: .28571429rem;
 }
 
 .rowBoxed {
     border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-collapse: separate;
 }
 
 .cellBoxed {
@@ -57,8 +60,14 @@ body {
 .noMargin {
     margin: 0 0 !important;
     background-color: rgba(211, 211, 211, .1);
+    border-radius: .28571429rem;
 }
 
 .stripedRow {
-    background-color: rgba(0,0,50,.02);
+    background-color: rgba(0, 0, 50, .02);
+}
+
+.rowBoxed:hover {
+    background: rgba(0, 0, 0, .05) !important;
+    color: rgba(0, 0, 0, .95) !important;
 }

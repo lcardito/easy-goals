@@ -65,12 +65,14 @@ class TableAccordion extends React.Component {
                             <Container text fluid>
                                 <Header as='h4'>Payments at this date</Header>
                                 <Table celled size='small'>
-                                    {item.payments.map((p, idx) => (
-                                        <Table.Row key={idx}>
-                                            <Table.Cell>{p.name}</Table.Cell>
-                                            <Table.Cell>{p.cost}</Table.Cell>
-                                        </Table.Row>
-                                    ))}
+                                    <Table.Body>
+                                        {item.payments.map((p, idx) => (
+                                            <Table.Row key={idx}>
+                                                <Table.Cell>{p.name}</Table.Cell>
+                                                <Table.Cell>{p.cost}</Table.Cell>
+                                            </Table.Row>
+                                        ))}
+                                    </Table.Body>
                                 </Table>
                             </Container>
                             }
