@@ -32,17 +32,15 @@ class BucketsPage extends React.Component {
         })
     }
 
+    componentWillReceiveProps(nextProps) {
+        Client.getBuckets((serverBuckets) => {
+            this._getBuckets(serverBuckets);
+        })
+    }
+
     _getBuckets(serverBuckets) {
         this.setState({
             buckets: serverBuckets
-        });
-    }
-
-    resetState(buckets) {
-        this.setState({
-            buckets: buckets ? buckets : this.state.buckets,
-            showBucket: false,
-            selectedBucket: this.defaultBucket
         });
     }
 
