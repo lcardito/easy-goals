@@ -9,7 +9,8 @@ class SortableTable extends React.Component {
         this.state = {
             headers: props.headers ? props.headers : [],
             items: props.items ? props.items : [],
-            editable: props.editable ? props.editable : false
+            editable: props.editable ? props.editable : false,
+            sortingBy: ''
         };
 
         this._sortBy = this._sortBy.bind(this);
@@ -19,14 +20,16 @@ class SortableTable extends React.Component {
         this.setState({
             headers: nextProps.headers,
             items: nextProps.items,
-            editable: nextProps.editable
+            editable: nextProps.editable,
+            sortingBy:''
         })
     }
 
     _sortBy(prop) {
         this.sortingOrder = (this.sortingOrder === 'asc') ? 'desc' : 'asc';
         this.setState({
-            items: _.orderBy(this.state.items, [prop], [this.sortingOrder])
+            items: _.orderBy(this.state.items, [prop], [this.sortingOrder]),
+            sortingBy: prop
         })
     }
 
@@ -40,11 +43,16 @@ class SortableTable extends React.Component {
                    selectable={this.state.editable}>
                 <Table.Header>
                     <Table.Row>
-                        {this.state.headers.map((h, idx) => (
-                            <Table.HeaderCell
-                                key={idx}
-                                onClick={() => this._sortBy(h.key)}>{h.value}</Table.HeaderCell>
-                        ))}
+                        {this.state.headers.map((h, idx) => {
+                            let iconName = 'sort';
+                            if(this.state.sortingBy === h.key) {
+                                iconName = this.sortingOrder === 'asc' ? 'sort ascending' : 'sort descending'
+                            }
+
+                            return <Table.HeaderCell key={idx} onClick={() => this._sortBy(h.key)}>
+                                <Icon name={iconName}/> {h.value}
+                            </Table.HeaderCell>
+                        })}
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
