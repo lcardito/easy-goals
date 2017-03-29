@@ -78,7 +78,7 @@ class BucketsPage extends React.Component {
                     <TableAccordion
                         editable={false}
                         headers={[
-                            {key: 'date', value: 'Date'},
+                            {key: 'dueDate', value: 'Date'},
                             {key: 'payIn', value: 'Payment In'},
                             {key: 'balance', value: 'Bucket Balance'},
                         ]}

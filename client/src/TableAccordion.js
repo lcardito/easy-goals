@@ -59,7 +59,7 @@ class TableAccordion extends React.Component {
                                 <Header as='h4'>Payments at this date</Header>
                                 <Table celled size='small'>
                                     {item.payments.map((p, idx) => (
-                                        <Table.Row>
+                                        <Table.Row key={idx}>
                                             <Table.Cell>{p.name}</Table.Cell>
                                             <Table.Cell>{p.cost}</Table.Cell>
                                         </Table.Row>

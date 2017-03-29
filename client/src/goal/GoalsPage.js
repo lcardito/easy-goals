@@ -17,7 +17,7 @@ class GoalsPage extends React.Component {
                 label: '',
                 cost: 0,
                 category: '',
-                date: '',
+                dueDate: '',
                 id: -1
             }
         };
@@ -49,7 +49,7 @@ class GoalsPage extends React.Component {
                 label: '',
                 cost: 0,
                 category: '',
-                date: '',
+                dueDate: '',
                 id: -1
             }
         });
@@ -103,7 +103,7 @@ class GoalsPage extends React.Component {
                 {key: 'label', value: 'Label'},
                 {key: 'category', value: 'Category'},
                 {key: 'cost', value: 'Cost'},
-                {key: 'date', value: 'Due Date'}
+                {key: 'dueDate', value: 'Due Date'}
             ];
             return (
                 <SortableTable
@@ -126,7 +126,7 @@ class GoalsPage extends React.Component {
                             {key: 'label', value: 'Label'},
                             {key: 'category', value: 'Category'},
                             {key: 'cost', value: 'Cost'},
-                            {key: 'date', value: 'Due Date'}
+                            {key: 'dueDate', value: 'Due Date'}
                         ]}
                         item={this.state.selectedGoal}
                         submitCallback={this._saveGoal}
