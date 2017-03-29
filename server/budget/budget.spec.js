@@ -81,7 +81,6 @@ describe('budget module', () => {
             ];
 
             const report = budget.buildReport(bucket, goals);
-            console.log(util.inspect(report, false, null));
 
             let payOuts = _.filter(report, (r) => {
                 return (r.payments && r.payments.length !== 0);

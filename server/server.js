@@ -8,28 +8,19 @@ const MomentRange = require('moment-range');
 const budget = require('./budget/budget');
 const moment = MomentRange.extendMoment(Moment);
 
-//TODO plugin DB and migrations
-// let knex = require('knex')({
-//     client: 'mysql2',
-//     connection: {
-//         host: 'db',
-//         user: 'goals',
-//         password: 'pwd',
-//         database: 'goals'
-//     }
-// });
-//
-// knex.migrate.latest()
-//     .then(function () {
-//         console.log('DB migrated');
-//     });
+let env = process.env.NODE_ENV;
+console.log('Starting server in ' + env);
+
+const config = require('../knexfile');
+console.log('Knex config: ' + util.inspect(config[env], false, null));
+const knex = require('knex')(config[env]);
 
 const app = express();
 app.set('port', (process.env.PORT || 3001));
 app.use(bodyParser.json());
 
 // Express only serves static assets in production
-if (process.env.NODE_ENV === 'production') {
+if (env === 'production') {
     app.use(express.static('client/build'));
 }
 
@@ -45,17 +36,6 @@ const goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, date
     {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, date: '2017-09-30'},
     {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, date: '2017-10-30'},
     {id: 6, category: 'Other', label: 'Phone', cost: 400, date: '2017-10-30'}
-];
-
-let payments = [
-    {
-        category: 'Vehicles',
-        tracks: []
-    },
-    {
-        category: 'Other',
-        tracks: []
-    }
 ];
 
 app.get('/api/bucket', (req, res) => {
@@ -143,8 +123,22 @@ app.delete('/api/bucket/:bucketId', (req, res) => {
     res.json({});
 });
 
-app.listen(app.get('port'), () => {
-    console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
-});
+knex.migrate.latest()
+    .then(() => {
+        console.log('DB migrated. Running seeds');
+        return knex.seed.run();
+    })
+    .then(() => {
+        app.listen(app.get('port'), () => {
 
-module.exports = app;
+            console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
+
+            app.emit('ready', null);
+
+        });
+    });
+
+module.exports = {
+    app: app,
+    knex: knex
+};
