@@ -14,11 +14,13 @@ class BucketDetail extends React.Component {
     }
 
     componentWillMount() {
-        Client.getBuckets((serverBuckets) => {
-            this.setState({
-                report: _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10))).report
+        if (!isNaN(this.props.params.bucketId)) {
+            Client.getBuckets((serverBuckets) => {
+                this.setState({
+                    report: _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10))).report
+                })
             })
-        })
+        }
     }
 
     render() {

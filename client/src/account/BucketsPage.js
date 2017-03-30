@@ -1,8 +1,6 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import {Button} from "semantic-ui-react";
-import TableAccordion from "../TableAccordion";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -23,16 +21,9 @@ class BucketsPage extends React.Component {
         };
 
         this._getBuckets = this._getBuckets.bind(this);
-        this._showBucket = this._showBucket.bind(this);
     }
 
     componentWillMount() {
-        Client.getBuckets((serverBuckets) => {
-            this._getBuckets(serverBuckets);
-        })
-    }
-
-    componentWillReceiveProps(nextProps) {
         Client.getBuckets((serverBuckets) => {
             this._getBuckets(serverBuckets);
         })
@@ -44,47 +35,20 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _showBucket(bucket) {
-        this.setState({
-            selectedBucket: bucket,
-            showBucket: true
-        });
-    };
-
     render() {
-        if (!this.state.showBucket) {
-            return (
-                <SortableTable
-                    editCallback={this._showBucket}
-                    headers={[
-                        {key: 'category', value: 'Category'},
-                        {key: 'balance', value: 'Balance'},
-                        {key: 'monthly', value: 'This Month Due'},
-                        {key: 'createdDate', value: 'Created'}
-                    ]}
-                    items={this.state.buckets}
-                    editable={false}
-                    detailPath="buckets"
-                />
-            )
-        } else {
-            return (
-                <div>
-                    <TableAccordion
-                        editable={false}
-                        headers={[
-                            {key: 'dueDate', value: 'Date'},
-                            {key: 'payIn', value: 'Payment In'},
-                            {key: 'balance', value: 'Bucket Balance'},
-                        ]}
-                        items={this.state.selectedBucket.report}
-                    />
-                    <Button className="marginTopButton"
-                            type="button"
-                            onClick={() => this.setState({showBucket: false})}>Back</Button>
-                </div>
-            )
-        }
+        return (
+            <SortableTable
+                headers={[
+                    {key: 'category', value: 'Category'},
+                    {key: 'balance', value: 'Balance'},
+                    {key: 'monthly', value: 'This Month Due'},
+                    {key: 'createdDate', value: 'Created'}
+                ]}
+                items={this.state.buckets}
+                editable={false}
+                detailPath="buckets"
+            />
+        )
     }
 }
 

@@ -3,6 +3,12 @@ import {Form, Confirm} from 'semantic-ui-react';
 import update from 'immutability-helper';
 
 class GenericForm extends React.Component {
+
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -65,7 +71,7 @@ class GenericForm extends React.Component {
                     <Form.Group>
                         <Form.Button color="green" type="submit">Save</Form.Button>
                         <Form.Button type="button"
-                                     onClick={() => this.props.cancelCallback()}>Cancel</Form.Button>
+                                     onClick={() => this.context.router.goBack()}>Back</Form.Button>
                         {deleteButton}
                     </Form.Group>
                 </Form>

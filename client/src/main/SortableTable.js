@@ -5,6 +5,7 @@ import moment from "moment";
 
 class SortableTable extends React.Component {
 
+    //noinspection JSUnusedGlobalSymbols
     static contextTypes = {
         router: React.PropTypes.object,
     };
@@ -42,7 +43,8 @@ class SortableTable extends React.Component {
     }
 
     _navigateToDetail(item) {
-        this.context.router.push(`/${this.state.detailPath}/${item.id}`)
+        let path = item ? `/${this.state.detailPath}/${item.id}` : `/${this.state.detailPath}/tmp`;
+        this.context.router.push(path);
     }
 
     render() {

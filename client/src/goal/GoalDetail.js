@@ -5,6 +5,12 @@ import Client from "../main/Client";
 import * as _ from "lodash";
 
 class GoalDetail extends React.Component {
+
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
+
     constructor() {
         super();
 
@@ -13,7 +19,7 @@ class GoalDetail extends React.Component {
                 label: '',
                 category: '',
                 cost: 0,
-                dueDate: '2017-01-01'
+                dueDate: ''
             }
         };
 
@@ -22,29 +28,29 @@ class GoalDetail extends React.Component {
     }
 
     componentWillMount() {
-        Client.getGoals((serverGoals) => {
-            this.setState({
-                selectedGoal: _.find(serverGoals, _.matchesProperty('id', parseInt(this.props.params.goalId, 10)))
+        if(!isNaN(this.props.params.goalId)) {
+            Client.getGoals((serverGoals) => {
+                this.setState({
+                    selectedGoal: _.find(serverGoals, _.matchesProperty('id', parseInt(this.props.params.goalId, 10)))
+                })
             })
-        })
+        }
+
     }
 
     _deleteGoal(goal) {
         Client.deleteGoal(goal.id);
+        this.context.router.goBack();
     }
 
     _saveGoal(goal) {
         if (!goal.id) {
-            Client.addGoal(goal, (savedGoal) => {
-                // this.resetState(update(this.state.goals, {$push: [savedGoal[0]]}));
+            Client.addGoal(goal, () => {
+                this.context.router.goBack();
             });
         } else {
-            Client.editGoal(goal, (savedGoals) => {
-                let savedGoal = savedGoals[0];
-                let goalIdx = _.findIndex(this.state.goals, (a) => {
-                    return a.id === savedGoal.id
-                });
-                // this.resetState(update(this.state.goals, {[goalIdx]: {$set: savedGoal}}));
+            Client.editGoal(goal, () => {
+                this.context.router.goBack()
             });
         }
     }
@@ -63,6 +69,7 @@ class GoalDetail extends React.Component {
                     {key: 'dueDate', value: 'Due Date'}
                 ]}
                 item={this.state.selectedGoal}
+                editing={true}
                 submitCallback={this._saveGoal}
                 deleteCallback={this._deleteGoal}
             />
