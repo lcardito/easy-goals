@@ -81,4 +81,10 @@ class GenericForm extends React.Component {
     }
 }
 
+GenericForm.defaultProps = {
+    fields: [],
+    item: {},
+    editing: false,
+};
+
 export default GenericForm;

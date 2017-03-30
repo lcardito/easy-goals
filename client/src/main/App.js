@@ -1,30 +1,27 @@
 import React from "react";
-import AppMenu from "./AppMenu";
-import BucketsPage from "../account/BucketsPage";
-import GoalsPage from '../goal/GoalsPage';
+import {Link} from "react-router";
+import {Menu} from "semantic-ui-react";
 
-class App extends React.Component {
-
-    constructor() {
-        super();
-        this.state = {
-            activeItem: "goals"
-        };
-    }
-
-    handleMenuItemClick = (name) => this.setState({activeItem: name});
-
+export default React.createClass({
     render() {
         return (
-            <div className='App'>
-                <div className='ui container'>
-                    <AppMenu initialActiveItem={this.state.activeItem} onMenuChange={this.handleMenuItemClick}/>
-                    <BucketsPage visible={this.state.activeItem === 'buckets'}/>
-                    <GoalsPage visible={this.state.activeItem === 'goals'}/>
-                </div>
+            <div className='ui container'>
+                <Menu>
+                    <Menu.Item
+                        name='goals'>
+                        <Link to="/">Home</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        name='goals'>
+                        <Link to="/goals">Goals</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        name='buckets'>
+                        <Link to="/buckets">Buckets</Link>
+                    </Menu.Item>
+                </Menu>
+                {this.props.children}
             </div>
-        );
+        )
     }
-}
-
-export default App;
+})

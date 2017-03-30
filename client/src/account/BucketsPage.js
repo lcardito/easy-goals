@@ -52,10 +52,6 @@ class BucketsPage extends React.Component {
     };
 
     render() {
-        if (!this.props.visible) {
-            return false;
-        }
-
         if (!this.state.showBucket) {
             return (
                 <SortableTable
@@ -68,6 +64,7 @@ class BucketsPage extends React.Component {
                     ]}
                     items={this.state.buckets}
                     editable={false}
+                    detailPath="buckets"
                 />
             )
         } else {

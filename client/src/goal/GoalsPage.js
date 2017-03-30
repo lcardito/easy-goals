@@ -93,10 +93,6 @@ class GoalsPage extends React.Component {
     }
 
     render() {
-        if (!this.props.visible) {
-            return false;
-        }
-
         if (!this.state.showForm) {
             const headers = [
                 {key: 'label', value: 'Label'},
@@ -110,7 +106,9 @@ class GoalsPage extends React.Component {
                     addNewCallback={() => this.setState({showForm: true})}
                     headers={headers}
                     items={this.state.goals}
-                    editable={true}/>
+                    editable={true}
+                    detailPath="goals"
+                />
             )
         } else {
             return (

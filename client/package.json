@@ -16,6 +16,7 @@
     "moment": "^2.18.1",
     "react": "15.4.0",
     "react-dom": "15.4.0",
+    "react-router": "3.0.3",
     "semantic-ui": "2.2.7",
     "semantic-ui-react": "^0.67.2"
   },

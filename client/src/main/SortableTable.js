@@ -1,20 +1,26 @@
-import React from 'react'
-import {Table, Button, Icon} from 'semantic-ui-react';
-import _ from 'lodash';
+import React from "react";
+import {Button, Icon, Table} from "semantic-ui-react";
+import _ from "lodash";
 import moment from "moment";
 
 class SortableTable extends React.Component {
+
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
 
     constructor(props) {
         super(props);
         this.state = {
             headers: props.headers ? props.headers : [],
             items: props.items ? props.items : [],
+            detailPath: props.detailPath ? props.detailPath : '',
             editable: props.editable ? props.editable : false,
             sortingBy: ''
         };
 
         this._sortBy = this._sortBy.bind(this);
+        this._navigateToDetail = this._navigateToDetail.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -22,6 +28,7 @@ class SortableTable extends React.Component {
             headers: nextProps.headers,
             items: nextProps.items,
             editable: nextProps.editable,
+            detailPath: nextProps.detailPath ? nextProps.detailPath : '',
             sortingBy: ''
         })
     }
@@ -32,6 +39,10 @@ class SortableTable extends React.Component {
             items: _.orderBy(this.state.items, [prop], [this.sortingOrder]),
             sortingBy: prop
         })
+    }
+
+    _navigateToDetail(item) {
+        this.context.router.push(`/${this.state.detailPath}/${item.id}`)
     }
 
     render() {
@@ -59,7 +70,7 @@ class SortableTable extends React.Component {
                     {this.state.items.map((item, itemIdx) => (
                         <Table.Row
                             key={itemIdx}
-                            onClick={() => this.props.editCallback(item)}>
+                            onClick={() => this._navigateToDetail(item)}>
                             {this.state.headers.map((h, idx) => {
                                 let itemValue = item[h.key];
 
@@ -78,7 +89,7 @@ class SortableTable extends React.Component {
                     <Table.Row>
                         <Table.HeaderCell colSpan={this.props.headers.length}>
                             <Button
-                                onClick={() => this.props.addNewCallback()}
+                                onClick={() => this._navigateToDetail()}
                                 floated='left' icon size='tiny' labelPosition='left' primary>
                                 <Icon name="add circle"/>Add New
                             </Button>

@@ -9,7 +9,7 @@ function search(query, cb) {
 }
 
 function getGoals(cb) {
-    fetch('api/goals/', {
+    fetch('/api/goals/', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -21,7 +21,7 @@ function getGoals(cb) {
 }
 
 function getBuckets(cb) {
-    fetch('api/bucket/', {
+    fetch('/api/bucket/', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -33,7 +33,7 @@ function getBuckets(cb) {
 }
 
 function addGoal(goal, cb) {
-    fetch('api/goals/', {
+    fetch('/api/goals/', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
