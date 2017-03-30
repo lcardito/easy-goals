@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "devDependencies": {
-    "@types/react-native": "^0.42.12",
+    "@types/react-native": "^0.42.13",
     "enzyme": "2.4.1",
     "react-addons-test-utils": "15.4.0",
     "react-scripts": "0.8.5"
