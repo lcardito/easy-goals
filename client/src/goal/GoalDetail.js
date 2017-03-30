@@ -78,3 +78,9 @@ class GoalDetail extends React.Component {
 }
 
 export default GoalDetail;
+
+GoalDetail.defaultProps = {
+    params: {
+        goalId: undefined
+    }
+};

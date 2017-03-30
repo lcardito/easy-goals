@@ -1,6 +1,6 @@
 import React from "react";
 import Client from "../main/Client";
-import TableAccordion from "../TableAccordion";
+import TableAccordion from "./TableAccordion";
 import * as _ from "lodash";
 
 class BucketDetail extends React.Component {
@@ -37,3 +37,9 @@ class BucketDetail extends React.Component {
 }
 
 export default BucketDetail;
+
+BucketDetail.defaultProps = {
+    params: {
+        bucketId: undefined
+    }
+};

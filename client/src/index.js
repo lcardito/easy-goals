@@ -5,8 +5,8 @@ import 'semantic-ui/dist/semantic.min.css';
 import {render} from 'react-dom'
 import {hashHistory, Route, Router} from 'react-router';
 
-import BucketsPage from "./account/BucketsPage";
-import BucketDetail from "./account/BucketDetail";
+import BucketsPage from "./bucket/BucketsPage";
+import BucketDetail from "./bucket/BucketDetail";
 import GoalsPage from "./goal/GoalsPage";
 import GoalDetail from "./goal/GoalDetail";
 

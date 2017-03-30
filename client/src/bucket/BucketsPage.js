@@ -10,8 +10,7 @@ class BucketsPage extends React.Component {
             category: '',
             balance: 0,
             monthly: 0,
-            report: [],
-            id: -1
+            report: []
         };
 
         this.state = {

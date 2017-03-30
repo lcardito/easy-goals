@@ -91,6 +91,8 @@ GenericForm.defaultProps = {
     fields: [],
     item: {},
     editing: false,
+    deleteCallback: () => {},
+    submitCallback: () => {}
 };
 
 export default GenericForm;
