@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Icon, Table} from "semantic-ui-react";
 import _ from "lodash";
-import moment from "moment";
+import {formatValue} from "../utils";
 
 class SortableTable extends React.Component {
 
@@ -74,13 +74,8 @@ class SortableTable extends React.Component {
                             key={itemIdx}
                             onClick={() => this._navigateToDetail(item)}>
                             {this.state.headers.map((h, idx) => {
-                                let itemValue = item[h.key];
-
-                                if (h.key.toLowerCase().indexOf('date') !== -1) {
-                                    itemValue = moment(itemValue).format('MMMM YYYY');
-                                }
                                 return <Table.Cell key={idx}>
-                                    {itemValue}
+                                    {formatValue(item[h.key], h.key)}
                                 </Table.Cell>
                             })}
                         </Table.Row>
