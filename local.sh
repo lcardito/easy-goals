@@ -2,9 +2,8 @@
 npm i
 cd client
 npm i
+
 rm -rf node_modules/@types/react
 
-npm run build
-
 cd ..
-npm run-scripts prod
+npm start
