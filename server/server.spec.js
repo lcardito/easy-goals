@@ -15,7 +15,7 @@ describe('integration tests', function () {
         });
     });
 
-    afterEach(() => {
+    beforeEach(() => {
         knex('goal').del();
         knex('bucket').del();
 
@@ -59,7 +59,7 @@ describe('integration tests', function () {
             .send({category: 'Vehicles', label: 'Bike exhaust', cost: 500, dueDate: '2017-06-30'})
             .expect(200)
             .then(response => {
-                assert.equal(response.body[0].id, 7, util.inspect(response, false, null));
+                assert.equal(response.body[0].label, 'Bike exhaust', util.inspect(response.body, false, null));
             });
     });
 
@@ -75,15 +75,17 @@ describe('integration tests', function () {
     });
 
     it('should delete into database on delete', (done) => {
-        request(server)
-            .del('/api/goals/0')
-            .expect(200)
-            .then(() => {
-                knex('goal').select().then((goals) => {
-                    assert.lengthOf(goals, 6);
-                    done();
-                })
-            });
+        knex('goal').select().limit(1).then((result) => {
+            request(server)
+                .del('/api/goals/' + result[0].id)
+                .expect(200)
+                .then(() => {
+                    knex('goal').select().then((goals) => {
+                        assert.lengthOf(goals, 6);
+                        done();
+                    })
+                });
+        });
     });
 
     it('should response the same to /api/bucket', () => {
@@ -101,7 +103,7 @@ describe('integration tests', function () {
             .send({category: 'NewCategory', label: 'Bike exhaust', cost: 500, dueDate: '2017-06-30'})
             .expect(200)
             .then(response => {
-                assert.equal(response.body[0].id, 7, util.inspect(response, false, null));
+                assert.equal(response.body[0].label, 'Bike exhaust', util.inspect(response.body, false, null));
 
                 knex('bucket').where({category: 'NewCategory'}).select().then((result) => {
                     assert.lengthOf(result, 1);
