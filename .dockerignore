@@ -5,3 +5,5 @@ test/
 Dockerfile
 .travis.yml
 README.md
+*.spec.js
+dev.db

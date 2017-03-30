@@ -6,11 +6,11 @@ ADD . /usr/src/app
 
 # Install dependencies
 WORKDIR /usr/src/app
-RUN chmod +x ./local.sh
+RUN chmod +x ./run.sh
 RUN npm install
 
 # Expose the app port
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the app
-ENTRYPOINT ["./local.sh"]
+ENTRYPOINT ["./run.sh"]
