@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {connect} from 'react-redux';
-import {Button} from "semantic-ui-react";
 import {mapStateToProps} from "../transformer";
 
 class LoginForm extends React.Component {

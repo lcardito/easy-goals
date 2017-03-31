@@ -12,6 +12,8 @@
     "moment": "^2.18.1",
     "moment-range": "^3.0.3",
     "mysql2": "^1.2.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "util": "^0.10.3"
   },
   "scripts": {
@@ -28,6 +30,7 @@
     "@types/express": "^4.0.35",
     "@types/jasmine": "^2.5.46",
     "@types/knex": "0.0.44",
+    "@types/passport": "^0.3.3",
     "@types/supertest": "^2.0.0",
     "chai": "^3.5.0",
     "concurrently": "3.1.0",

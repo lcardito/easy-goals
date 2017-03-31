@@ -110,5 +110,26 @@ describe('integration tests', function () {
                     done();
                 })
             });
-    })
+    });
+
+    it('should be able to authenticate', (done) => {
+        request(server)
+            .post('/login')
+            .type('form')
+            .expect(200)
+            .send({'email': 'gigo@gigio.com', 'password': 'blabla'})
+            .then((response) => {
+                assert.equal(response.body.username, 'luigi');
+                done();
+            });
+    });
+
+    it('401 for an unauthorized user', () => {
+        return request(server)
+            .post('/login')
+            .type('form')
+            .expect(401)
+            .send({'email': 'fake@unknown.com', 'password': 'blabla'});
+    });
+
 });

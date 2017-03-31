@@ -15,9 +15,46 @@ const config = require('../knexfile');
 console.log('Knex config: ' + util.inspect(config[env], false, null));
 const knex = require('knex')(config[env]);
 
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: false,
+        session: true
+    },
+    (username, password, done) => {
+        knex('user').where({email: username})
+            .limit(1)
+            .select()
+            .then((result) => {
+                done(null, result[0]);
+            });
+    }
+));
+
+passport.serializeUser(function (user, cb) {
+    cb(null, user.id);
+});
+
+passport.deserializeUser(function (id, cb) {
+    knex('user').where({id: id}).then((user) => {
+        cb(null, user);
+    });
+});
+
+
 const app = express();
 app.set('port', (process.env.PORT || 3001));
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Express only serves static assets in production
 if (env === 'production') {
@@ -111,6 +148,15 @@ app.delete('/api/goals/:goalId', (req, res) => {
     });
 });
 
+app.post('/login',
+    passport.authenticate('local', {failWithError: true}),
+    (req, res) => {
+        return res.json(req.user);
+    },
+    (err, req, res, next) => {
+        return res.json(err);
+    });
+
 knex.migrate.latest()
     .then(() => {
         console.log('DB migrated. Running seeds');
@@ -118,9 +164,7 @@ knex.migrate.latest()
     })
     .then(() => {
         app.listen(app.get('port'), () => {
-
             console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
-
             app.emit('ready', null);
 
         });
