@@ -7,6 +7,11 @@ import {mapStateToProps} from "../transformer";
 
 class App extends React.Component {
 
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
+
     constructor() {
         super();
 
@@ -24,6 +29,7 @@ class App extends React.Component {
         this.props.dispatch({
             type: 'LOG_OUT'
         });
+        this.context.router.replace("/login");
     }
 
     render() {
@@ -40,10 +46,9 @@ class App extends React.Component {
                     </Menu.Item>
                     <Menu.Menu position='right'>
                         {this.props.isLoggedIn &&
-                        <Menu.Item name='logout' onClick={this._logout}/>
-                        }
-                        {!this.props.isLoggedIn &&
-                        <Menu.Item name='login' onClick={this._login}/>
+                        <Menu.Item name='logout' onClick={this._logout}>
+                            {this.props.user.email}
+                        </Menu.Item>
                         }
                     </Menu.Menu>
                 </Menu>
