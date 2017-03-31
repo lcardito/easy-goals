@@ -117,7 +117,7 @@ describe('integration tests', function () {
             .post('/login')
             .type('form')
             .expect(200)
-            .send({'email': 'gigo@gigio.com', 'password': 'blabla'})
+            .send({'email': 'gigo@gigio.com', 'password': 'password'})
             .then((response) => {
                 assert.equal(response.body.username, 'luigi');
                 done();

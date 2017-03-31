@@ -15,9 +15,10 @@ const config = require('../knexfile');
 console.log('Knex config: ' + util.inspect(config[env], false, null));
 const knex = require('knex')(config[env]);
 
-
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+
+const passwUtil = require('./passwUtil');
 
 passport.use(new LocalStrategy({
         usernameField: 'email',
@@ -30,7 +31,17 @@ passport.use(new LocalStrategy({
             .limit(1)
             .select()
             .then((result) => {
-                done(null, result[0]);
+                let user = result[0];
+                if(!user) {
+                    return done(null, false);
+                }
+                passwUtil.comparePassword(password, user.password, (err, isValid) => {
+                   if(isValid) {
+                       return done(null, user);
+                   } else {
+                       return done(null, false);
+                   }
+                });
             });
     }
 ));
