@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const util = require('util');
 const _ = require('lodash');
@@ -32,28 +34,32 @@ passport.use(new LocalStrategy({
             .select()
             .then((result) => {
                 let user = result[0];
-                if(!user) {
+                if (!user) {
                     return done(null, false);
                 }
                 passwUtil.comparePassword(password, user.password, (err, isValid) => {
-                   if(isValid) {
-                       return done(null, user);
-                   } else {
-                       return done(null, false);
-                   }
+                    if (isValid) {
+                        delete user["password"];
+                        return done(null, user);
+                    } else {
+                        return done(null, false);
+                    }
                 });
             });
     }
 ));
 
-passport.serializeUser(function (user, cb) {
+passport.serializeUser((user, cb) => {
     cb(null, user.id);
 });
 
-passport.deserializeUser(function (id, cb) {
-    knex('user').where({id: id}).then((user) => {
-        cb(null, user);
-    });
+passport.deserializeUser((id, cb) => {
+    knex('user')
+        .where({id: id})
+        .select('username', 'email', 'createdDate')
+        .then((user) => {
+            cb(null, user);
+        });
 });
 
 
@@ -63,9 +69,16 @@ app.set('port', (process.env.PORT || 3001));
 app.use(bodyParser.json({extended: true}));
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(cookieParser());
+app.use(['/*'], session({
+    secret: 'keyboard cat',
+    cookie: {
+        httpOnly: false
+    }
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Express only serves static assets in production
 if (env === 'production') {
@@ -74,7 +87,6 @@ if (env === 'production') {
 
 app.get('/api/bucket', (req, res) => {
     knex('bucket').select().then((buckets) => {
-        "use strict";
         knex('goal').select().then((goals) => {
 
             const categories = [...new Set(goals.map(item => item.category))];
@@ -106,19 +118,18 @@ app.get('/api/bucket', (req, res) => {
 });
 
 app.get('/api/goals', (req, res) => {
-    knex('goal').select().then((goals) => {
-        "use strict";
-
-        res.json(goals);
-    });
+    console.log(req['user']);
+    knex('goal')
+        .select()
+        .then((goals) => {
+            res.json(goals);
+        });
 });
 
 app.post('/api/goals', (req, res) => {
     let goal = req.body;
 
     knex('goal').insert(goal).then((savedId) => {
-        "use strict";
-
         knex('bucket').where({category: goal.category}).select().then((result) => {
             if (result.length === 0) {
                 return knex('bucket').insert({
@@ -139,11 +150,10 @@ app.put('/api/goals', (req, res) => {
 
     knex('goal')
         .where('id', '=', goal.id)
-        .update(goal).then(() => {
-        "use strict";
-
-        res.json([goal]);
-    });
+        .update(goal)
+        .then(() => {
+            res.json([goal]);
+        });
 
 });
 
@@ -152,20 +162,17 @@ app.delete('/api/goals/:goalId', (req, res) => {
 
     knex('goal')
         .where('id', '=', id)
-        .del().then(() => {
-        "use strict";
-
-        res.json({});
-    });
+        .del()
+        .then(() => {
+            res.json({});
+        });
 });
 
 app.post('/login',
     passport.authenticate('local', {failWithError: true}),
     (req, res) => {
+        res.cookie('goals.user', JSON.stringify(req.user), {maxAge: 900000, httpOnly: false});
         return res.json(req.user);
-    },
-    (err, req, res, next) => {
-        return res.json(err);
     });
 
 knex.migrate.latest()
@@ -177,7 +184,6 @@ knex.migrate.latest()
         app.listen(app.get('port'), () => {
             console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
             app.emit('ready', null);
-
         });
     });
 

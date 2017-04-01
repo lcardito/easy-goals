@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {mapStateToProps} from "../transformer";
 import GenericForm from "./GenericForm";
+import Client from '../main/Client';
 
 class LoginForm extends React.Component {
     //noinspection JSUnusedGlobalSymbols
@@ -27,10 +28,15 @@ class LoginForm extends React.Component {
     }
 
     _submit(userData) {
-        this.props.dispatch({
-            type: 'LOG_IN'
+        Client.login(userData, (user) => {
+            if (user) {
+                this.props.dispatch({
+                    type: 'LOG_IN',
+                    user: user
+                });
+                this.context.router.replace("/");
+            }
         });
-        this.context.router.replace("/");
     }
 
     render() {
@@ -39,7 +45,7 @@ class LoginForm extends React.Component {
                 {key: 'email', value: 'Email'},
                 {key: 'password', value: 'Password'}
             ]}
-            item={{email: '', passowrd: ''}}
+            item={{email: '', password: ''}}
             editing={false}
             submitCallback={this._submit}/>;
     }

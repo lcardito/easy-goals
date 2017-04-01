@@ -8,9 +8,24 @@ function search(query, cb) {
 
 }
 
+function login(user, cb) {
+    fetch('/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function getGoals(cb) {
     fetch('/api/goals/', {
         method: 'GET',
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -23,6 +38,7 @@ function getGoals(cb) {
 function getBuckets(cb) {
     fetch('/api/bucket/', {
         method: 'GET',
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -35,6 +51,7 @@ function getBuckets(cb) {
 function addGoal(goal, cb) {
     fetch('/api/goals/', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -48,6 +65,7 @@ function addGoal(goal, cb) {
 function editGoal(toEdit, cb) {
     fetch('api/goals/', {
         method: 'PUT',
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -60,7 +78,8 @@ function editGoal(toEdit, cb) {
 
 function deleteGoal(goalId, cb) {
     fetch(`api/goals/${goalId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
     }).then(checkStatus)
         .then(cb);
 }
@@ -81,7 +100,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal
+    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login
 };
 
 export default Client;

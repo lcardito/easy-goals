@@ -1,6 +1,7 @@
 import React from 'react';
 import {Form, Confirm} from 'semantic-ui-react';
 import update from 'immutability-helper';
+import {getInputType} from "../utils";
 
 class GenericForm extends React.Component {
 
@@ -62,7 +63,7 @@ class GenericForm extends React.Component {
                                 key={idx}
                                 label={field.value}
                                 name={field.key}
-                                type={field.key.toLowerCase().indexOf('date') !== -1 ? 'date' : 'text'}
+                                type={getInputType(field.key)}
                                 value={this.state.item[field.key]}
                                 onChange={this._updateItem}
                             />

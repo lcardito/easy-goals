@@ -14,19 +14,21 @@ import EnsureLoggedInContainer from "./main/EnsureLoggedInContainer";
 
 import {createStore} from 'redux'
 import LoginForm from "./main/LoginForm";
+import cookie from "react-cookie";
 
 function login(state = {}, action) {
     switch (action.type) {
         case 'LOG_IN':
-            return state = {user: {username: 'luigi', name: 'Luigi', email: 'lcardito@gmail.com'}};
+            return state = {user: action.user};
         case 'LOG_OUT':
-            return state = {user: {username: '', name: 'Luigi', email: 'lcardito@gmail.com'}};
+            cookie.remove('goals.user');
+            return state = {user: {}};
         default:
-            return state
+            return state;
     }
 }
 
-let store = createStore(login, {user: {username: 'luigi', name: 'Luigi', email: 'lcardito@gmail.com'}});
+let store = createStore(login, {user: cookie.load('goals.user')});
 
 render((
     <Provider store={store}>
