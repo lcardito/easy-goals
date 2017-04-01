@@ -1,5 +1,5 @@
 import React from 'react';
-import {Accordion, Grid, Container, Header, Table} from 'semantic-ui-react';
+import {Accordion, Grid, Container, Header, Table, Icon} from 'semantic-ui-react';
 import {formatValue} from "../utils";
 
 class TableAccordion extends React.Component {
@@ -37,10 +37,10 @@ class TableAccordion extends React.Component {
                     className="boxed"
                     exclusive={true}
                     fluid>
-                    {this.state.items.map((item, idx) => ([
+                    {this.state.items.map((item, itemIdx) => ([
                         <Accordion.Title
-                            className={idx % 2 !== 0 ? 'stripedRow attached rowBoxed' : 'attached rowBoxed'}
-                            key={idx}>
+                            className={itemIdx % 2 !== 0 ? 'stripedRow attached rowBoxed' : 'attached rowBoxed'}
+                            key={itemIdx}>
                             <Grid
                                 className="attached"
                                 celled='internally'
@@ -49,6 +49,10 @@ class TableAccordion extends React.Component {
                                     return <Grid.Column
                                         key={idx}>
                                         {formatValue(item[h.key], h.key)}
+                                        {idx === this.state.headers.length - 1 &&
+                                        item.payments.length > 0 &&
+                                        <Icon className="floatRight" name="money"/>
+                                        }
                                     </Grid.Column>
                                 })}
                             </Grid>
