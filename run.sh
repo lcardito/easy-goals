@@ -9,4 +9,4 @@ npm run build
 cd ..
 rm -rf node_modules
 npm i
-npm run-script prod
+npm start

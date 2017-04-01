@@ -6,4 +6,4 @@ npm i
 rm -rf node_modules/@types/react
 
 cd ..
-npm start
+npm run-script dev-start
