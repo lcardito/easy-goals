@@ -215,6 +215,7 @@ knex.migrate.latest()
         app.listen(app.get('port'), () => {
             console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
             app.emit('ready', null);
+            app.isRunning = true;
         });
     });
 

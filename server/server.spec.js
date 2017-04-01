@@ -3,18 +3,25 @@
 const request = require('supertest');
 const util = require("util");
 const assert = require('chai').assert;
+const server = require('./server');
+const superAgent = require('superagent');
 
 describe('integration tests', () => {
-    let server;
+    let app;
     let knex;
 
     before((done) => {
-        server = require('./server').app;
-        server.on('ready', () => {
-            console.log('Server up and running');
-            knex = require('./server').knex;
+        app = server.app;
+        if(app.isRunning) {
+            knex = server.knex;
             done();
-        });
+        } else {
+            app.on('ready', () => {
+                console.log('Server up and running');
+                knex = server.knex;
+                done();
+            });
+        }
     });
 
     beforeEach(() => {
@@ -51,11 +58,10 @@ describe('integration tests', () => {
         let user1, user2, host;
 
         before((done) => {
-            let request = require('superagent');
-            host = 'http://localhost:' + server.get('port');
+            host = 'http://localhost:' + app.get('port');
 
-            user1 = request.agent();
-            user2 = request.agent();
+            user1 = superAgent.agent();
+            user2 = superAgent.agent();
 
             user1.post(host + '/login')
                 .send({'email': 'gigo@gigio.com', 'password': 'password'})
@@ -171,7 +177,7 @@ describe('integration tests', () => {
     });
 
     it('401 for an unauthorized user', () => {
-        return request(server)
+        return request(app)
             .post('/login')
             .type('form')
             .expect(401)
