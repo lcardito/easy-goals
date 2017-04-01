@@ -118,7 +118,7 @@ api.get('/bucket', (req, res) => {
                 .where('user_id', req.user.id)
                 .select()
                 .then((goals) => {
-                    const categories = [...new Set(goals.map(item => item.category))];
+                    let categories = _.uniq(goals.map(item => item.category));
                     let now = moment();
                     let response = [];
 
