@@ -208,16 +208,13 @@ app.use('/api', api);
 
 knex.migrate.latest()
     .then(() => {
-        console.log('DB migrated. Running seeds');
-        return knex.seed.run();
-    })
-    .then(() => {
         app.listen(process.env.PORT || app.get('port'), () => {
             console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
             app.emit('ready', null);
             app.isRunning = true;
         });
     });
+
 
 module.exports = {
     app: app,
