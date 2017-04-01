@@ -7,6 +7,8 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 const BALANCE_THRESHOLD = 5;
 
 function calculateMonthlySavings(startingDate, goals, initialBalance) {
+    "use strict";
+
     let totalCost = _.sumBy(goals, 'cost');
     if (initialBalance >= totalCost) {
         return 0;
