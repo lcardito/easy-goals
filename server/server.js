@@ -56,9 +56,9 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
     knex('user')
         .where({id: id})
-        .select('username', 'email', 'createdDate')
-        .then((user) => {
-            cb(null, user);
+        .select('id', 'username', 'email', 'createdDate')
+        .then((result) => {
+            cb(null, result[0]);
         });
 });
 
@@ -72,6 +72,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(['/*'], session({
     secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
     cookie: {
         httpOnly: false
     }
@@ -85,67 +87,100 @@ if (env === 'production') {
     app.use(express.static('client/build'));
 }
 
-app.get('/api/bucket', (req, res) => {
-    knex('bucket').select().then((buckets) => {
-        knex('goal').select().then((goals) => {
-
-            const categories = [...new Set(goals.map(item => item.category))];
-            let now = moment();
-            let response = [];
-
-            categories.forEach((c) => {
-                let goalsForCategory = goals.filter((g) => g.category === c);
-                let bucket = buckets.filter((a) => a.category === c)[0];
-
-                if (bucket) {
-                    let responseBucket = util._extend({}, bucket);
-                    const report = budget.buildReport(responseBucket, goalsForCategory);
-
-                    const current = _.find(report, (r) => {
-                        return moment(r.date).isSame(now, 'month')
-                            && moment(r.date).isSame(now, 'year');
-                    });
-
-                    responseBucket.report = report;
-                    responseBucket.balance = current.balance;
-                    responseBucket.monthly = current.payIn;
-                    response.push(responseBucket);
-                }
-            });
-            res.json(response);
-        });
+app.post('/login',
+    passport.authenticate('local', {failWithError: true}),
+    (req, res) => {
+        res.cookie('goals.user', JSON.stringify(req.user), {maxAge: 900000, httpOnly: false});
+        return res.json(req.user);
     });
+
+let api = express.Router();
+
+api.use((req, res, next) => {
+    if (req.user) {
+        next();
+    } else {
+        return res.status(403).send({
+            success: false,
+            message: 'User is not authenticated'
+        });
+    }
 });
 
-app.get('/api/goals', (req, res) => {
-    console.log(req['user']);
+api.get('/bucket', (req, res) => {
+    knex('bucket')
+        .where('user_id', req.user.id)
+        .select()
+        .then((buckets) => {
+            knex('goal')
+                .where('user_id', req.user.id)
+                .select()
+                .then((goals) => {
+                    const categories = [...new Set(goals.map(item => item.category))];
+                    let now = moment();
+                    let response = [];
+
+                    categories.forEach((c) => {
+                        let goalsForCategory = goals.filter((g) => g.category === c);
+                        let bucket = buckets.filter((a) => a.category === c)[0];
+
+                        if (bucket) {
+                            let responseBucket = util._extend({}, bucket);
+                            const report = budget.buildReport(responseBucket, goalsForCategory);
+
+                            const current = _.find(report, (r) => {
+                                return moment(r.date).isSame(now, 'month')
+                                    && moment(r.date).isSame(now, 'year');
+                            });
+
+                            responseBucket.report = report;
+                            responseBucket.balance = current.balance;
+                            responseBucket.monthly = current.payIn;
+                            response.push(responseBucket);
+                        }
+                    });
+                    res.json(response);
+                });
+        });
+});
+
+api.get('/goals', (req, res) => {
     knex('goal')
+        .where('user_id', req.user.id)
         .select()
         .then((goals) => {
             res.json(goals);
         });
 });
 
-app.post('/api/goals', (req, res) => {
+api.post('/goals', (req, res) => {
     let goal = req.body;
-
-    knex('goal').insert(goal).then((savedId) => {
-        knex('bucket').where({category: goal.category}).select().then((result) => {
-            if (result.length === 0) {
-                return knex('bucket').insert({
+    goal.user_id = req.user.id;
+    knex('goal')
+        .insert(goal)
+        .then((savedId) => {
+            knex('bucket')
+                .where({
                     category: goal.category,
-                    balance: 0,
-                    createdDate: moment().format('YYYY-MM-DD')
-                })
-            }
-        }).then(() => {
-            goal.id = savedId;
-            res.json([goal]);
+                    user_id: req.user.id
+                }).select()
+                .then((result) => {
+                    if (result.length === 0) {
+                        return knex('bucket').insert({
+                            user_id: req.user.id,
+                            category: goal.category,
+                            balance: 0,
+                            createdDate: moment().format('YYYY-MM-DD')
+                        })
+                    }
+                }).then(() => {
+                goal.id = savedId;
+                res.json([goal]);
+            });
         });
-    });
 });
 
-app.put('/api/goals', (req, res) => {
+api.put('/goals', (req, res) => {
     let goal = req.body;
 
     knex('goal')
@@ -154,10 +189,9 @@ app.put('/api/goals', (req, res) => {
         .then(() => {
             res.json([goal]);
         });
-
 });
 
-app.delete('/api/goals/:goalId', (req, res) => {
+api.delete('/goals/:goalId', (req, res) => {
     let id = req.params.goalId;
 
     knex('goal')
@@ -168,12 +202,7 @@ app.delete('/api/goals/:goalId', (req, res) => {
         });
 });
 
-app.post('/login',
-    passport.authenticate('local', {failWithError: true}),
-    (req, res) => {
-        res.cookie('goals.user', JSON.stringify(req.user), {maxAge: 900000, httpOnly: false});
-        return res.json(req.user);
-    });
+app.use('/api', api);
 
 knex.migrate.latest()
     .then(() => {
