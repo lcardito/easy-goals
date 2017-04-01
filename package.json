@@ -23,7 +23,6 @@
     "util": "^0.10.3"
   },
   "scripts": {
-    "prestart": "NODE_ENV=production npm i && cd client && npm i",
     "start": "NODE_ENV=production node server/server.js",
     "dev-start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "NODE_ENV=dev nodemon server/server.js --exec babel-node",
