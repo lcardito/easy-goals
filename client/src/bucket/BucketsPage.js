@@ -1,6 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
+import {Message} from "semantic-ui-react";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -36,17 +37,23 @@ class BucketsPage extends React.Component {
 
     render() {
         return (
-            <SortableTable
-                headers={[
-                    {key: 'category', value: 'Category'},
-                    {key: 'balance', value: 'Balance'},
-                    {key: 'monthly', value: 'This Month Due'},
-                    {key: 'createdDate', value: 'Created'}
-                ]}
-                items={this.state.buckets}
-                editable={false}
-                detailPath="buckets"
-            />
+            <div>
+                <Message
+                    header='Your personal buckets'
+                    content='These are your Money Buckets. Click on one of them to view the bucket history and details.'
+                />
+                <SortableTable
+                    headers={[
+                        {key: 'category', value: 'Category'},
+                        {key: 'balance', value: 'Balance'},
+                        {key: 'monthly', value: 'This Month Due'},
+                        {key: 'createdDate', value: 'Created'}
+                    ]}
+                    items={this.state.buckets}
+                    editable={false}
+                    detailPath="buckets"
+                />
+            </div>
         )
     }
 }

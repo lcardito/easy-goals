@@ -2,6 +2,7 @@ import React from "react";
 import Client from "../main/Client";
 import TableAccordion from "./TableAccordion";
 import * as _ from "lodash";
+import {Message} from "semantic-ui-react";
 
 class BucketDetail extends React.Component {
 
@@ -24,15 +25,21 @@ class BucketDetail extends React.Component {
     }
 
     render() {
-        return <TableAccordion
-            editable={false}
-            headers={[
-                {key: 'dueDate', value: 'Date'},
-                {key: 'payIn', value: 'Payment In'},
-                {key: 'balance', value: 'Bucket Balance'},
-            ]}
-            items={this.state.report}
-        />
+        return <div>
+            <Message
+                header='Bucket detail'
+                content='These is the report for your Buckets. Click on one of them to view the payments you might have to make.'
+            />
+            <TableAccordion
+                editable={false}
+                headers={[
+                    {key: 'dueDate', value: 'Date'},
+                    {key: 'payIn', value: 'Payment In'},
+                    {key: 'balance', value: 'Bucket Balance'},
+                ]}
+                items={this.state.report}
+            />
+        </div>
     }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
+import {Message} from "semantic-ui-react";
 
 class GoalsPage extends React.Component {
     constructor() {
@@ -33,17 +34,23 @@ class GoalsPage extends React.Component {
 
     render() {
         return (
-            <SortableTable
-                detailPath="goals"
-                headers={[
-                    {key: 'label', value: 'Label'},
-                    {key: 'category', value: 'Category'},
-                    {key: 'cost', value: 'Cost'},
-                    {key: 'dueDate', value: 'Due Date'}
-                ]}
-                items={this.state.goals}
-                editable={true}
-            />
+            <div>
+                <Message
+                    header='Goals'
+                    content='These are your goals. You are in control of them. Add, edit or delete one of them.'
+                />
+                <SortableTable
+                    detailPath="goals"
+                    headers={[
+                        {key: 'label', value: 'Label'},
+                        {key: 'category', value: 'Category'},
+                        {key: 'cost', value: 'Cost'},
+                        {key: 'dueDate', value: 'Due Date'}
+                    ]}
+                    items={this.state.goals}
+                    editable={true}
+                />
+            </div>
         )
     }
 }
