@@ -1,8 +1,10 @@
+"use strict";
+
 const request = require('supertest');
 const util = require("util");
 const assert = require('chai').assert;
 
-describe('integration tests', function () {
+describe('integration tests', () => {
     let server;
     let knex;
 
@@ -25,7 +27,6 @@ describe('integration tests', function () {
     describe('migration tests', () => {
         it('should run buckets migrations', (done) => {
             knex('bucket').select().then((allBuckets) => {
-                "use strict";
 
                 assert.isDefined(allBuckets);
                 assert.lengthOf(allBuckets, 2);
@@ -77,7 +78,7 @@ describe('integration tests', function () {
                 .then((response) => {
                     assert.lengthOf(response.body, 6);
                     done();
-            });
+                });
 
         });
 
