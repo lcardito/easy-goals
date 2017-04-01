@@ -1,5 +1,17 @@
 deployment:
-  staging:
-    branch: master
-    heroku:
-      appname: simple-goals
+  production:
+    branch: production
+    commands:
+      - |
+        cat >~/.netrc <<EOF
+        machine api.heroku.com
+          login lcardito@gmail.com
+          password lca81ce4477-ef1c-4a43-8b7a-d2aaaf234ddf
+        machine git.heroku.com
+          login lcardito@gmail.com
+          password $81ce4477-ef1c-4a43-8b7a-d2aaaf234ddf
+        EOF
+      - chmod 600 ~/.netrc
+      - cd client && npm i && npm run build
+      - "[[ ! -s \"$(git rev-parse --git-dir)/shallow\" ]] || git fetch --unshallow"
+      - git push git@heroku.com:simple-goals.git $CIRCLE_SHA1:refs/heads/master

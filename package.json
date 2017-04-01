@@ -29,8 +29,7 @@
     "client": "babel-node start-client.js",
     "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
     "lint": "eslint .",
-    "test": "NODE_ENV=test mocha $(find server -name '*.spec.js')",
-    "posttest": "cd client && npm i && npm run build"
+    "test": "NODE_ENV=test mocha $(find server -name '*.spec.js')"
   },
   "devDependencies": {
     "@types/chai": "^3.4.35",
