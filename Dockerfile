@@ -7,7 +7,6 @@ ADD . /usr/src/app
 # Install dependencies
 WORKDIR /usr/src/app
 RUN chmod +x ./run.sh
-RUN npm install
 
 # Expose the app port
 EXPOSE 3001

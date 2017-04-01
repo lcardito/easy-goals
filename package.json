@@ -17,7 +17,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "moment-range": "^3.0.3",
-    "mysql2": "^1.2.0",
+    "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "util": "^0.10.3"

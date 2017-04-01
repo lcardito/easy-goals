@@ -14,7 +14,7 @@ module.exports = {
             tableName: 'knex_migrations'
         },
         seeds: {
-            directory: './migrations/seeds/'
+            directory: './migrations/seeds/test'
         },
         useNullAsDefault: true
     },
@@ -31,25 +31,28 @@ module.exports = {
             tableName: 'knex_migrations'
         },
         seeds: {
-            directory: './migrations/seeds/'
+            directory: './migrations/seeds/test'
         },
         useNullAsDefault: true
     },
 
-
     production: {
-        client: 'mysql2',
+        client: 'mysql',
         connection: {
-            database: 'goals',
-            user: 'goals',
-            password: 'pwd'
-        },
+            host: 'u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+            database: 'c5ppg8gr86kuusso',
+            user: 'nvyuivdm1jxu1ew6',
+            password: 'it6wxh4qn65n2rie',
+            port: 3306        },
         pool: {
-            min: 2,
-            max: 10
+            min: 1,
+            max: 5
         },
         migrations: {
             tableName: 'knex_migrations'
+        },
+        seeds: {
+            directory: './migrations/seeds/prod'
         }
     }
 };

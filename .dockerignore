@@ -1,9 +1,7 @@
 .git
-build/
-node_modules/
-test/
+build
+node_modules
 Dockerfile
-.travis.yml
 README.md
 *.spec.js
 dev.db
