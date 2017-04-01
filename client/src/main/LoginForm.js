@@ -47,6 +47,7 @@ class LoginForm extends React.Component {
             ]}
             item={{email: '', password: ''}}
             editing={false}
+            submitButton={{text: "Login", color: "green"}}
             submitCallback={this._submit}/>;
     }
 }

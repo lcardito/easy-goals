@@ -70,7 +70,7 @@ class GenericForm extends React.Component {
                         ))}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Button color="green" type="submit">Save</Form.Button>
+                        <Form.Button color={this.props.submitButton.color} type="submit">{this.props.submitButton.text}</Form.Button>
                         <Form.Button type="button"
                                      onClick={() => this.context.router.goBack()}>Back</Form.Button>
                         {deleteButton}
@@ -92,6 +92,10 @@ GenericForm.defaultProps = {
     fields: [],
     item: {},
     editing: false,
+    submitButton: {
+        color: "green",
+        text: "Save"
+    },
     deleteCallback: () => {},
     submitCallback: () => {}
 };
