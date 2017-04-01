@@ -1,7 +1,5 @@
 deployment:
   staging:
     branch: master
-    commands:
-          - cd client && npm run build
     heroku:
       appname: simple-goals
