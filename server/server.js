@@ -17,7 +17,7 @@ console.log('Starting server in ' + env);
 
 const config = require('../knexfile');
 console.log('Knex config: ' + util.inspect(config[env], false, null));
-const knex = require('knex')(config[env]);
+const db = require('knex')(config[env]);
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -31,7 +31,7 @@ passport.use(new LocalStrategy({
         session: true
     },
     (username, password, done) => {
-        knex('user').where({email: username})
+        db('user').where({email: username})
             .limit(1)
             .select()
             .then((result) => {
@@ -56,7 +56,7 @@ passport.serializeUser((user, cb) => {
 });
 
 passport.deserializeUser((id, cb) => {
-    knex('user')
+    db('user')
         .where({id: id})
         .select('id', 'username', 'email', 'createdDate')
         .then((result) => {
@@ -92,7 +92,6 @@ if (env === 'production') {
 app.post('/login',
     passport.authenticate('local', {failWithError: true}),
     (req, res) => {
-        res.cookie('goals.user', JSON.stringify(req.user), {maxAge: 900000, httpOnly: false});
         return res.json(req.user);
     });
 
@@ -100,6 +99,7 @@ let api = express.Router();
 
 api.use((req, res, next) => {
     if (req.user) {
+        res.cookie('goals.user', JSON.stringify(req.user), {maxAge: 900000, httpOnly: false});
         next();
     } else {
         return res.status(403).send({
@@ -110,12 +110,14 @@ api.use((req, res, next) => {
 });
 
 api.get('/bucket', (req, res) => {
-    knex('bucket')
+    db('bucket')
         .where('user_id', req.user.id)
         .select()
         .then((buckets) => {
-            knex('goal')
-                .where('user_id', req.user.id)
+            db('goal')
+                .where({
+                    'user_id': req.user.id
+                })
                 .select()
                 .then((goals) => {
                     let categories = _.uniq(goals.map(item => item.category));
@@ -124,7 +126,7 @@ api.get('/bucket', (req, res) => {
 
                     categories.forEach((c) => {
                         let goalsForCategory = goals.filter((g) => g.category === c);
-                        let bucket = buckets.filter((a) => a.category === c)[0];
+                        let bucket = buckets.filter((b) => b.category === c)[0];
 
                         if (bucket) {
                             let responseBucket = util._extend({}, bucket);
@@ -147,7 +149,7 @@ api.get('/bucket', (req, res) => {
 });
 
 api.get('/goals', (req, res) => {
-    knex('goal')
+    db('goal')
         .where('user_id', req.user.id)
         .select()
         .then((goals) => {
@@ -158,17 +160,17 @@ api.get('/goals', (req, res) => {
 api.post('/goals', (req, res) => {
     let goal = req.body;
     goal.user_id = req.user.id;
-    knex('goal')
+    db('goal')
         .insert(goal)
         .then((savedId) => {
-            knex('bucket')
+            db('bucket')
                 .where({
                     category: goal.category,
                     user_id: req.user.id
                 }).select()
                 .then((result) => {
                     if (result.length === 0) {
-                        return knex('bucket').insert({
+                        return db('bucket').insert({
                             user_id: req.user.id,
                             category: goal.category,
                             balance: 0,
@@ -185,7 +187,7 @@ api.post('/goals', (req, res) => {
 api.put('/goals', (req, res) => {
     let goal = req.body;
 
-    knex('goal')
+    db('goal')
         .where('id', '=', goal.id)
         .update(goal)
         .then(() => {
@@ -196,7 +198,7 @@ api.put('/goals', (req, res) => {
 api.delete('/goals/:goalId', (req, res) => {
     let id = req.params.goalId;
 
-    knex('goal')
+    db('goal')
         .where('id', '=', id)
         .del()
         .then(() => {
@@ -206,7 +208,7 @@ api.delete('/goals/:goalId', (req, res) => {
 
 app.use('/api', api);
 
-knex.migrate.latest()
+db.migrate.latest()
     .then(() => {
         app.listen(process.env.PORT || app.get('port'), () => {
             console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
@@ -218,5 +220,5 @@ knex.migrate.latest()
 
 module.exports = {
     app: app,
-    knex: knex
+    knex: db
 };
