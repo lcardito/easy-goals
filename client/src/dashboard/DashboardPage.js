@@ -1,59 +1,77 @@
 import React from 'react';
-import {Message} from "semantic-ui-react";
-import {Line} from "react-chartjs";
+import {Grid, List, Message} from "semantic-ui-react";
 
 import Client from '../main/Client';
 import {formatValue} from "../utils";
+
+const LineChart = require("react-chartjs").Line;
 
 class DashboardPage extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            buckets: [],
+            graphData: {},
+            graphLegend: ''
         };
 
-        this._getBuckets = this._getBuckets.bind(this);
-
+        this._buildGraphData = this._buildGraphData.bind(this);
     }
 
     componentWillMount() {
         Client.getBuckets((serverBuckets) => {
-            console.log(serverBuckets);
-            this._getBuckets(serverBuckets);
+            this._buildGraphData(serverBuckets);
         })
     }
 
-    _getBuckets(serverBuckets) {
+    _buildGraphData(serverBuckets) {
+        let dataSets = [];
+        let labels = [];
+        serverBuckets.forEach((bu) => {
+
+            let tmpLabels = [];
+            let data = [];
+            bu.report.forEach((r) => {
+                tmpLabels.push(formatValue(r.dueDate, 'date'));
+                data.push(r.balance);
+            });
+
+            while (data.length < labels.length) {
+                data.push(0);
+            }
+
+            if (tmpLabels.length > labels.length) {
+                labels = tmpLabels;
+            }
+
+            let r = (Math.floor(Math.random() * 256));
+            let g = (Math.floor(Math.random() * 256));
+            let b = (Math.floor(Math.random() * 256));
+
+            dataSets.push({
+                label: bu.category,
+                data: data,
+                fill: false,
+                fillColor: `rgba(${r}, ${g}, ${b}, 0.2)`,
+                strokeColor: `rgba(${r}, ${g}, ${b}, 0.1)`,
+                pointColor: `rgba(${r}, ${g}, ${b}, 1)`,
+                pointHighlightStroke: `rgba(${r}, ${g}, ${b}, 1)`,
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff"
+            });
+        });
+
         this.setState({
-            buckets: serverBuckets
+            graphData: {
+                labels: labels,
+                datasets: dataSets
+            }
         });
     }
 
     render() {
-        function rand(min, max, num) {
-            let rtn = [];
-            while (rtn.length < num) {
-                rtn.push((Math.random() * (max - min)) + min);
-            }
-            return rtn;
-        }
-
-        let data = {
-            labels: this.state.buckets.length > 0 ? this.state.buckets[0].report.map((r) => formatValue(r.dueDate, 'date')) : [],
-            datasets: [
-                {
-                    label: "Bucket data",
-                    fill: false,
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: this.state.buckets.length > 0 ? this.state.buckets[0].report.map((r) => r.balance) : []
-                }
-            ]
+        const charOpt = {
+            responsive: true, maintainAspectRatio: true, bezierCurve: false
         };
 
         return (
@@ -62,7 +80,26 @@ class DashboardPage extends React.Component {
                     header='Dashboard'
                     content='Your dashboard for a quick view'
                 />
-                <Line data={data} options={{ responsive: true, maintainAspectRatio: true}} />
+                {this.state.graphData.datasets &&
+                <Grid textAlign="center">
+                    <Grid.Row>
+                        <Grid.Column width={14}>
+                            <LineChart data={this.state.graphData} options={charOpt}/>
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <List divided>
+                                {this.state.graphData.datasets.map((ds) => {
+                                    return <List.Item key={ds.label}>
+                                        <List.Content style={{backgroundColor: ds.strokeColor}}>
+                                            <List.Header>{ds.label}</List.Header>
+                                        </List.Content>
+                                    </List.Item>
+                                })}
+                            </List>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                }
             </div>
         )
     }
