@@ -30,8 +30,12 @@ class App extends React.Component {
             <div className='ui container'>
                 <Menu>
                     <Menu.Item
+                        name='dashboard'>
+                        <Link to="/">Dashboard</Link>
+                    </Menu.Item>
+                    <Menu.Item
                         name='goals'>
-                        <Link to="/">Goals</Link>
+                        <Link to="/goals">Goals</Link>
                     </Menu.Item>
                     <Menu.Item
                         name='buckets'>

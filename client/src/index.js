@@ -10,6 +10,7 @@ import BucketsPage from "./bucket/BucketsPage";
 import BucketDetail from "./bucket/BucketDetail";
 import GoalsPage from "./goal/GoalsPage";
 import GoalDetail from "./goal/GoalDetail";
+import Dashboard from './dashboard/DashboardPage';
 import EnsureLoggedInContainer from "./main/EnsureLoggedInContainer";
 
 import {createStore} from 'redux'
@@ -36,7 +37,8 @@ render((
             <Route component={App}>
                 <Route path="/login" component={LoginForm}/>
                 <Route component={EnsureLoggedInContainer}>
-                    <Route path="/" component={GoalsPage}/>
+                    <Route path="/" component={Dashboard}/>
+                    <Route path="/goals" component={GoalsPage}/>
                     <Route path="/goals/:goalId" component={GoalDetail}/>
                     <Route path="/buckets" component={BucketsPage}/>
                     <Route path="/buckets/:bucketId" component={BucketDetail}/>
