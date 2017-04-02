@@ -6,7 +6,6 @@ const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const BALANCE_THRESHOLD = 5;
 
 function calculateMonthlySavings(startingDate, goals, initialBalance) {
     let totalCost = _.sumBy(goals, 'cost');
@@ -60,13 +59,15 @@ exports.buildReport = (bucket, goals) => {
                 startingBalance = bucket.balance;
                 continue;
             }
-        }
 
-        if (tempBalance < BALANCE_THRESHOLD) {
             let nextGoals = goals.filter((g) => {
                 return moment(g.dueDate).isAfter(currentMonth, 'month');
             });
-            monthlySaving = calculateMonthlySavings(currentMonth.add(1, 'month'), nextGoals, tempBalance);
+
+            let newMonthly = calculateMonthlySavings(currentMonth.clone().add(1, 'month'), nextGoals, tempBalance);
+            if (newMonthly < monthlySaving) {
+                monthlySaving = newMonthly;
+            }
         }
 
         startingBalance = tempBalance;
