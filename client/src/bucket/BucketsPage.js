@@ -23,6 +23,7 @@ class BucketsPage extends React.Component {
 
         this._getBuckets = this._getBuckets.bind(this);
         this._navigateToDetail = this._navigateToDetail.bind(this);
+        this._openPayment = this._openPayment.bind(this)
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -42,13 +43,13 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _openPayment(e) {
-        e.preventDefault();
-        console.log('here');
+    _openPayment(item) {
+        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+        this.context.router.push(path);
     }
 
     _navigateToDetail(item) {
-        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+        let path = item ? `/buckets/${item.id}/report` : `/${this.state.detailPath}/tmp`;
         this.context.router.push(path);
     }
 
@@ -59,8 +60,8 @@ class BucketsPage extends React.Component {
                 ? <Button
                     icon
                     size="mini"
-                    onClick={this._openPayment.bind(this)}>
-                    <Icon name='setting'/>
+                    onClick={() => this._openPayment(item)}>
+                    <Icon name='upload'/>
                 </Button>
                 : formatValue(item[h.key], h.key);
 

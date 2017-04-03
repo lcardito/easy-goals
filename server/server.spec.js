@@ -26,14 +26,14 @@ describe('integration tests', () => {
 
     beforeEach(() => {
         knex('payment').del();
-        knex('bucket').del();
+        knex('payment').del();
 
         return knex.seed.run();
     });
 
     describe('migration tests', () => {
         it('should run buckets migrations', (done) => {
-            knex('bucket').select().then((allBuckets) => {
+            knex('payment').select().then((allBuckets) => {
 
                 assert.isDefined(allBuckets);
                 assert.lengthOf(allBuckets, 2);
@@ -97,7 +97,7 @@ describe('integration tests', () => {
 
         });
 
-        it('should add bucket for the goal if its category does not exists', (done) => {
+        it('should add payment for the goal if its category does not exists', (done) => {
             user1.post(host + '/api/goals')
                 .send({
                     category: 'NewCategory',
@@ -109,7 +109,7 @@ describe('integration tests', () => {
                 .then(response => {
                     assert.equal(response.body[0].label, 'Bike exhaust', util.inspect(response.body, false, null));
 
-                    knex('bucket').where({category: 'NewCategory'}).select().then((result) => {
+                    knex('payment').where({category: 'NewCategory'}).select().then((result) => {
                         assert.lengthOf(result, 1);
                         done();
                     })
@@ -118,7 +118,7 @@ describe('integration tests', () => {
 
         it('user1 should see own buckets', (done) => {
             user1
-                .get(host + '/api/bucket')
+                .get(host + '/api/payment')
                 .then(response => {
                     assert.lengthOf(response.body, 1);
                     assert.equal(response.body[0].balance, 147, util.inspect(response.body, false, null));
@@ -128,7 +128,7 @@ describe('integration tests', () => {
 
         it('user2 should see own buckets', (done) => {
             user2
-                .get(host + '/api/bucket')
+                .get(host + '/api/payment')
                 .then(response => {
                     assert.lengthOf(response.body, 1);
                     assert.equal(response.body[0].balance, 58, util.inspect(response.body, false, null));

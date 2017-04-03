@@ -66,10 +66,10 @@ class GoalDetail extends React.Component {
             />
             <GenericForm
                 fields={[
-                    {key: 'label', value: 'Label'},
-                    {key: 'category', value: 'Category'},
-                    {key: 'amount', value: 'Cost'},
-                    {key: 'dueDate', value: 'Due Date'}
+                    {key: 'label', value: 'Label', disabled: false},
+                    {key: 'category', value: 'Category', disabled: false},
+                    {key: 'amount', value: 'Cost', disabled: false},
+                    {key: 'dueDate', value: 'Due Date', disabled: false}
                 ]}
                 item={this.state.selectedGoal}
                 editing={true}

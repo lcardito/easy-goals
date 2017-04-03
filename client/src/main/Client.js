@@ -49,6 +49,19 @@ function getBuckets(cb) {
         .then(cb);
 }
 
+function getBucket(bucketId, cb) {
+    fetch(`api/bucket/${bucketId}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function addGoal(goal, cb) {
     fetch('/api/goals/', {
         method: 'POST',
@@ -58,6 +71,20 @@ function addGoal(goal, cb) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(goal)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
+function addPayment(payment, cb) {
+    fetch('/api/payment/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payment)
     }).then(checkStatus)
         .then(parseJSON)
         .then(cb);
@@ -101,7 +128,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login
+    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment
 };
 
 export default Client;

@@ -8,6 +8,7 @@ import {Provider} from 'react-redux';
 
 import BucketsPage from "./bucket/BucketsPage";
 import BucketDetail from "./bucket/BucketDetail";
+import BucketForm from "./bucket/BucketForm";
 import GoalsPage from "./goal/GoalsPage";
 import GoalDetail from "./goal/GoalDetail";
 import Dashboard from './dashboard/DashboardPage';
@@ -41,7 +42,8 @@ render((
                     <Route path="/goals" component={GoalsPage}/>
                     <Route path="/goals/:goalId" component={GoalDetail}/>
                     <Route path="/buckets" component={BucketsPage}/>
-                    <Route path="/buckets/:bucketId" component={BucketDetail}/>
+                    <Route path="/buckets/:bucketId" component={BucketForm}/>
+                    <Route path="/buckets/:bucketId/report" component={BucketDetail}/>
                 </Route>
             </Route>
         </Router>

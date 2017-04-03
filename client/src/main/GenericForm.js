@@ -71,6 +71,7 @@ class GenericForm extends React.Component {
                                 name={field.key}
                                 type={getInputType(field.key)}
                                 value={this.state.item[field.key]}
+                                disabled={field.disabled}
                                 onChange={this._updateItem}
                             />
                         ))}

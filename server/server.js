@@ -144,6 +144,18 @@ api.get('/bucket', (req, res) => {
         });
 });
 
+api.get('/bucket/:bucketId', (req, res) => {
+    db('bucket')
+        .where({
+            'user_id': req.user.id,
+            'id': req.params.bucketId
+        })
+        .select()
+        .then((buckets) => {
+            res.json(buckets[0]);
+        });
+});
+
 api.get('/goals', (req, res) => {
     db('payment')
         .where({
@@ -164,14 +176,14 @@ api.post('/goals', (req, res) => {
     db('payment')
         .insert(goal)
         .then((savedId) => {
-            db('bucket')
+            db('payment')
                 .where({
                     category: goal.category,
                     user_id: req.user.id
                 }).select()
                 .then((result) => {
                     if (result.length === 0) {
-                        return db('bucket').insert({
+                        return db('payment').insert({
                             user_id: req.user.id,
                             category: goal.category,
                             balance: 0,
@@ -202,7 +214,10 @@ api.put('/goals', (req, res) => {
     let goal = req.body;
 
     db('payment')
-        .where('id', '=', goal.id)
+        .where({
+            'id': goal.id,
+            'user_id': req.user.id
+        })
         .update(goal)
         .then(() => {
             res.json([goal]);
