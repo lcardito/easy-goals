@@ -1,5 +1,5 @@
 import React from 'react';
-import App from './main/App';
+import AppMenu from './main/AppMenu';
 import './index.css';
 import 'semantic-ui/dist/semantic.min.css';
 import {render} from 'react-dom'
@@ -34,7 +34,7 @@ let store = createStore(login, {user: cookie.load('goals.user')});
 render((
     <Provider store={store}>
         <Router history={hashHistory}>
-            <Route component={App}>
+            <Route component={AppMenu}>
                 <Route path="/login" component={LoginForm}/>
                 <Route component={EnsureLoggedInContainer}>
                     <Route path="/" component={Dashboard}/>

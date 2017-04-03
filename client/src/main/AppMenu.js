@@ -5,7 +5,7 @@ import {Menu} from "semantic-ui-react";
 import {connect} from 'react-redux';
 import {mapStateToProps} from "../transformer";
 
-class App extends React.Component {
+class AppMenu extends React.Component {
 
     //noinspection JSUnusedGlobalSymbols
     static contextTypes = {
@@ -55,4 +55,4 @@ class App extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(AppMenu);
