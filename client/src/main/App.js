@@ -28,7 +28,7 @@ class App extends React.Component {
     render() {
         return (
             <div className='ui container'>
-                <Menu>
+                <Menu stackable={true}>
                     <Menu.Item
                         name='dashboard'>
                         <Link to="/">Dashboard</Link>

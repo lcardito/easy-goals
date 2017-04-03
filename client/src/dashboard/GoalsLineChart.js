@@ -1,7 +1,7 @@
 import React from 'react';
 import {Grid, List} from "semantic-ui-react";
 import {formatValue} from "../utils";
-const LineChart = require("react-chartjs").Line;
+import Chart from 'chart.js';
 
 class GoalsLineChart extends React.Component {
 
@@ -16,6 +16,17 @@ class GoalsLineChart extends React.Component {
 
     componentWillMount() {
         this._buildGraphData(this.props.buckets);
+    }
+
+    componentDidMount(){
+        let lineCtx = document.getElementById('lineChart');
+        const charOpt = {
+            responsive: true, maintainAspectRatio: true,
+            legend: {
+                display: false
+            }
+        };
+        new Chart(lineCtx, {type: 'line', data: this.state.graphData, options: charOpt});
     }
 
     _buildGraphData(buckets) {
@@ -43,15 +54,13 @@ class GoalsLineChart extends React.Component {
             let b = (Math.floor(Math.random() * 256));
 
             dataSets.push({
-                label: bu.category,
                 data: data,
+                label: bu.category,
                 fill: false,
-                fillColor: `rgba(${r}, ${g}, ${b}, 0.2)`,
-                strokeColor: `rgba(${r}, ${g}, ${b}, 0.1)`,
-                pointColor: `rgba(${r}, ${g}, ${b}, 1)`,
-                pointHighlightStroke: `rgba(${r}, ${g}, ${b}, 1)`,
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff"
+                lineTension: 0,
+                borderColor: `rgba(${r}, ${g}, ${b}, 0.1)`,
+                pointBorderColor: `rgba(${r}, ${g}, ${b}, 1)`,
+                pointBackgroundColor: `rgba(${r}, ${g}, ${b}, 1)`,
             });
         });
 
@@ -64,20 +73,16 @@ class GoalsLineChart extends React.Component {
     }
 
     render() {
-        const charOpt = {
-            responsive: true, maintainAspectRatio: true, bezierCurve: false
-        };
-
-        return <Grid textAlign="center">
+        return <Grid textAlign="center" stackable={true}>
             <Grid.Row>
                 <Grid.Column width={14}>
-                    <LineChart data={this.state.graphData} options={charOpt}/>
+                    <canvas id="lineChart" />
                 </Grid.Column>
                 <Grid.Column width={2}>
                     <List divided>
                         {this.state.graphData.datasets.map((ds) => {
                             return <List.Item key={ds.label}>
-                                <List.Content style={{backgroundColor: ds.strokeColor}}>
+                                <List.Content style={{backgroundColor: ds.borderColor}}>
                                     <List.Header>{ds.label}</List.Header>
                                 </List.Content>
                             </List.Item>
