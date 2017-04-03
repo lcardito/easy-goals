@@ -52,7 +52,7 @@ class SortableTable extends React.Component {
                    padded
                    sortable
                    striped
-                   stackable
+                   unstackable
                    selectable={this.state.editable}>
                 <Table.Header>
                     <Table.Row>

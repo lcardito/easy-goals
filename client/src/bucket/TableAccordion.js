@@ -64,7 +64,7 @@ class TableAccordion extends React.Component {
                                 celled
                                 padded
                                 striped
-                                stackable
+                                unstackable
                                 style={{width: '50%', margin: '0 auto'}}>
                                 <Table.Header fullWidth>
                                     <Table.Row>
