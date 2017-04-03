@@ -36,6 +36,27 @@ module.exports = {
         useNullAsDefault: true
     },
 
+    docker: {
+        client: 'mysql',
+        connection: {
+            host: '0.0.0.0',
+            database: 'goals',
+            user: 'goals',
+            password: 'pwd',
+            port: 3306
+        },
+        pool: {
+            min: 1,
+            max: 5
+        },
+        migrations: {
+            tableName: 'knex_migrations'
+        },
+        seeds: {
+            directory: './migrations/seeds/test'
+        }
+    },
+
     production: {
         client: 'mysql',
         connection: {
@@ -50,9 +71,6 @@ module.exports = {
         },
         migrations: {
             tableName: 'knex_migrations'
-        },
-        seeds: {
-            directory: './migrations/seeds/prod'
         }
     }
 };
