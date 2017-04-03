@@ -12,7 +12,7 @@ describe('integration tests', () => {
 
     before((done) => {
         app = server.app;
-        if(app.isRunning) {
+        if (app.isRunning) {
             knex = server.knex;
             done();
         } else {
@@ -173,6 +173,20 @@ describe('integration tests', () => {
                                 })
                         });
                 });
+        });
+
+        it('user1 should be able to make a payment in', (done) => {
+            user1.post(host + '/api/payment')
+                .send({
+                    category: 'Personal',
+                    label: 'Some extra cache',
+                    amount: 100,
+                    dueDate: '2017-06-30'
+                })
+                .then((response) => {
+                    assert.equal(response.body[0].type, 'IN', util.inspect(response.body, false, null));
+                    done();
+                })
         });
 
     });

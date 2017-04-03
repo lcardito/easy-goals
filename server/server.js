@@ -144,12 +144,6 @@ api.get('/bucket', (req, res) => {
         });
 });
 
-api.put('/bucket/:bucketId', (req, res) => {
-    let id = req.params.bucketId;
-    // let lumpSumPayment = req.body.
-
-});
-
 api.get('/goals', (req, res) => {
     db('payment')
         .where({
@@ -165,6 +159,8 @@ api.get('/goals', (req, res) => {
 api.post('/goals', (req, res) => {
     let goal = req.body;
     goal.user_id = req.user.id;
+    goal.type = 'OUT';
+
     db('payment')
         .insert(goal)
         .then((savedId) => {
@@ -186,6 +182,19 @@ api.post('/goals', (req, res) => {
                 goal.id = savedId;
                 res.json([goal]);
             });
+        });
+});
+
+api.post('/payment', (req, res) => {
+    let paymentIn = req.body;
+    paymentIn.user_id = req.user.id;
+    paymentIn.type = 'IN';
+
+    db('payment')
+        .insert(paymentIn)
+        .then((savedId) => {
+            paymentIn.id = savedId;
+            res.json([paymentIn]);
         });
 });
 
