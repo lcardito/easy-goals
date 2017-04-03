@@ -13,6 +13,9 @@ class LoginForm extends React.Component {
 
     constructor() {
         super();
+        this.state = {
+            error: false
+        };
 
         this._submit = this._submit.bind(this);
     }
@@ -28,11 +31,15 @@ class LoginForm extends React.Component {
     }
 
     _submit(userData) {
-        Client.login(userData, (user) => {
-            if (user) {
+        Client.login(userData, (response) => {
+            if (response.errorStatus) {
+                this.setState({
+                    error: true
+                });
+            } else if (response) {
                 this.props.dispatch({
                     type: 'LOG_IN',
-                    user: user
+                    user: response
                 });
                 this.context.router.replace("/");
             }
@@ -47,6 +54,7 @@ class LoginForm extends React.Component {
             ]}
             item={{email: '', password: ''}}
             editing={false}
+            error={this.state.error}
             submitButton={{text: "Login", color: "green"}}
             submitCallback={this._submit}/>;
     }

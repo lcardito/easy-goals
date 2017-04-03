@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Confirm} from 'semantic-ui-react';
+import {Form, Confirm, Message} from 'semantic-ui-react';
 import update from 'immutability-helper';
 import {getInputType} from "../utils";
 
@@ -55,8 +55,14 @@ class GenericForm extends React.Component {
         return (
             <div>
                 <Form
+                    error={this.props.error}
                     className='segment'
                     onSubmit={this._submitForm.bind(this)}>
+                    <Message
+                        error
+                        header='Login Failed'
+                        content='Credentials are invalid'
+                    />
                     <Form.Group widths='equal'>
                         {this.state.fields.map((field, idx) => (
                             <Form.Input
@@ -92,6 +98,7 @@ GenericForm.defaultProps = {
     fields: [],
     item: {},
     editing: false,
+    error: false,
     submitButton: {
         color: "green",
         text: "Save"

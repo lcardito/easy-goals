@@ -19,7 +19,8 @@ function login(user, cb) {
         body: JSON.stringify(user)
     }).then(checkStatus)
         .then(parseJSON)
-        .then(cb);
+        .then(cb)
+        .catch(cb);
 }
 
 function getGoals(cb) {
@@ -89,7 +90,7 @@ function checkStatus(response) {
         return response;
     }
     const error = new Error(`HTTP Error ${response.statusText}`);
-    error.status = response.statusText;
+    error.errorStatus = response.statusText;
     error.response = response;
 
     throw error;
