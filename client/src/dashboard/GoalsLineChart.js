@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, List} from "semantic-ui-react";
+import {Grid, List, Message} from "semantic-ui-react";
 import {formatValue} from "../utils";
 import Chart from 'chart.js';
 
@@ -8,7 +8,7 @@ class GoalsLineChart extends React.Component {
     constructor() {
         super();
         this.state = {
-            graphData: {}
+            lineGraphData: {}
         };
 
         this._buildGraphData = this._buildGraphData.bind(this);
@@ -18,31 +18,43 @@ class GoalsLineChart extends React.Component {
         this._buildGraphData(this.props.buckets);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let lineCtx = document.getElementById('lineChart');
+        let pieCtx = document.getElementById('pieChart');
         const charOpt = {
-            responsive: true, maintainAspectRatio: true,
+            responsive: true,
+            maintainAspectRatio: true,
             legend: {
                 display: false
             }
         };
-        new Chart(lineCtx, {type: 'line', data: this.state.graphData, options: charOpt});
+        new Chart(lineCtx, {type: 'line', data: this.state.lineGraphData, options: charOpt});
+        new Chart(pieCtx, {type: 'pie', data: this.state.pieGraphData, options: charOpt});
+
     }
 
     _buildGraphData(buckets) {
-        let dataSets = [];
+        let lineDataSets = [];
         let labels = [];
+        let pieDatasets = [{
+            data: [],
+            backgroundColor: [],
+            hoverBackgroundColor: []
+        }];
+        let pieLabels = [];
         buckets.forEach((bu) => {
 
             let tmpLabels = [];
-            let data = [];
+            let lineData = [];
+            let sum = 0;
             bu.report.forEach((r) => {
                 tmpLabels.push(formatValue(r.dueDate, 'date'));
-                data.push(r.balance);
+                lineData.push(r.balance);
+                sum += r.payIn;
             });
 
-            while (data.length < labels.length) {
-                data.push(0);
+            while (lineData.length < labels.length) {
+                lineData.push(0);
             }
 
             if (tmpLabels.length > labels.length) {
@@ -53,8 +65,13 @@ class GoalsLineChart extends React.Component {
             let g = (Math.floor(Math.random() * 256));
             let b = (Math.floor(Math.random() * 256));
 
-            dataSets.push({
-                data: data,
+            pieLabels.push(bu.category);
+            pieDatasets[0].data.push(sum);
+            pieDatasets[0].backgroundColor.push(`rgba(${r}, ${g}, ${b}, 0.1)`);
+            pieDatasets[0].hoverBackgroundColor.push(`rgba(${r}, ${g}, ${b}, 1)`);
+
+            lineDataSets.push({
+                data: lineData,
                 label: bu.category,
                 fill: false,
                 lineTension: 0,
@@ -65,22 +82,23 @@ class GoalsLineChart extends React.Component {
         });
 
         this.setState({
-            graphData: {
+            lineGraphData: {
                 labels: labels,
-                datasets: dataSets
+                datasets: lineDataSets
+            },
+            pieGraphData: {
+                labels: pieLabels,
+                datasets: pieDatasets
             }
         });
     }
 
     render() {
-        return <Grid textAlign="center" stackable={true}>
-            <Grid.Row>
-                <Grid.Column width={14}>
-                    <canvas id="lineChart" />
-                </Grid.Column>
-                <Grid.Column width={2}>
+        return <Grid stackable={true}>
+            <Grid.Row centered={true}>
+                <Grid.Column width={4} textAlign="center">
                     <List divided>
-                        {this.state.graphData.datasets.map((ds) => {
+                        {this.state.lineGraphData.datasets.map((ds) => {
                             return <List.Item key={ds.label}>
                                 <List.Content style={{backgroundColor: ds.borderColor}}>
                                     <List.Header>{ds.label}</List.Header>
@@ -88,6 +106,29 @@ class GoalsLineChart extends React.Component {
                             </List.Item>
                         })}
                     </List>
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column width={13}>
+                    <canvas id="lineChart"/>
+                </Grid.Column>
+                <Grid.Column width={3}>
+                    <Message
+                        info={true}
+                        header='Trend'
+                        content='Have a look at your trends, month by month'
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row >
+                <Grid.Column width={9}>
+                    <Message
+                        info={true}
+                        header='Totals'
+                        content='A quick view or your categories totals'/>
+                </Grid.Column>
+                <Grid.Column width={4}>
+                    <canvas id="pieChart"/>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
