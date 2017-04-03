@@ -20,7 +20,7 @@ function calculateMonthlySavings(startingDate, goals, initialBalance) {
     return Math.ceil((totalCost - initialBalance) / months);
 }
 
-exports.buildReport = (bucket, goals) => {
+exports.buildReport = (bucket, goals, paymentsIn = []) => {
     let startingBalance = bucket.balance;
     let goalsByDate = _.orderBy(goals, ['dueDate'], ['asc']);
     let monthlySaving = calculateMonthlySavings(bucket.createdDate, goalsByDate, startingBalance);
@@ -33,17 +33,23 @@ exports.buildReport = (bucket, goals) => {
         let currentMonth = monthsIn[mIdx - 1];
         let isLast = mIdx === monthsIn.length;
 
-        let current = {
+        let extraPayments = paymentsIn.filter((p) => {
+            return moment(p.dueDate).isSame(currentMonth, 'month')
+                && moment(p.dueDate).isSame(currentMonth, 'year');
+        });
+
+        let reportItem = {
             dueDate: currentMonth.format(DATE_FORMAT),
-            payIn: isLast ? 0 : monthlySaving
+            payIn: isLast ? 0 : monthlySaving,
+            extraPayIn: _.sumBy(extraPayments, 'amount')
         };
 
         let paymentsOut = [];
+        let tempBalance = startingBalance + reportItem.payIn + reportItem.extraPayIn;
         let goalsInMonth = goals.filter((g) => {
             return moment(g.dueDate).isSame(currentMonth, 'month')
                 && moment(g.dueDate).isSame(currentMonth, 'year')
         });
-        let tempBalance = startingBalance + current.payIn;
         if (goalsInMonth.length > 0) {
             paymentsOut = goalsInMonth.map((g) => {
                 return {name: g.label, amount: g.amount}
@@ -58,22 +64,21 @@ exports.buildReport = (bucket, goals) => {
                 startingBalance = bucket.balance;
                 continue;
             }
+        }
 
-            let nextGoals = goals.filter((g) => {
-                return moment(g.dueDate).isAfter(currentMonth, 'month');
-            });
-
-            let newMonthly = calculateMonthlySavings(currentMonth.clone().add(1, 'month'), nextGoals, tempBalance);
-            if (newMonthly < monthlySaving) {
-                monthlySaving = newMonthly;
-            }
+        let nextGoals = goals.filter((g) => {
+            return moment(g.dueDate).isAfter(currentMonth, 'month');
+        });
+        let newMonthly = calculateMonthlySavings(currentMonth.clone().add(1, 'month'), nextGoals, tempBalance);
+        if (newMonthly < monthlySaving) {
+            monthlySaving = newMonthly;
         }
 
         startingBalance = tempBalance;
-        current.balance = tempBalance;
-        current.payments = paymentsOut;
+        reportItem.balance = tempBalance;
+        reportItem.payments = paymentsOut;
 
-        report.push(current);
+        report.push(reportItem);
     }
 
     return report;

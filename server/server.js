@@ -126,7 +126,8 @@ api.get('/bucket', (req, res) => {
                     buckets.forEach((b) => {
                         let category = b.category;
                         let goalsForCategory = payments.filter((g) => g.category === category && g.type === 'OUT');
-                        const report = budget.buildReport(b, goalsForCategory);
+                        let paymentsIn = payments.filter((p) => p.category === category && p.type === 'IN');
+                        const report = budget.buildReport(b, goalsForCategory, paymentsIn);
 
                         const current = _.find(report, (r) => {
                             return moment(r.date).isSame(now, 'month')
@@ -137,7 +138,6 @@ api.get('/bucket', (req, res) => {
                         b.balance = current.balance;
                         b.monthly = current.payIn;
                         response.push(b);
-
                     });
                     res.json(response);
                 });

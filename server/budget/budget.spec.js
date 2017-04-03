@@ -36,33 +36,39 @@ describe('budget module', () => {
             const report = budget.buildReport(bucket, goals);
             assert.lengthOf(report, 8, util.inspect(report, false, null));
             assert.equal(report[0].payIn, 43);
-            assert.equal(_.sumBy(report, 'payIn'), 301);
+            assert.equal(_.sumBy(report, 'payIn'), 300);
         });
     });
 
     describe('monthly report', () => {
 
         it('should report on each month saving amount', () => {
-            const bucket = {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0};
+            const bucket = {category: 'Other', balance: 0, createdDate: '2017-02-25', id: 0};
             const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-05-30', type: 'OUT'}];
 
             const report = budget.buildReport(bucket, goals);
 
-            assert.lengthOf(report, 3, util.inspect(report, false, null));
+            assert.lengthOf(report, 4, util.inspect(report, false, null));
 
             let firstPayment = report[0];
-            assert.equal(firstPayment.dueDate, '2017-03-25');
-            assert.equal(firstPayment.payIn, 200);
+            assert.equal(firstPayment.dueDate, '2017-02-25');
+            assert.equal(firstPayment.payIn, 134);
             assert.equal(_.sumBy(firstPayment.payments, 'cost'), 0);
-            assert.equal(firstPayment.balance, 200);
+            assert.equal(firstPayment.balance, 134);
 
             let secondPayment = report[1];
-            assert.equal(secondPayment.dueDate, '2017-04-25');
-            assert.equal(secondPayment.payIn, 200);
+            assert.equal(secondPayment.dueDate, '2017-03-25');
+            assert.equal(secondPayment.payIn, 133);
             assert.equal(_.sumBy(secondPayment.payments, 'cost'), 0);
-            assert.equal(secondPayment.balance, 400);
+            assert.equal(secondPayment.balance, 267);
 
-            let lastPayment = report[2];
+            let thirdPayment = report[2];
+            assert.equal(thirdPayment.dueDate, '2017-04-25');
+            assert.equal(thirdPayment.payIn, 133);
+            assert.equal(_.sumBy(thirdPayment.payments, 'cost'), 0);
+            assert.equal(thirdPayment.balance, 400);
+
+            let lastPayment = report[3];
             assert.equal(lastPayment.dueDate, '2017-05-25');
             assert.equal(lastPayment.payIn, 0);
             assert.equal(_.sumBy(lastPayment.payments, 'amount'), 400);
@@ -132,7 +138,7 @@ describe('budget module', () => {
             assert.equal(report[0].payIn, 43);
         });
 
-        it('Ending balance should not be greater than a threshold', () => {
+        it('ending balance should not be greater than a threshold', () => {
             const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
 
             let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', amount: 90, dueDate: '2017-06-30'},
@@ -146,6 +152,42 @@ describe('budget module', () => {
             const report = budget.buildReport(bucket, goals);
             assert.isBelow(report.slice(-1)[0].balance, 5);
 
+        });
+
+        it('report should take into account an extra payment in', () => {
+            const bucket = {category: 'Other', balance: 0, createdDate: '2017-02-25', id: 0};
+            const extraPayments = [{id: 7, category: 'Other', label: 'Got spare cache', amount: 100, dueDate: '2017-03-30'}];
+
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-05-30'}];
+
+            const report = budget.buildReport(bucket, goals, extraPayments);
+
+            assert.lengthOf(report, 4, util.inspect(report, false, null));
+
+            let firstPayment = report[0];
+            assert.equal(firstPayment.dueDate, '2017-02-25');
+            assert.equal(firstPayment.payIn, 134);
+            assert.equal(_.sumBy(firstPayment.payments, 'cost'), 0);
+            assert.equal(firstPayment.balance, 134);
+
+            let secondPayment = report[1];
+            assert.equal(secondPayment.dueDate, '2017-03-25');
+            assert.equal(secondPayment.payIn, 133);
+            assert.equal(secondPayment.extraPayIn, 100);
+            assert.equal(_.sumBy(secondPayment.payments, 'cost'), 0);
+            assert.equal(secondPayment.balance, 367);
+
+            let thirdPayment = report[2];
+            assert.equal(thirdPayment.dueDate, '2017-04-25');
+            assert.equal(thirdPayment.payIn, 33);
+            assert.equal(_.sumBy(thirdPayment.payments, 'cost'), 0);
+            assert.equal(thirdPayment.balance, 400);
+
+            let lastPayment = report[3];
+            assert.equal(lastPayment.dueDate, '2017-05-25');
+            assert.equal(lastPayment.payIn, 0);
+            assert.equal(_.sumBy(lastPayment.payments, 'amount'), 400);
+            assert.equal(lastPayment.balance, 0);
         });
     });
 });
