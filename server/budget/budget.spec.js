@@ -20,7 +20,7 @@ describe('budget module', () => {
 
         it('should return no payment in if balance covers the goal', () => {
             const bucket = {category: 'Other', balance: 400, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, dueDate: '2017-10-30'}];
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-10-30', type: 'OUT'}];
 
             const report = budget.buildReport(bucket, goals);
             assert.lengthOf(report, 8);
@@ -31,7 +31,7 @@ describe('budget module', () => {
 
         it('should should use start balance to calculate monthly savings', () => {
             const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, dueDate: '2017-10-30'}];
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-10-30', type: 'OUT'}];
 
             const report = budget.buildReport(bucket, goals);
             assert.lengthOf(report, 8, util.inspect(report, false, null));
@@ -44,7 +44,7 @@ describe('budget module', () => {
 
         it('should report on each month saving amount', () => {
             const bucket = {category: 'Other', balance: 0, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, dueDate: '2017-05-30'}];
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-05-30', type: 'OUT'}];
 
             const report = budget.buildReport(bucket, goals);
 
@@ -65,19 +65,19 @@ describe('budget module', () => {
             let lastPayment = report[2];
             assert.equal(lastPayment.dueDate, '2017-05-25');
             assert.equal(lastPayment.payIn, 0);
-            assert.equal(_.sumBy(lastPayment.payments, 'cost'), 400);
+            assert.equal(_.sumBy(lastPayment.payments, 'amount'), 400);
             assert.equal(lastPayment.balance, 0);
         });
 
         it('should collapse goal payments on same dueDate', () => {
             const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
 
-            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, dueDate: '2017-06-30'},
-                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, dueDate: '2017-06-30'},
-                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, dueDate: '2018-02-28'},
-                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, dueDate: '2017-07-30'},
-                {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, dueDate: '2017-09-30'},
-                {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, dueDate: '2017-10-30'}
+            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', amount: 90, dueDate: '2017-06-30', type: 'OUT'},
+                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', amount: 300, dueDate: '2017-06-30', type: 'OUT'},
+                {id: 2, category: 'Vehicles', label: 'AA', amount: 111, dueDate: '2018-02-28', type: 'OUT'},
+                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', amount: 130, dueDate: '2017-07-30', type: 'OUT'},
+                {id: 4, category: 'Vehicles', label: 'Car - MOT', amount: 90, dueDate: '2017-09-30', type: 'OUT'},
+                {id: 5, category: 'Vehicles', label: 'Car - Insurance', amount: 565, dueDate: '2017-10-30', type: 'OUT'}
             ];
 
             const report = budget.buildReport(bucket, goals);
@@ -98,12 +98,12 @@ describe('budget module', () => {
         it('Should never fail a payment', () => {
             const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
 
-            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, dueDate: '2017-06-30'},
-                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, dueDate: '2017-06-30'},
-                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, dueDate: '2018-02-28'},
-                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, dueDate: '2017-07-30'},
-                {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, dueDate: '2017-09-30'},
-                {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, dueDate: '2017-10-30'}
+            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', amount: 90, dueDate: '2017-06-30'},
+                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', amount: 300, dueDate: '2017-06-30'},
+                {id: 2, category: 'Vehicles', label: 'AA', amount: 111, dueDate: '2018-02-28'},
+                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', amount: 130, dueDate: '2017-07-30'},
+                {id: 4, category: 'Vehicles', label: 'Car - MOT', amount: 90, dueDate: '2017-09-30'},
+                {id: 5, category: 'Vehicles', label: 'Car - Insurance', amount: 565, dueDate: '2017-10-30'}
             ];
 
             const report = budget.buildReport(bucket, goals);
@@ -115,7 +115,7 @@ describe('budget module', () => {
 
         it('build report will return monthly payment value', () => {
             const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, dueDate: '2017-10-30'}];
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-10-30'}];
 
             let report = budget.buildReport(bucket, goals);
             assert.equal(report[0].payIn, 43);
@@ -123,7 +123,7 @@ describe('budget module', () => {
 
         it('should not cache stuff', () => {
             const bucket = {category: 'Other', balance: 100, createdDate: '2017-03-25', id: 0};
-            const goals = [{id: 6, category: 'Other', label: 'Phone', cost: 400, dueDate: '2017-10-30'}];
+            const goals = [{id: 6, category: 'Other', label: 'Phone', amount: 400, dueDate: '2017-10-30'}];
 
             let report = budget.buildReport(bucket, goals);
             assert.equal(report[0].payIn, 43);
@@ -135,12 +135,12 @@ describe('budget module', () => {
         it('Ending balance should not be greater than a threshold', () => {
             const bucket = {category: 'Vehicles', balance: 0, createdDate: '2017-03-25', id: 0};
 
-            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', cost: 90, dueDate: '2017-06-30'},
-                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', cost: 300, dueDate: '2017-06-30'},
-                {id: 2, category: 'Vehicles', label: 'AA', cost: 111, dueDate: '2018-02-28'},
-                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', cost: 130, dueDate: '2017-07-30'},
-                {id: 4, category: 'Vehicles', label: 'Car - MOT', cost: 90, dueDate: '2017-09-30'},
-                {id: 5, category: 'Vehicles', label: 'Car - Insurance', cost: 565, dueDate: '2017-10-30'}
+            let goals = [{id: 0, category: 'Vehicles', label: 'Bike - MOT', amount: 90, dueDate: '2017-06-30'},
+                {id: 1, category: 'Vehicles', label: 'Car - Maintenance', amount: 300, dueDate: '2017-06-30'},
+                {id: 2, category: 'Vehicles', label: 'AA', amount: 111, dueDate: '2018-02-28'},
+                {id: 3, category: 'Vehicles', label: 'Car - Road Tax', amount: 130, dueDate: '2017-07-30'},
+                {id: 4, category: 'Vehicles', label: 'Car - MOT', amount: 90, dueDate: '2017-09-30'},
+                {id: 5, category: 'Vehicles', label: 'Car - Insurance', amount: 565, dueDate: '2017-10-30'}
             ];
 
             const report = budget.buildReport(bucket, goals);

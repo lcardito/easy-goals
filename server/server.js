@@ -114,18 +114,18 @@ api.get('/bucket', (req, res) => {
         .where('user_id', req.user.id)
         .select()
         .then((buckets) => {
-            db('goal')
+            db('payment')
                 .where({
                     'user_id': req.user.id
                 })
                 .select()
-                .then((goals) => {
+                .then((payments) => {
                     let response = [];
                     let now = moment();
 
                     buckets.forEach((b) => {
                         let category = b.category;
-                        let goalsForCategory = goals.filter((g) => g.category === category);
+                        let goalsForCategory = payments.filter((g) => g.category === category && g.type === 'OUT');
                         const report = budget.buildReport(b, goalsForCategory);
 
                         const current = _.find(report, (r) => {
@@ -151,8 +151,11 @@ api.put('/bucket/:bucketId', (req, res) => {
 });
 
 api.get('/goals', (req, res) => {
-    db('goal')
-        .where('user_id', req.user.id)
+    db('payment')
+        .where({
+            'user_id': req.user.id,
+            'type': 'OUT'
+        })
         .select()
         .then((goals) => {
             res.json(goals);
@@ -162,7 +165,7 @@ api.get('/goals', (req, res) => {
 api.post('/goals', (req, res) => {
     let goal = req.body;
     goal.user_id = req.user.id;
-    db('goal')
+    db('payment')
         .insert(goal)
         .then((savedId) => {
             db('bucket')
@@ -189,7 +192,7 @@ api.post('/goals', (req, res) => {
 api.put('/goals', (req, res) => {
     let goal = req.body;
 
-    db('goal')
+    db('payment')
         .where('id', '=', goal.id)
         .update(goal)
         .then(() => {
@@ -200,7 +203,7 @@ api.put('/goals', (req, res) => {
 api.delete('/goals/:goalId', (req, res) => {
     let id = req.params.goalId;
 
-    db('goal')
+    db('payment')
         .where('id', '=', id)
         .del()
         .then(() => {

@@ -67,7 +67,7 @@ class TableAccordion extends React.Component {
                                         {item.payments.map((p, idx) => (
                                             <Table.Row key={idx}>
                                                 <Table.Cell>{p.name}</Table.Cell>
-                                                <Table.Cell>{p.cost}</Table.Cell>
+                                                <Table.Cell>{p.amount}</Table.Cell>
                                             </Table.Row>
                                         ))}
                                     </Table.Body>

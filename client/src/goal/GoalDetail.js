@@ -3,6 +3,7 @@ import {Message} from "semantic-ui-react";
 import GenericForm from "../main/GenericForm";
 import Client from "../main/Client";
 import * as _ from "lodash";
+import {formatInput} from "../utils";
 
 class GoalDetail extends React.Component {
 
@@ -18,7 +19,7 @@ class GoalDetail extends React.Component {
             selectedGoal: {
                 label: '',
                 category: '',
-                cost: 0,
+                amount: 0,
                 dueDate: ''
             }
         };
@@ -30,10 +31,12 @@ class GoalDetail extends React.Component {
     componentWillMount() {
         if(!isNaN(this.props.params.goalId)) {
             Client.getGoals((serverGoals) => {
+                let goal = _.find(serverGoals, _.matchesProperty('id', parseInt(this.props.params.goalId, 10)));
+                goal.dueDate = formatInput(goal.dueDate, 'date');
                 this.setState({
-                    selectedGoal: _.find(serverGoals, _.matchesProperty('id', parseInt(this.props.params.goalId, 10)))
-                })
-            })
+                    selectedGoal: goal
+                });
+            });
         }
 
     }
@@ -65,7 +68,7 @@ class GoalDetail extends React.Component {
                 fields={[
                     {key: 'label', value: 'Label'},
                     {key: 'category', value: 'Category'},
-                    {key: 'cost', value: 'Cost'},
+                    {key: 'amount', value: 'Cost'},
                     {key: 'dueDate', value: 'Due Date'}
                 ]}
                 item={this.state.selectedGoal}

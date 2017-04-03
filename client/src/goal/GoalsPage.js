@@ -11,7 +11,7 @@ class GoalsPage extends React.Component {
             goals: [],
             selectedGoal: {
                 label: '',
-                cost: 0,
+                amount: 0,
                 category: '',
                 dueDate: ''
             }
@@ -44,7 +44,7 @@ class GoalsPage extends React.Component {
                     headers={[
                         {key: 'label', value: 'Label'},
                         {key: 'category', value: 'Category'},
-                        {key: 'cost', value: 'Cost'},
+                        {key: 'amount', value: 'Cost'},
                         {key: 'dueDate', value: 'Due Date'}
                     ]}
                     items={this.state.goals}

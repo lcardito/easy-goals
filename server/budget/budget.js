@@ -8,7 +8,7 @@ const moment = MomentRange.extendMoment(Moment);
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 function calculateMonthlySavings(startingDate, goals, initialBalance) {
-    let totalCost = _.sumBy(goals, 'cost');
+    let totalCost = _.sumBy(goals, 'amount');
     if (initialBalance >= totalCost) {
         return 0;
     }
@@ -46,10 +46,10 @@ exports.buildReport = (bucket, goals) => {
         let tempBalance = startingBalance + current.payIn;
         if (goalsInMonth.length > 0) {
             paymentsOut = goalsInMonth.map((g) => {
-                return {name: g.label, cost: g.cost}
+                return {name: g.label, amount: g.amount}
             });
 
-            tempBalance = tempBalance - _.sumBy(paymentsOut, 'cost');
+            tempBalance = tempBalance - _.sumBy(paymentsOut, 'amount');
 
             if (tempBalance < 0) {
                 mIdx = 0;
