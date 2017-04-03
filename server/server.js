@@ -120,32 +120,34 @@ api.get('/bucket', (req, res) => {
                 })
                 .select()
                 .then((goals) => {
-                    let categories = _.uniq(goals.map(item => item.category));
-                    let now = moment();
                     let response = [];
+                    let now = moment();
 
-                    categories.forEach((c) => {
-                        let goalsForCategory = goals.filter((g) => g.category === c);
-                        let bucket = buckets.filter((b) => b.category === c)[0];
+                    buckets.forEach((b) => {
+                        let category = b.category;
+                        let goalsForCategory = goals.filter((g) => g.category === category);
+                        const report = budget.buildReport(b, goalsForCategory);
 
-                        if (bucket) {
-                            let responseBucket = util._extend({}, bucket);
-                            const report = budget.buildReport(responseBucket, goalsForCategory);
+                        const current = _.find(report, (r) => {
+                            return moment(r.date).isSame(now, 'month')
+                                && moment(r.date).isSame(now, 'year');
+                        });
 
-                            const current = _.find(report, (r) => {
-                                return moment(r.date).isSame(now, 'month')
-                                    && moment(r.date).isSame(now, 'year');
-                            });
+                        b.report = report;
+                        b.balance = current.balance;
+                        b.monthly = current.payIn;
+                        response.push(b);
 
-                            responseBucket.report = report;
-                            responseBucket.balance = current.balance;
-                            responseBucket.monthly = current.payIn;
-                            response.push(responseBucket);
-                        }
                     });
                     res.json(response);
                 });
         });
+});
+
+api.put('/bucket/:bucketId', (req, res) => {
+    let id = req.params.bucketId;
+    // let lumpSumPayment = req.body.
+
 });
 
 api.get('/goals', (req, res) => {

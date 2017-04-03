@@ -120,15 +120,15 @@ class GoalsLineChart extends React.Component {
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row >
+            <Grid.Row>
+                <Grid.Column width={4}>
+                    <canvas id="pieChart"/>
+                </Grid.Column>
                 <Grid.Column width={9}>
                     <Message
                         info={true}
                         header='Totals'
                         content='A quick view or your categories totals'/>
-                </Grid.Column>
-                <Grid.Column width={4}>
-                    <canvas id="pieChart"/>
                 </Grid.Column>
             </Grid.Row>
         </Grid>

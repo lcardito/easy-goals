@@ -37,20 +37,19 @@ exports.buildReport = (bucket, goals) => {
             dueDate: currentMonth.format(DATE_FORMAT),
             payIn: isLast ? 0 : monthlySaving
         };
-        let payments = [];
 
+        let paymentsOut = [];
         let goalsInMonth = goals.filter((g) => {
             return moment(g.dueDate).isSame(currentMonth, 'month')
                 && moment(g.dueDate).isSame(currentMonth, 'year')
         });
-
         let tempBalance = startingBalance + current.payIn;
         if (goalsInMonth.length > 0) {
-            payments = goalsInMonth.map((g) => {
+            paymentsOut = goalsInMonth.map((g) => {
                 return {name: g.label, cost: g.cost}
             });
 
-            tempBalance = tempBalance - _.sumBy(payments, 'cost');
+            tempBalance = tempBalance - _.sumBy(paymentsOut, 'cost');
 
             if (tempBalance < 0) {
                 mIdx = 0;
@@ -72,7 +71,7 @@ exports.buildReport = (bucket, goals) => {
 
         startingBalance = tempBalance;
         current.balance = tempBalance;
-        current.payments = payments;
+        current.payments = paymentsOut;
 
         report.push(current);
     }
