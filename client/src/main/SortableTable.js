@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, Icon, Table} from "semantic-ui-react";
 import _ from "lodash";
-import {formatValue} from "../utils";
 
 class SortableTable extends React.Component {
 
@@ -75,9 +74,7 @@ class SortableTable extends React.Component {
                             key={itemIdx}
                             onClick={() => this._navigateToDetail(item)}>
                             {this.state.headers.map((h, idx) => {
-                                return <Table.Cell key={idx}>
-                                    {formatValue(item[h.key], h.key)}
-                                </Table.Cell>
+                                return this.props.itemMapper(item, h, idx);
                             })}
                         </Table.Row>
                     ))}
@@ -99,5 +96,9 @@ class SortableTable extends React.Component {
         )
     }
 }
+
+SortableTable.defaultProps = {
+    itemMapper: () => {}
+};
 
 export default SortableTable;
