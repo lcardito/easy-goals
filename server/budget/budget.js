@@ -20,7 +20,8 @@ function calculateMonthlySavings(startingDate, goals, initialBalance) {
     return Math.ceil((totalCost - initialBalance) / months);
 }
 
-exports.buildReport = (bucket, goals, paymentsIn = []) => {
+exports.buildReport = (bucket, goals, paymentsIn) => {
+    paymentsIn = paymentsIn ? paymentsIn : [];
     let startingBalance = bucket.balance;
     let goalsByDate = _.orderBy(goals, ['dueDate'], ['asc']);
     let monthlySaving = calculateMonthlySavings(bucket.createdDate, goalsByDate, startingBalance);
