@@ -60,19 +60,29 @@ class TableAccordion extends React.Component {
                         <Accordion.Content
                             className="rowBoxed">
                             {item.payments.length > 0 &&
-                            <Container text fluid>
-                                <Header as='h4'>Payments at this date</Header>
-                                <Table celled size='small'>
-                                    <Table.Body>
-                                        {item.payments.map((p, idx) => (
-                                            <Table.Row key={idx}>
-                                                <Table.Cell>{p.name}</Table.Cell>
-                                                <Table.Cell>{p.amount}</Table.Cell>
-                                            </Table.Row>
-                                        ))}
-                                    </Table.Body>
-                                </Table>
-                            </Container>
+                            <Table
+                                celled
+                                padded
+                                striped
+                                unstackable
+                                style={{width: '50%', margin: '0 auto'}}>
+                                <Table.Header fullWidth>
+                                    <Table.Row>
+                                        <Table.HeaderCell colSpan='2'>Transactions at this date</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Header>
+                                <Table.Body>
+                                    {item.payments.map((p, idx) => {
+                                        return <Table.Row
+                                            key={idx}>
+                                            <Table.Cell>{p.label}</Table.Cell>
+                                            <Table.Cell
+                                                negative={p.type === 'OUT'}
+                                                positive={p.type === 'IN'}>{p.amount}</Table.Cell>
+                                        </Table.Row>
+                                    })}
+                                </Table.Body>
+                            </Table>
                             }
                             {item.payments.length === 0 &&
                             <Container text fluid>

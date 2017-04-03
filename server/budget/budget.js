@@ -40,22 +40,16 @@ exports.buildReport = (bucket, goals, paymentsIn = []) => {
 
         let reportItem = {
             dueDate: currentMonth.format(DATE_FORMAT),
-            payIn: isLast ? 0 : monthlySaving,
-            extraPayIn: _.sumBy(extraPayments, 'amount')
+            payIn: isLast ? 0 : monthlySaving
         };
 
-        let paymentsOut = [];
-        let tempBalance = startingBalance + reportItem.payIn + reportItem.extraPayIn;
+        let tempBalance = startingBalance + reportItem.payIn + _.sumBy(extraPayments, 'amount');
         let goalsInMonth = goals.filter((g) => {
             return moment(g.dueDate).isSame(currentMonth, 'month')
                 && moment(g.dueDate).isSame(currentMonth, 'year')
         });
         if (goalsInMonth.length > 0) {
-            paymentsOut = goalsInMonth.map((g) => {
-                return {name: g.label, amount: g.amount}
-            });
-
-            tempBalance = tempBalance - _.sumBy(paymentsOut, 'amount');
+            tempBalance = tempBalance - _.sumBy(goalsInMonth, 'amount');
 
             if (tempBalance < 0) {
                 mIdx = 0;
@@ -76,7 +70,7 @@ exports.buildReport = (bucket, goals, paymentsIn = []) => {
 
         startingBalance = tempBalance;
         reportItem.balance = tempBalance;
-        reportItem.payments = paymentsOut;
+        reportItem.payments = goalsInMonth.concat(extraPayments);
 
         report.push(reportItem);
     }

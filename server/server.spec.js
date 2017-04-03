@@ -26,14 +26,14 @@ describe('integration tests', () => {
 
     beforeEach(() => {
         knex('payment').del();
-        knex('payment').del();
+        knex('bucket').del();
 
         return knex.seed.run();
     });
 
     describe('migration tests', () => {
         it('should run buckets migrations', (done) => {
-            knex('payment').select().then((allBuckets) => {
+            knex('bucket').select().then((allBuckets) => {
 
                 assert.isDefined(allBuckets);
                 assert.lengthOf(allBuckets, 2);
@@ -42,7 +42,7 @@ describe('integration tests', () => {
             });
         });
 
-        it('should run goal migrations', (done) => {
+        it('should run payment migrations', (done) => {
             knex('payment').select().then((allGoals) => {
                 "use strict";
 
@@ -118,7 +118,7 @@ describe('integration tests', () => {
 
         it('user1 should see own buckets', (done) => {
             user1
-                .get(host + '/api/payment')
+                .get(host + '/api/bucket')
                 .then(response => {
                     assert.lengthOf(response.body, 1);
                     assert.equal(response.body[0].balance, 147, util.inspect(response.body, false, null));
@@ -128,7 +128,7 @@ describe('integration tests', () => {
 
         it('user2 should see own buckets', (done) => {
             user2
-                .get(host + '/api/payment')
+                .get(host + '/api/bucket')
                 .then(response => {
                     assert.lengthOf(response.body, 1);
                     assert.equal(response.body[0].balance, 58, util.inspect(response.body, false, null));

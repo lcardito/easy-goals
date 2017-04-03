@@ -95,8 +95,8 @@ describe('budget module', () => {
             assert.lengthOf(payOuts, 5, util.inspect(payOuts, false, null));
             let firstPayments = payOuts[0].payments;
             assert.lengthOf(firstPayments, 2);
-            assert.equal(firstPayments[0].name, 'Bike - MOT');
-            assert.equal(firstPayments[1].name, 'Car - Maintenance');
+            assert.equal(firstPayments[0].label, 'Bike - MOT');
+            assert.equal(firstPayments[1].label, 'Car - Maintenance');
 
             assert.lengthOf(payOuts[1].payments, 1);
         });
@@ -173,14 +173,13 @@ describe('budget module', () => {
             let secondPayment = report[1];
             assert.equal(secondPayment.dueDate, '2017-03-25');
             assert.equal(secondPayment.payIn, 133);
-            assert.equal(secondPayment.extraPayIn, 100);
-            assert.equal(_.sumBy(secondPayment.payments, 'cost'), 0);
+            assert.equal(_.sumBy(secondPayment.payments, 'amount'), 100);
             assert.equal(secondPayment.balance, 367);
 
             let thirdPayment = report[2];
             assert.equal(thirdPayment.dueDate, '2017-04-25');
             assert.equal(thirdPayment.payIn, 33);
-            assert.equal(_.sumBy(thirdPayment.payments, 'cost'), 0);
+            assert.equal(_.sumBy(thirdPayment.payments, 'amount'), 0);
             assert.equal(thirdPayment.balance, 400);
 
             let lastPayment = report[3];
