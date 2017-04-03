@@ -71,8 +71,7 @@ class SortableTable extends React.Component {
                 <Table.Body>
                     {this.state.items.map((item, itemIdx) => (
                         <Table.Row
-                            key={itemIdx}
-                            onClick={() => this._navigateToDetail(item)}>
+                            key={itemIdx}>
                             {this.state.headers.map((h, idx) => {
                                 return this.props.itemMapper(item, h, idx);
                             })}

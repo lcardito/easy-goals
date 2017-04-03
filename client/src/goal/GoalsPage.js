@@ -19,7 +19,13 @@ class GoalsPage extends React.Component {
         };
 
         this._getGoals = this._getGoals.bind(this);
+        this._navigateToDetail = this._navigateToDetail.bind(this);
     }
+
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
 
     componentWillMount() {
         Client.getGoals((serverGoals) => {
@@ -33,9 +39,16 @@ class GoalsPage extends React.Component {
         });
     }
 
+    _navigateToDetail(item) {
+        let path = item ? `/goals/${item.id}` : `/${this.state.detailPath}/tmp`;
+        this.context.router.push(path);
+    }
+
     render() {
         const itemMapper = (item, h, idx) => {
-            return <Table.Cell key={idx}>
+            return <Table.Cell
+                onClick={() => this._navigateToDetail(item)}
+                key={idx}>
                 {formatValue(item[h.key], h.key)}
             </Table.Cell>
         };
@@ -46,7 +59,6 @@ class GoalsPage extends React.Component {
                     content='These are your goals. You are in control of them. Add, edit or delete one of them.'
                 />
                 <SortableTable
-                    detailPath="goals"
                     headers={[
                         {key: 'label', value: 'Label'},
                         {key: 'category', value: 'Category'},

@@ -1,7 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import {Message, Table} from "semantic-ui-react";
+import {Button, Icon, Message, Table} from "semantic-ui-react";
 import {formatValue} from "../utils";
 
 class BucketsPage extends React.Component {
@@ -22,7 +22,13 @@ class BucketsPage extends React.Component {
         };
 
         this._getBuckets = this._getBuckets.bind(this);
+        this._navigateToDetail = this._navigateToDetail.bind(this);
     }
+
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
 
     componentWillMount() {
         Client.getBuckets((serverBuckets) => {
@@ -36,10 +42,33 @@ class BucketsPage extends React.Component {
         });
     }
 
+    _openPayment(e) {
+        e.preventDefault();
+        console.log('here');
+    }
+
+    _navigateToDetail(item) {
+        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+        this.context.router.push(path);
+    }
+
     render() {
         const itemMapper = (item, h, idx) => {
-            return <Table.Cell key={idx}>
-                {formatValue(item[h.key], h.key)}
+            let isAction = h.key === 'action';
+            let value = isAction
+                ? <Button
+                    icon
+                    size="mini"
+                    onClick={this._openPayment.bind(this)}>
+                    <Icon name='setting'/>
+                </Button>
+                : formatValue(item[h.key], h.key);
+
+            return <Table.Cell
+                onClick={!isAction ? () => this._navigateToDetail(item) : (e) => {e.preventDefault()}}
+                textAlign={isAction ? 'center' : 'left'}
+                key={idx}>
+                {value}
             </Table.Cell>
         };
 
@@ -54,12 +83,12 @@ class BucketsPage extends React.Component {
                         {key: 'category', value: 'Category'},
                         {key: 'balance', value: 'Balance'},
                         {key: 'monthly', value: 'This Month Due'},
-                        {key: 'createdDate', value: 'Created'}
+                        {key: 'createdDate', value: 'Created'},
+                        {key: 'action', value: 'Actions'}
                     ]}
                     itemMapper={itemMapper}
                     items={this.state.buckets}
                     editable={false}
-                    detailPath="buckets"
                 />
             </div>
         )
