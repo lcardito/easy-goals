@@ -18,7 +18,6 @@ class BucketDetail extends React.Component {
         if (!isNaN(this.props.params.bucketId)) {
             Client.getBuckets((serverBuckets) => {
                 let bucket = _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10)));
-                console.log(bucket);
                 this.setState({
                     report: bucket.report,
                     category: bucket.category

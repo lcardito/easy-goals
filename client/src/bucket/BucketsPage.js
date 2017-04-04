@@ -1,8 +1,8 @@
 import React from "react";
 import Client from "../main/Client";
-import SortableTable from "../main/SortableTable";
-import {Dropdown, Header, Icon, Table} from "semantic-ui-react";
+import {Button, Header, Icon, Table} from "semantic-ui-react";
 import {formatValue} from "../utils";
+import _ from "lodash";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -18,12 +18,14 @@ class BucketsPage extends React.Component {
         this.state = {
             buckets: [],
             showBucket: false,
-            selectedBucket: this.defaultBucket
+            selectedBucket: this.defaultBucket,
+            sortingBy: ''
         };
 
         this._getBuckets = this._getBuckets.bind(this);
-        this._navigateToDetail = this._navigateToDetail.bind(this);
-        this._openPayment = this._openPayment.bind(this)
+        this._openReport = this._openReport.bind(this);
+        this._openPayment = this._openPayment.bind(this);
+        this._sortBy = this._sortBy.bind(this);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -43,57 +45,43 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _openPayment(item, d) {
-        let value = d.value;
-        if (value && value !== 'none') {
-            let path = '';
-            if (value === 'edit') {
-                path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
-            } else if (value === 'report') {
-                path = item ? `/buckets/${item.id}/report` : `/${this.state.detailPath}/tmp`;
-            }
-            this.context.router.push(path);
-        }
+    _openPayment(item) {
+        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+        this.context.router.push(path);
     }
 
-    _navigateToDetail(item) {
+    _openReport(item) {
         let path = item ? `/buckets/${item.id}/report` : `/${this.state.detailPath}/tmp`;
         this.context.router.push(path);
     }
 
+    _sortBy(prop) {
+        this.sortingOrder = (this.sortingOrder === 'asc') ? 'desc' : 'asc';
+        this.setState({
+            items: _.orderBy(this.state.items, [prop], [this.sortingOrder]),
+            sortingBy: prop
+        })
+    }
+
     render() {
-
-        const actionOptions = [
-            {key: 'none', text: '', value: 'none'},
-            {key: 'report', icon: 'table', text: 'Monthly Report', value: 'report'},
-            {key: 'payIn', icon: 'edit', text: 'Add cash', value: 'edit'},
-        ];
-
         const itemMapper = (item, h, idx) => {
-            let actionButton =
-                <Dropdown
-                    icon="settings"
-                    onChange={(e, d) => this._openPayment(item, d)}
-                    options={actionOptions}
-                    floating
-                    inline/>;
-
-            let isAction = h.key === 'action';
-            let value = isAction
-                ? actionButton
-                : formatValue(item[h.key], h.key);
-
             return <Table.Cell
-                textAlign={isAction ? 'center' : 'left'}
                 key={idx}>
-                {value}
+                {formatValue(item[h.key], h.key)}
             </Table.Cell>
         };
+
+        const headers = [
+            {key: 'category', value: 'Category'},
+            {key: 'balance', value: 'Balance'},
+            {key: 'monthly', value: 'This Month Due'},
+            {key: 'createdDate', value: 'Created'}
+        ];
 
         return (
             <div>
                 <Header as='h2'>
-                    <Icon name='archive' />
+                    <Icon name='archive'/>
                     <Header.Content>
                         This are your personal buckets
                         <Header.Subheader>
@@ -101,18 +89,44 @@ class BucketsPage extends React.Component {
                         </Header.Subheader>
                     </Header.Content>
                 </Header>
-                <SortableTable
-                    headers={[
-                        {key: 'category', value: 'Category'},
-                        {key: 'balance', value: 'Balance'},
-                        {key: 'monthly', value: 'This Month Due'},
-                        {key: 'createdDate', value: 'Created'},
-                        {key: 'action', value: 'Actions'}
-                    ]}
-                    itemMapper={itemMapper}
-                    items={this.state.buckets}
-                    editable={false}
-                />
+                <Table celled
+                       padded
+                       sortable
+                       striped
+                       unstackable
+                       selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            {headers.map((h, idx) => {
+                                let iconName = 'sort';
+                                if (this.state.sortingBy === h.key) {
+                                    iconName = this.sortingOrder === 'asc' ? 'sort ascending' : 'sort descending'
+                                }
+
+                                return <Table.HeaderCell key={idx} onClick={() => this._sortBy(h.key)}>
+                                    <Icon name={iconName}/> {h.value}
+                                </Table.HeaderCell>
+                            })}
+                            <Table.HeaderCell />
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {this.state.buckets.map((item, itemIdx) => (
+                            <Table.Row
+                                key={itemIdx}>
+                                {headers.map((h, idx) => {
+                                    return itemMapper(item, h, idx);
+                                })}
+                                <Table.Cell collapsing textAlign="center">
+                                    <Button.Group size="mini" basic compact>
+                                        <Button color="blue" icon="edit" onClick={() => this._openPayment(item)}/>
+                                        <Button negative icon="table" onClick={() => this._openReport(item)}/>
+                                    </Button.Group>
+                                </Table.Cell>
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table>
             </div>
         )
     }
