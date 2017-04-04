@@ -2,7 +2,7 @@ import React from "react";
 import Client from "../main/Client";
 import TableAccordion from "./TableAccordion";
 import * as _ from "lodash";
-import {Header, Icon} from "semantic-ui-react";
+import {Button, Header, Icon} from "semantic-ui-react";
 
 class BucketDetail extends React.Component {
 
@@ -13,6 +13,11 @@ class BucketDetail extends React.Component {
             category: ''
         };
     }
+
+    //noinspection JSUnusedGlobalSymbols
+    static contextTypes = {
+        router: React.PropTypes.object,
+    };
 
     componentWillMount() {
         if (!isNaN(this.props.params.bucketId)) {
@@ -46,6 +51,7 @@ class BucketDetail extends React.Component {
                 ]}
                 items={this.state.report}
             />
+            <Button className="marginTopButton" type="button" onClick={() => this.context.router.goBack()}>Back</Button>
         </div>
     }
 }
