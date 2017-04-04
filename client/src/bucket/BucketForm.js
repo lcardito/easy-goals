@@ -1,6 +1,6 @@
 import React from 'react';
 import Client from "../main/Client";
-import {Message} from "semantic-ui-react";
+import {Header, Icon, Message} from "semantic-ui-react";
 import GenericForm from "../main/GenericForm";
 
 import update from 'immutability-helper';
@@ -51,15 +51,20 @@ class BucketForm extends React.Component {
 
     render() {
         return <div>
-            <Message
-                header='Add some cache to your bucket'
-                content='Feeling a good saver? Add some cache!'
-            />
+            <Header as='h2'>
+                <Icon name='add square' />
+                <Header.Content>
+                    Bucket - {this.state.payment.category}
+                    <Header.Subheader>
+                        Add some cash to reach your goals quicker!
+                    </Header.Subheader>
+                </Header.Content>
+            </Header>
             <GenericForm
                 fields={[
                     {key: 'label', value: 'Label', disabled: false},
-                    {key: 'category', value: 'Category', disabled: true},
-                    {key: 'amount', value: 'Extra cache', disabled: false}
+                    {key: 'amount', value: 'Extra cash', disabled: false},
+                    {key: 'category', value: 'Category', disabled: true}
                 ]}
                 item={this.state.payment}
                 submitCallback={this._saveBucket}

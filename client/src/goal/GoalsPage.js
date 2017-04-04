@@ -1,7 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import {Message, Table} from "semantic-ui-react";
+import {Header, Icon, Message, Table} from "semantic-ui-react";
 import {formatValue} from "../utils";
 
 class GoalsPage extends React.Component {
@@ -54,10 +54,15 @@ class GoalsPage extends React.Component {
         };
         return (
             <div>
-                <Message
-                    header='Goals'
-                    content='These are your goals. You are in control of them. Add, edit or delete one of them.'
-                />
+                <Header as='h2'>
+                    <Icon name='target'/>
+                    <Header.Content>
+                        This are your personal goals
+                        <Header.Subheader>
+                            These are your goals. You are in control of them. Add, edit or delete one of them.
+                        </Header.Subheader>
+                    </Header.Content>
+                </Header>
                 <SortableTable
                     headers={[
                         {key: 'label', value: 'Label'},

@@ -1,7 +1,7 @@
 import React from 'react';
 import Client from '../main/Client';
 import SortableTable from '../main/SortableTable';
-import {Button, Icon, Message, Table} from "semantic-ui-react";
+import {Dropdown, Header, Icon, Message, Table} from "semantic-ui-react";
 import {formatValue} from "../utils";
 
 class BucketsPage extends React.Component {
@@ -43,9 +43,17 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _openPayment(item) {
-        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
-        this.context.router.push(path);
+    _openPayment(item, d) {
+        let value = d.value;
+        if (value && value !== 'none') {
+            let path = '';
+            if (value === 'edit') {
+                path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+            } else if (value === 'report') {
+                path = item ? `/buckets/${item.id}/report` : `/${this.state.detailPath}/tmp`;
+            }
+            this.context.router.push(path);
+        }
     }
 
     _navigateToDetail(item) {
@@ -54,19 +62,28 @@ class BucketsPage extends React.Component {
     }
 
     render() {
+
+        const actionOptions = [
+            {key: 'none', text: '', value: 'none'},
+            {key: 'report', icon: 'table', text: 'Monthly Report', value: 'report'},
+            {key: 'payIn', icon: 'edit', text: 'Add cash', value: 'edit'},
+        ];
+
         const itemMapper = (item, h, idx) => {
+            let actionButton =
+                <Dropdown
+                    icon="settings"
+                    onChange={(e, d) => this._openPayment(item, d)}
+                    options={actionOptions}
+                    floating
+                    inline/>;
+
             let isAction = h.key === 'action';
             let value = isAction
-                ? <Button
-                    icon
-                    size="mini"
-                    onClick={() => this._openPayment(item)}>
-                    <Icon name='upload'/>
-                </Button>
+                ? actionButton
                 : formatValue(item[h.key], h.key);
 
             return <Table.Cell
-                onClick={!isAction ? () => this._navigateToDetail(item) : (e) => {e.preventDefault()}}
                 textAlign={isAction ? 'center' : 'left'}
                 key={idx}>
                 {value}
@@ -75,10 +92,15 @@ class BucketsPage extends React.Component {
 
         return (
             <div>
-                <Message
-                    header='Your personal buckets'
-                    content='These are your Money Buckets. Click on one of them to view the bucket history and details.'
-                />
+                <Header as='h2'>
+                    <Icon name='archive' />
+                    <Header.Content>
+                        This are your personal buckets
+                        <Header.Subheader>
+                            These are your Money Buckets. Click on one of them to view the bucket history and details.
+                        </Header.Subheader>
+                    </Header.Content>
+                </Header>
                 <SortableTable
                     headers={[
                         {key: 'category', value: 'Category'},

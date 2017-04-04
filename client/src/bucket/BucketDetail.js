@@ -2,23 +2,26 @@ import React from "react";
 import Client from "../main/Client";
 import TableAccordion from "./TableAccordion";
 import * as _ from "lodash";
-import {Message} from "semantic-ui-react";
+import {Header, Icon} from "semantic-ui-react";
 
 class BucketDetail extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            report: []
-
+            report: [],
+            category: ''
         };
     }
 
     componentWillMount() {
         if (!isNaN(this.props.params.bucketId)) {
             Client.getBuckets((serverBuckets) => {
+                let bucket = _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10)));
+                console.log(bucket);
                 this.setState({
-                    report: _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10))).report
+                    report: bucket.report,
+                    category: bucket.category
                 })
             })
         }
@@ -26,15 +29,20 @@ class BucketDetail extends React.Component {
 
     render() {
         return <div>
-            <Message
-                header='Bucket detail'
-                content='These is the report for your Buckets. Click on one of them to view the payments you might have to make.'
-            />
+            <Header as='h2'>
+                <Icon name='table' />
+                <Header.Content>
+                    {this.state.category}
+                    <Header.Subheader>
+                        Here you can see the trend for this bucket
+                    </Header.Subheader>
+                </Header.Content>
+            </Header>
             <TableAccordion
                 editable={false}
                 headers={[
-                    {key: 'dueDate', value: 'Date'},
-                    {key: 'payIn', value: 'Payment In'},
+                    {key: 'dueDate', value: 'Month'},
+                    {key: 'payIn', value: 'Fixed monthly deposit'},
                     {key: 'balance', value: 'Bucket Balance'},
                 ]}
                 items={this.state.report}

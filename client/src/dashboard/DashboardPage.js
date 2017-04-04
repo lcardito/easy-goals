@@ -30,10 +30,6 @@ class DashboardPage extends React.Component {
     render() {
         return (
             <div>
-                <Message
-                    header='Dashboard'
-                    content='Your dashboard for a quick view'
-                />
                 {this.state.buckets &&
                 <GoalsLineChart
                     buckets={this.state.buckets}
