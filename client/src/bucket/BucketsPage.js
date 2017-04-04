@@ -1,7 +1,7 @@
-import React from 'react';
-import Client from '../main/Client';
-import SortableTable from '../main/SortableTable';
-import {Dropdown, Header, Icon, Message, Table} from "semantic-ui-react";
+import React from "react";
+import Client from "../main/Client";
+import SortableTable from "../main/SortableTable";
+import {Dropdown, Header, Icon, Table} from "semantic-ui-react";
 import {formatValue} from "../utils";
 
 class BucketsPage extends React.Component {

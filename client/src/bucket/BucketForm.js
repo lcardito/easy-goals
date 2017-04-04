@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import Client from "../main/Client";
-import {Header, Icon, Message} from "semantic-ui-react";
+import {Header, Icon} from "semantic-ui-react";
 import GenericForm from "../main/GenericForm";
 
-import update from 'immutability-helper';
+import update from "immutability-helper";
 import moment from "moment";
 
 class BucketForm extends React.Component {

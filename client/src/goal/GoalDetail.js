@@ -1,5 +1,5 @@
-import React from 'react';
-import {Icon, Message} from "semantic-ui-react";
+import React from "react";
+import {Message} from "semantic-ui-react";
 import GenericForm from "../main/GenericForm";
 import Client from "../main/Client";
 import * as _ from "lodash";

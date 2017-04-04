@@ -212,6 +212,7 @@ api.post('/payment', (req, res) => {
 
 api.put('/goals', (req, res) => {
     let goal = req.body;
+    goal.dueDate = moment(goal.dueDate).format('YYYY-MM-DD');
 
     db('payment')
         .where({

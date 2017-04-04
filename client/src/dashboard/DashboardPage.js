@@ -1,7 +1,6 @@
-import React from 'react';
-import {Message} from "semantic-ui-react";
+import React from "react";
 
-import Client from '../main/Client';
+import Client from "../main/Client";
 import GoalsLineChart from "./GoalsLineChart";
 
 class DashboardPage extends React.Component {
