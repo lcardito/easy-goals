@@ -1,37 +1,24 @@
 import React from "react";
-import {Button, Confirm, Container, Header, Table} from "semantic-ui-react";
+import {Button, Container, Header, Table} from "semantic-ui-react";
 
 class Payments extends React.Component {
 
-    constructor() {
+    constructor(props) {
         super();
 
         this.state = {
-            deleting: false,
-            toBeDeleted: {}
+            payments: props.payments
         };
-
-        this._deletePayment = this._deletePayment.bind(this);
     }
 
-    _deletePayment(p) {
-        if (this.state.deleting) {
-            //TODO
-            // Client.deleteGoal(this.toBeDeleted.id);
-            // let idx = _.findIndex(this.state.goals, ['id', this.toBeDeleted.id]);
-            // this.setState({
-            //     goals: update(this.state.goals, {
-            //         $splice: [[idx, 1]]
-            //     }),
-            //     deleting: false
-            // });
-        } else {
-            this.setState({deleting: true, toBeDeleted: p});
-        }
+    componentWillReceiveProps(nextProps){
+        this.state = {
+            payments: nextProps.payments
+        };
     }
 
     render() {
-        if (this.props.payments.length === 0) {
+        if (this.state.payments.length === 0) {
             return <Container text fluid>
                 <Header as='h4'>No expected payments</Header>
             </Container>;
@@ -49,7 +36,7 @@ class Payments extends React.Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {this.props.payments.map((p, idx) => {
+                        {this.state.payments.map((p, idx) => {
                             return <Table.Row
                                 key={idx}>
                                 <Table.Cell>{p.label}</Table.Cell>
@@ -59,7 +46,7 @@ class Payments extends React.Component {
                                 {p.type === 'IN' &&
                                 <Table.Cell width={1} textAlign="center">
                                     <Button color="red" size="mini" basic compact icon="delete"
-                                            onClick={() => this._deletePayment(p)}
+                                            onClick={() => this.props.deleteCallback(p)}
                                     />
                                 </Table.Cell>
                                 }
@@ -67,13 +54,6 @@ class Payments extends React.Component {
                         })}
                     </Table.Body>
                 </Table>
-                <Confirm
-                    open={this.state.deleting}
-                    header='This operation can NOT be reverted'
-                    content={`Are you sure you want to delete the payment "${this.state.toBeDeleted.label}"?`}
-                    onCancel={() => this.setState({deleting: false})}
-                    onConfirm={this._deletePayment}
-                />
             </div>
         }
     }
@@ -82,5 +62,6 @@ class Payments extends React.Component {
 export default Payments;
 
 Payments.propTypes = {
-    payments: React.PropTypes.array
+    payments: React.PropTypes.array,
+    deleteCallback: React.PropTypes.func
 };

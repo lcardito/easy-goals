@@ -1,3 +1,5 @@
+"use strict";
+
 const db = require('../db');
 let goalApi = require('express').Router({mergeParams: true});
 
@@ -65,7 +67,7 @@ goalApi.delete('/:goalId', (req, res) => {
     let id = req.params.goalId;
 
     db('payment')
-        .where('id', '=', id)
+        .where({id: id, type: 'OUT'})
         .del()
         .then(() => {
             res.json({});

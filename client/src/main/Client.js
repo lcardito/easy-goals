@@ -112,6 +112,15 @@ function deleteGoal(goalId, cb) {
         .then(cb);
 }
 
+function deletePayment(paymentId, cb) {
+    fetch(`api/payment/${paymentId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    }).then(checkStatus)
+        .then(cb);
+}
+
+
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
@@ -128,7 +137,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment
+    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment, deletePayment
 };
 
 export default Client;
