@@ -1,8 +1,9 @@
 import React from 'react';
-import {Accordion, Grid, Container, Header, Table, Icon} from 'semantic-ui-react';
+import {Accordion, Grid, Container, Header, Table} from 'semantic-ui-react';
 import {formatValue} from "../utils";
+import _ from "lodash";
 
-class TableAccordion extends React.Component {
+class ReportTable extends React.Component {
 
     constructor(props) {
         super(props);
@@ -46,13 +47,18 @@ class TableAccordion extends React.Component {
                                 celled='internally'
                                 columns={this.state.headers.length}>
                                 {this.state.headers.map((h, idx) => {
+                                    let value = item[h.key];
+                                    if(h.key === 'paymentsIn') {
+                                        let pIn = item.payments.filter((t) => t.type === 'IN');
+                                        value = _.sumBy(pIn, 'amount');
+                                    }
+                                    if(h.key === 'paymentsOut') {
+                                        let pOut = item.payments.filter((t) => t.type === 'OUT');
+                                        value = _.sumBy(pOut, 'amount');
+                                    }
                                     return <Grid.Column
                                         key={idx}>
-                                        {formatValue(item[h.key], h.key)}
-                                        {idx === this.state.headers.length - 1 &&
-                                        item.payments.length > 0 &&
-                                        <Icon className="floatRight" name="money"/>
-                                        }
+                                        {formatValue(value, h.key)}
                                     </Grid.Column>
                                 })}
                             </Grid>
@@ -97,9 +103,9 @@ class TableAccordion extends React.Component {
     }
 }
 
-export default TableAccordion;
+export default ReportTable;
 
-TableAccordion.propTypes = {
+ReportTable.propTypes = {
     headers: React.PropTypes.array,
     items: React.PropTypes.array
 };

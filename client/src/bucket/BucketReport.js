@@ -1,10 +1,10 @@
 import React from "react";
 import Client from "../main/Client";
-import TableAccordion from "./TableAccordion";
 import * as _ from "lodash";
 import {Button, Header, Icon} from "semantic-ui-react";
+import ReportTable from "./ReportTable";
 
-class BucketDetail extends React.Component {
+class BucketReport extends React.Component {
 
     constructor() {
         super();
@@ -42,12 +42,14 @@ class BucketDetail extends React.Component {
                     </Header.Subheader>
                 </Header.Content>
             </Header>
-            <TableAccordion
+            <ReportTable
                 editable={false}
                 headers={[
                     {key: 'dueDate', value: 'Month'},
-                    {key: 'payIn', value: 'Fixed monthly deposit'},
-                    {key: 'balance', value: 'Bucket Balance'},
+                    {key: 'payIn', value: 'Calculated deposit'},
+                    {key: 'balance', value: 'Bucket balance'},
+                    {key: 'paymentsIn', value: 'Money in'},
+                    {key: 'paymentsOut', value: 'Money out'}
                 ]}
                 items={this.state.report}
             />
@@ -56,9 +58,9 @@ class BucketDetail extends React.Component {
     }
 }
 
-export default BucketDetail;
+export default BucketReport;
 
-BucketDetail.defaultProps = {
+BucketReport.defaultProps = {
     params: {
         bucketId: undefined
     }

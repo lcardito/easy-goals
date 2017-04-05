@@ -7,7 +7,7 @@ import {hashHistory, Route, Router} from 'react-router';
 import {Provider} from 'react-redux';
 
 import BucketsPage from "./bucket/BucketsPage";
-import BucketDetail from "./bucket/BucketDetail";
+import BucketDetail from "./bucket/BucketReport";
 import BucketForm from "./bucket/BucketForm";
 import GoalsPage from "./goal/GoalsPage";
 import GoalDetail from "./goal/GoalDetail";
