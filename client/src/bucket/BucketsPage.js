@@ -46,12 +46,12 @@ class BucketsPage extends React.Component {
     }
 
     _openPayment(item) {
-        let path = item ? `/buckets/${item.id}` : `/${this.state.detailPath}/tmp`;
+        let path = `/buckets/${item.id}`;
         this.context.router.push(path);
     }
 
     _openReport(item) {
-        let path = item ? `/buckets/${item.id}/report` : `/${this.state.detailPath}/tmp`;
+        let path = `/buckets/${item.id}/report`;
         this.context.router.push(path);
     }
 

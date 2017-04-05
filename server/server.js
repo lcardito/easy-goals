@@ -115,31 +115,12 @@ api.get('/bucket', (req, res) => {
         .select()
         .then((buckets) => {
             db('payment')
-                .where({
-                    'user_id': req.user.id
-                })
+                .where({'user_id': req.user.id})
                 .select()
                 .then((payments) => {
-                    let response = [];
-                    let now = moment();
-
-                    buckets.forEach((b) => {
-                        let category = b.category;
-                        let goalsForCategory = payments.filter((g) => g.category === category && g.type === 'OUT');
-                        let paymentsIn = payments.filter((p) => p.category === category && p.type === 'IN');
-                        const report = budget.buildReport(b, goalsForCategory, paymentsIn);
-
-                        const current = _.find(report, (r) => {
-                            return moment(r.date).isSame(now, 'month')
-                                && moment(r.date).isSame(now, 'year');
-                        });
-
-                        b.report = report;
-                        b.balance = current.balance;
-                        b.monthly = current.payIn;
-                        response.push(b);
+                    budget.getReport(buckets, payments).then((response) => {
+                        res.json(response);
                     });
-                    res.json(response);
                 });
         });
 });
