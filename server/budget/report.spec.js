@@ -1,6 +1,6 @@
 "use strict";
 
-const budget = require('./budget');
+const budget = require('./report');
 const moment = require('moment');
 const util = require("util");
 const _ = require("lodash");

@@ -80,7 +80,7 @@ exports.buildReport = (bucket, goals, paymentsIn) => {
 };
 
 exports.getReport = (buckets, payments) => {
-    return new Promise((fulfill) => {
+    return new Promise((fulfill, reject) => {
         let response = [];
         let now = moment();
 
@@ -88,8 +88,12 @@ exports.getReport = (buckets, payments) => {
             let category = b.category;
             let goalsForCategory = payments.filter((g) => g.category === category && g.type === 'OUT');
             let paymentsIn = payments.filter((p) => p.category === category && p.type === 'IN');
-            const report = this.buildReport(b, goalsForCategory, paymentsIn);
-
+            let report;
+            try {
+                report = this.buildReport(b, goalsForCategory, paymentsIn);
+            } catch (e) {
+                reject();
+            }
             const current = _.find(report, (r) => {
                 return moment(r.date).isSame(now, 'month')
                     && moment(r.date).isSame(now, 'year');

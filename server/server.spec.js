@@ -32,6 +32,16 @@ describe('integration tests', () => {
     });
 
     describe('migration tests', () => {
+        it('should run user migrations', (done) => {
+            knex('user').select().then((users) => {
+
+                assert.isDefined(users);
+                assert.lengthOf(users, 2);
+
+                done();
+            });
+        });
+
         it('should run buckets migrations', (done) => {
             knex('bucket').select().then((allBuckets) => {
 
@@ -58,6 +68,7 @@ describe('integration tests', () => {
         let user1, user2, host;
 
         before((done) => {
+
             host = 'http://localhost:' + app.get('port');
 
             user1 = superAgent.agent();
