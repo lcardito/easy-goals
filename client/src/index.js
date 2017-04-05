@@ -1,20 +1,19 @@
-import React from 'react';
-import AppMenu from './main/AppMenu';
-import './index.css';
-import 'semantic-ui/dist/semantic.min.css';
-import {render} from 'react-dom'
-import {hashHistory, Route, Router} from 'react-router';
-import {Provider} from 'react-redux';
+import React from "react";
+import AppMenu from "./main/AppMenu";
+import "./index.css";
+import "semantic-ui/dist/semantic.min.css";
+import {render} from "react-dom";
+import {hashHistory, Route, Router} from "react-router";
+import {Provider} from "react-redux";
 
 import BucketsPage from "./bucket/BucketsPage";
 import BucketDetail from "./bucket/BucketReport";
 import BucketForm from "./bucket/BucketForm";
 import GoalsPage from "./goal/GoalsPage";
-import GoalDetail from "./goal/GoalDetail";
-import Dashboard from './dashboard/DashboardPage';
+import Dashboard from "./dashboard/DashboardPage";
 import EnsureLoggedInContainer from "./main/EnsureLoggedInContainer";
 
-import {createStore} from 'redux'
+import {createStore} from "redux";
 import LoginForm from "./main/LoginForm";
 import cookie from "react-cookie";
 
@@ -40,7 +39,6 @@ render((
                 <Route component={EnsureLoggedInContainer}>
                     <Route path="/" component={Dashboard}/>
                     <Route path="/goals" component={GoalsPage}/>
-                    <Route path="/goals/:goalId" component={GoalDetail}/>
                     <Route path="/buckets" component={BucketsPage}/>
                     <Route path="/buckets/:bucketId" component={BucketForm}/>
                     <Route path="/buckets/:bucketId/report" component={BucketDetail}/>

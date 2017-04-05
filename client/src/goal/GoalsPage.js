@@ -1,10 +1,10 @@
 import React from "react";
 import Client from "../main/Client";
-import {Button, Confirm, Header, Icon, Input, Table} from "semantic-ui-react";
-import {formatInput, formatValue, getInputType} from "../utils";
+import {Button, Confirm, Header, Icon, Table} from "semantic-ui-react";
 import update from "immutability-helper";
 import _ from "lodash";
 import moment from "moment";
+import EditableGoalRow from "./EditableGoalRow";
 
 class GoalsPage extends React.Component {
     constructor() {
@@ -12,12 +12,6 @@ class GoalsPage extends React.Component {
 
         this.state = {
             goals: [],
-            selectedGoal: {
-                label: '',
-                amount: 0,
-                category: '',
-                dueDate: moment().format('YYYY-MM-DD')
-            },
             deleting: false,
             sortingBy: ''
         };
@@ -30,8 +24,6 @@ class GoalsPage extends React.Component {
         ];
 
         this._getGoals = this._getGoals.bind(this);
-        this._startEditItem = this._startEditItem.bind(this);
-        this._updateGoal = this._updateGoal.bind(this);
         this._saveGoal = this._saveGoal.bind(this);
         this._deleteGoal = this._deleteGoal.bind(this);
         this._exitEditItem = this._exitEditItem.bind(this);
@@ -58,17 +50,8 @@ class GoalsPage extends React.Component {
         })
     }
 
-    _updateGoal(event) {
-        event.preventDefault();
-        this.setState({
-            selectedGoal: update(this.state.selectedGoal, {
-                $merge: {[event.target.name]: event.target.value}
-            })
-        });
-    }
-
-    _deleteGoal(goal){
-        if(this.state.deleting) {
+    _deleteGoal(goal) {
+        if (this.state.deleting) {
             Client.deleteGoal(this.toBeDeleted.id);
             let idx = _.findIndex(this.state.goals, ['id', this.toBeDeleted.id]);
             this.setState({
@@ -83,9 +66,11 @@ class GoalsPage extends React.Component {
         }
     };
 
-    _saveGoal(idx) {
-        if (!this.state.selectedGoal.id) {
-            Client.addGoal(this.state.selectedGoal, (newGoal) => {
+    _saveGoal(goal) {
+        let idx = _.findIndex(this.state.goals, goal);
+
+        if (!goal.id) {
+            Client.addGoal(goal, (newGoal) => {
                 let goals = this.state.goals;
                 this.setState({
                     goals: update(goals, {
@@ -94,7 +79,7 @@ class GoalsPage extends React.Component {
                 })
             });
         } else {
-            Client.editGoal(this.state.selectedGoal, (updatedGoals) => {
+            Client.editGoal(goal, (updatedGoals) => {
                 let goals = this.state.goals;
                 this.setState({
                     goals: update(goals, {
@@ -103,68 +88,33 @@ class GoalsPage extends React.Component {
                 });
             });
         }
-        this.setState({
-            selectedGoal: {
-                label: '',
-                amount: 0,
-                category: '',
-                dueDate: moment().format('YYYY-MM-DD')
-            }
-        });
     };
 
-    _startEditItem(idx) {
-        this.setState({
-            selectedGoal: this.state.goals[idx]
-        });
-    };
-
-    _exitEditItem() {
-        if(!this.state.selectedGoal.id){
+    _exitEditItem(item) {
+        if (!item.id) {
             this.setState({
                 goals: update(this.state.goals, {
                     $splice: [[this.state.goals.length - 1, 1]]
                 })
             });
         }
-        this.setState({
-            selectedGoal: {}
-        });
     }
 
     _addNewGoal() {
-        if(_.last(this.state.goals).id) {
+        if (_.last(this.state.goals).id) {
             let goals = this.state.goals;
             this.setState({
                 goals: update(goals, {
-                    $push: [this.state.selectedGoal]
+                    $push: [{
+                        label: '',
+                        amount: 0,
+                        category: '',
+                        dueDate: moment().format('YYYY-MM-DD')
+                    }]
                 })
             });
         }
     }
-
-    _itemMapper = (item, h, idx) => {
-        if (this.state.selectedGoal.id === item.id) {
-            return (
-                <Table.Cell
-                    key={idx}>
-                    <Input
-                        fluid
-                        type={getInputType(h.key)}
-                        onChange={this._updateGoal}
-                        name={h.key}
-                        value={formatInput(this.state.selectedGoal[h.key], h.key)}/>
-                </Table.Cell>
-            )
-        } else {
-            return (
-                <Table.Cell
-                    key={idx}>
-                    {formatValue(item[h.key], h.key)}
-                </Table.Cell>
-            )
-        }
-    };
 
     _headerMapper = (h, idx) => {
         let iconName = 'sort';
@@ -201,28 +151,17 @@ class GoalsPage extends React.Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {this.state.goals.map((goal, itemIdx) => ([
-                            <Table.Row
-                                key={itemIdx}>
-                                {this.headers.map((h, idx) => {
-                                    return this._itemMapper(goal, h, idx);
-                                })}
-                                <Table.Cell collapsing textAlign="center">
-                                    {this.state.selectedGoal.id !== goal.id &&
-                                    <Button.Group size="mini" basic compact>
-                                        <Button color="blue" icon="edit" onClick={() => this._startEditItem(itemIdx)}/>
-                                        <Button negative icon="delete" onClick={() => {this._deleteGoal(goal)}}/>
-                                    </Button.Group>
-                                    }
-                                    {this.state.selectedGoal.id === goal.id &&
-                                    <Button.Group size="mini" basic compact>
-                                        <Button icon="step backward" onClick={() => this._exitEditItem()}/>
-                                        <Button icon='save' color="blue" onClick={() => this._saveGoal(itemIdx)}/>
-                                    </Button.Group>
-                                    }
-                                </Table.Cell>
-                            </Table.Row>
-                        ]))}
+                        {this.state.goals.map((goal, itemIdx) => (
+                            <EditableGoalRow
+                                key={itemIdx}
+                                editing={!goal.id}
+                                goal={goal}
+                                goalKeys={this.headers}
+                                saveCallback={this._saveGoal}
+                                undoCallback={this._exitEditItem}
+                                deleteCallback={this._deleteGoal}
+                            />
+                        ))}
                     </Table.Body>
                     <Table.Footer fullWidth>
                         <Table.Row>
