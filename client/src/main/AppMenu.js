@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router";
 import {Menu} from "semantic-ui-react";
 
-import {connect} from 'react-redux';
+import {connect} from "react-redux";
 import {mapStateToProps} from "../transformer";
 
 class AppMenu extends React.Component {
@@ -26,6 +26,7 @@ class AppMenu extends React.Component {
     }
 
     render() {
+        //noinspection HtmlDeprecatedTag
         return (
             <div className='ui container'>
                 <Menu stackable={true}>
@@ -56,3 +57,11 @@ class AppMenu extends React.Component {
 }
 
 export default connect(mapStateToProps)(AppMenu);
+
+AppMenu.propTypes = {
+    isLoggedIn: React.PropTypes.bool
+};
+
+AppMenu.propDefatul = {
+    isLoggedIn: false
+};
