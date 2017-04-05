@@ -53,7 +53,7 @@ module.exports = {
             tableName: 'knex_migrations'
         },
         seeds: {
-            directory: './migrations/seeds/test'
+            directory: './migrations/seeds/demo'
         }
     },
 
