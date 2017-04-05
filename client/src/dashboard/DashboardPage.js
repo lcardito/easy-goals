@@ -1,7 +1,7 @@
 import React from "react";
 
 import Client from "../main/Client";
-import GoalsLineChart from "./GoalsLineChart";
+import GoalsLineChart from "./DashboardCharts";
 
 class DashboardPage extends React.Component {
     constructor() {
