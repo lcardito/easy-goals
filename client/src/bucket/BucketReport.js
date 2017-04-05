@@ -51,7 +51,7 @@ class BucketReport extends React.Component {
                     {key: 'paymentsIn', value: 'Money in'},
                     {key: 'paymentsOut', value: 'Money out'}
                 ]}
-                items={this.state.report}
+                report={this.state.report}
             />
             <Button className="marginTopButton" type="button" onClick={() => this.context.router.goBack()}>Back</Button>
         </div>
