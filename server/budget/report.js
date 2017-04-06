@@ -8,33 +8,36 @@ const moment = MomentRange.extendMoment(Moment);
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 function calculateMonthlySavings(startingDate, goals, initialBalance) {
+    let ordered = _.orderBy(goals, ['dueDate'], ['asc']);
     let totalCost = _.sumBy(goals, 'amount');
     if (initialBalance >= totalCost) {
         return 0;
     }
 
-    let lastDueDate = moment(goals.slice(-1)[0].dueDate, DATE_FORMAT);
+    let lastDueDate = moment(ordered.slice(-1)[0].dueDate, DATE_FORMAT);
     let startSavingDate = moment(startingDate, DATE_FORMAT);
 
     let months = Math.floor(moment.duration(lastDueDate.diff(startSavingDate)).asMonths());
     return Math.ceil((totalCost - initialBalance) / months);
 }
 
-exports.buildReport = (bucket, goals, paymentsIn) => {
+exports.buildReport = (bucket, paymentsOut, paymentsIn) => {
     paymentsIn = paymentsIn ? paymentsIn : [];
     let startingBalance = bucket.balance;
-    let goalsByDate = _.orderBy(goals, ['dueDate'], ['asc']);
-    let monthlySaving = calculateMonthlySavings(bucket.createdDate, goalsByDate, startingBalance);
+    let paymentsOutByDate = _.orderBy(paymentsOut, ['dueDate'], ['asc']);
+    let maxPayment = _.maxBy(paymentsOut, 'amount');
+
+    let monthlySaving = calculateMonthlySavings(bucket.createdDate, paymentsOutByDate, startingBalance);
 
     let report = [];
     let monthsIn = Array.from(moment.range(moment(bucket.createdDate),
-        moment(goalsByDate.slice(-1)[0].dueDate, DATE_FORMAT)).by('month'));
+        moment(paymentsOutByDate.slice(-1)[0].dueDate, DATE_FORMAT)).by('month'));
 
     for (let mIdx = 1; mIdx <= monthsIn.length; mIdx++) {
         let currentMonth = monthsIn[mIdx - 1];
         let isLast = mIdx === monthsIn.length;
 
-        let extraPayments = paymentsIn.filter((p) => {
+        let currentMonthPaymentIn = paymentsIn.filter((p) => {
             return moment(p.dueDate).isSame(currentMonth, 'month')
                 && moment(p.dueDate).isSame(currentMonth, 'year');
         });
@@ -44,13 +47,13 @@ exports.buildReport = (bucket, goals, paymentsIn) => {
             payIn: isLast ? 0 : monthlySaving
         };
 
-        let tempBalance = startingBalance + reportItem.payIn + _.sumBy(extraPayments, 'amount');
-        let goalsInMonth = goals.filter((g) => {
+        let tempBalance = startingBalance + reportItem.payIn + _.sumBy(currentMonthPaymentIn, 'amount');
+        let currentMothPaymentsOut = paymentsOut.filter((g) => {
             return moment(g.dueDate).isSame(currentMonth, 'month')
                 && moment(g.dueDate).isSame(currentMonth, 'year')
         });
-        if (goalsInMonth.length > 0) {
-            tempBalance = tempBalance - _.sumBy(goalsInMonth, 'amount');
+        if (currentMothPaymentsOut.length > 0) {
+            tempBalance = tempBalance - _.sumBy(currentMothPaymentsOut, 'amount');
 
             if (tempBalance < 0) {
                 mIdx = 0;
@@ -59,19 +62,21 @@ exports.buildReport = (bucket, goals, paymentsIn) => {
                 startingBalance = bucket.balance;
                 continue;
             }
-        }
 
-        let nextGoals = goals.filter((g) => {
-            return moment(g.dueDate).isAfter(currentMonth, 'month');
-        });
-        let newMonthly = calculateMonthlySavings(currentMonth.clone().add(1, 'month'), nextGoals, tempBalance);
-        if (newMonthly < monthlySaving) {
-            monthlySaving = newMonthly;
+            if (currentMothPaymentsOut.indexOf(maxPayment) !== -1) {
+                let nextGoals = paymentsOut.filter((g) => {
+                    return moment(g.dueDate).isAfter(currentMonth, 'month');
+                });
+                let newMonthly = calculateMonthlySavings(currentMonth.clone().add(1, 'month'), nextGoals, tempBalance);
+                if (newMonthly < monthlySaving) {
+                    monthlySaving = newMonthly;
+                }
+            }
         }
 
         startingBalance = tempBalance;
         reportItem.balance = tempBalance;
-        reportItem.payments = goalsInMonth.concat(extraPayments);
+        reportItem.payments = currentMothPaymentsOut.concat(currentMonthPaymentIn);
 
         report.push(reportItem);
     }
@@ -86,11 +91,11 @@ exports.getReport = (buckets, payments) => {
 
         buckets.forEach((b) => {
             let category = b.category;
-            let goalsForCategory = payments.filter((g) => g.category === category && g.type === 'OUT');
+            let paymentsOut = payments.filter((g) => g.category === category && g.type === 'OUT');
             let paymentsIn = payments.filter((p) => p.category === category && p.type === 'IN');
             let report;
             try {
-                report = this.buildReport(b, goalsForCategory, paymentsIn);
+                report = this.buildReport(b, paymentsOut, paymentsIn);
             } catch (e) {
                 reject();
             }
