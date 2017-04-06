@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Container, Header, Table} from "semantic-ui-react";
+import {Button, Container, Header, List} from "semantic-ui-react";
 
 class Payments extends React.Component {
 
@@ -11,7 +11,7 @@ class Payments extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         this.state = {
             payments: nextProps.payments
         };
@@ -23,37 +23,30 @@ class Payments extends React.Component {
                 <Header as='h4'>No expected payments</Header>
             </Container>;
         } else {
-            return <div>
-                <Table
-                    celled
-                    padded
-                    striped
-                    unstackable
-                    style={{width: '50%', margin: '0 auto'}}>
-                    <Table.Header fullWidth>
-                        <Table.Row>
-                            <Table.HeaderCell colSpan='3'>Transactions at this date</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {this.state.payments.map((p, idx) => {
-                            return <Table.Row
-                                key={idx}>
-                                <Table.Cell>{p.label}</Table.Cell>
-                                <Table.Cell
-                                    negative={p.type === 'OUT'}
-                                    positive={p.type === 'IN'}>{p.amount}</Table.Cell>
-                                {p.type === 'IN' &&
-                                <Table.Cell width={1} textAlign="center">
-                                    <Button color="red" size="mini" basic compact icon="delete"
-                                            onClick={() => this.props.deleteCallback(p)}
-                                    />
-                                </Table.Cell>
-                                }
-                            </Table.Row>
-                        })}
-                    </Table.Body>
-                </Table>
+            return <div style={{width: '80%', height: '20%', margin: '1em auto'}}>
+                <Header as='h4'>Transactions at this date</Header>
+                <List divided size="large">
+                    {this.state.payments.map((p, idx) => {
+                        return <List.Item
+                            key={idx}>
+                            {p.type === 'IN' &&
+                            <List.Content floated='right'>
+                                <Button size="mini" basic compact color="red">delete</Button>
+                            </List.Content>
+                            }
+                            {p.type === 'IN' &&
+                            <List.Icon name='plus' color="green" size='small' verticalAlign='middle'/>
+                            }
+                            {p.type === 'OUT' &&
+                            <List.Icon color="red" name='minus' size='small' verticalAlign='middle'/>
+                            }
+                            <List.Content>
+                                <List.Header as='a'>{p.label}</List.Header>
+                                <List.Description as='a'>£ {p.amount}</List.Description>
+                            </List.Content>
+                        </List.Item>
+                    })}
+                </List>
             </div>
         }
     }
