@@ -160,6 +160,7 @@ class GoalsPage extends React.Component {
                                 saveCallback={this._saveGoal}
                                 undoCallback={this._exitEditItem}
                                 deleteCallback={this._deleteGoal}
+                                categories={_.uniq(this.state.goals.map((g) => {return g.category})).filter((c) => c !== '')}
                             />
                         ))}
                     </Table.Body>

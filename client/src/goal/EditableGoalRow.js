@@ -1,21 +1,23 @@
 import React from "react";
 import {formatInput, formatValue, getInputType} from "../utils";
-import {Button, Input, Table} from "semantic-ui-react";
+import {Button, Dropdown, Input, Table} from "semantic-ui-react";
 import update from "immutability-helper";
 
 class EditableGoalRow extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super();
         this.state = {
             editing: props.editing,
-            goal: props.goal
+            goal: props.goal,
+            categories: props.categories
         };
 
         this._startEditItem = this._startEditItem.bind(this);
         this._stopEditItem = this._stopEditItem.bind(this);
         this._updateItem = this._updateItem.bind(this);
         this._saveItem = this._saveItem.bind(this);
+        this._addCategory = this._addCategory.bind(this);
     }
 
     _startEditItem() {
@@ -39,26 +41,51 @@ class EditableGoalRow extends React.Component {
         this.props.saveCallback(this.state.goal);
     }
 
-    _updateItem(event) {
+    _updateItem(event, {name, value}) {
         event.preventDefault();
+        let goalKey = name ? name : event.target.name;
+        let goalValue = value ? value : event.target.value;
         this.setState({
             goal: update(this.state.goal, {
-                $merge: {[event.target.name]: event.target.value}
+                $merge: {[goalKey]: goalValue}
             })
         });
     }
 
+    _addCategory(e, {value}){
+        e.preventDefault();
+        let newCategories = this.state.categories;
+        newCategories.push(value);
+        this.setState({
+            categories: newCategories
+        });
+    }
 
     _goalMapper = (goal, h, idx) => {
         if (this.state.editing) {
+            let input;
+            if (h.key === 'category') {
+                let opt = this.state.categories.map((c, idx) => {
+                    return {key: `${c}_${idx}`, value: c, text: c}
+                });
+                input = <Dropdown fluid search selection
+                                  placeholder='Category'
+                                  allowAdditions={true}
+                                  name='category'
+                                  onAddItem={this._addCategory}
+                                  onChange={this._updateItem}
+                                  options={opt}/>;
+            } else {
+                input = <Input
+                    fluid
+                    type={getInputType(h.key)}
+                    onChange={this._updateItem}
+                    name={h.key}
+                    value={formatInput(this.state.goal[h.key], h.key)}/>
+            }
             return (
                 <Table.Cell key={idx}>
-                    <Input
-                        fluid
-                        type={getInputType(h.key)}
-                        onChange={this._updateItem}
-                        name={h.key}
-                        value={formatInput(this.state.goal[h.key], h.key)}/>
+                    {input}
                 </Table.Cell>
             )
         } else {
@@ -99,6 +126,7 @@ class EditableGoalRow extends React.Component {
 EditableGoalRow.propTypes = {
     goalKeys: React.PropTypes.array,
     goal: React.PropTypes.object,
+    categories: React.PropTypes.array,
     editing: React.PropTypes.bool,
     saveCallback: React.PropTypes.func,
     deleteCallback: React.PropTypes.func,
@@ -107,10 +135,14 @@ EditableGoalRow.propTypes = {
 EditableGoalRow.defaultProps = {
     goalKeys: [],
     goal: {},
+    categories: [],
     editing: false,
-    deleteCallback: () => {},
-    saveCallback: () => {},
-    undoCallback: () => {}
+    deleteCallback: () => {
+    },
+    saveCallback: () => {
+    },
+    undoCallback: () => {
+    }
 };
 
 export default EditableGoalRow;
