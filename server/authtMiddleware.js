@@ -31,7 +31,6 @@ auth.use(new LocalStrategy({
                     }
                 });
             }).catch((e) => {
-            "use strict";
             console.error('Something went wrong ' + e);
         });
     }

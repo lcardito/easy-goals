@@ -1,8 +1,8 @@
 "use strict";
 
 const db = require('../db');
-const budget = require('../budget/report');
-let bucketApi = require('express').Router({mergeParams: true});
+const reporter = require('../report/report');
+const bucketApi = require('express').Router({mergeParams: true});
 
 bucketApi.get('/', (req, res) => {
     db('bucket')
@@ -13,7 +13,7 @@ bucketApi.get('/', (req, res) => {
                 .where({'user_id': req.user.id})
                 .select()
                 .then((payments) => {
-                    budget.getReport(buckets, payments).then((response) => {
+                    reporter.getReport(buckets, payments).then((response) => {
                         res.json(response);
                     });
                 });

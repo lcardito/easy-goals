@@ -31,7 +31,9 @@ class Payments extends React.Component {
                             key={idx}>
                             {p.type === 'IN' &&
                             <List.Content floated='right'>
-                                <Button size="mini" basic compact color="red">delete</Button>
+                                <Button
+                                    style={{marginTop: '0.3em'}}
+                                    size="mini" basic compact color="red">delete</Button>
                             </List.Content>
                             }
                             {p.type === 'IN' &&
