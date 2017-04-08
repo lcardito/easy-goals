@@ -32,7 +32,6 @@ if(env === 'production' || env === 'docker'){
     let whitelist = ['http://localhost:3000', 'https://simple-goals.herokuapp.com'];
     let corsOptions = {
         origin: (origin, callback) => {
-            console.log(origin);
             if (whitelist.indexOf(origin) !== -1) {
                 callback(null, true)
             } else {
