@@ -27,14 +27,14 @@ goalApi.post('/', (req, res) => {
     db('payment')
         .insert(goal)
         .then((savedId) => {
-            db('payment')
+            db('bucket')
                 .where({
                     category: goal.category,
                     user_id: req.user.id
                 }).select()
                 .then((result) => {
                     if (result.length === 0) {
-                        return db('payment').insert({
+                        return db('bucket').insert({
                             user_id: req.user.id,
                             category: goal.category,
                             balance: 0,
