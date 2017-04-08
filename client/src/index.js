@@ -1,11 +1,11 @@
 import React from "react";
-import AppMenu from "./main/AppMenu";
 import "./index.css";
 import "semantic-ui/dist/semantic.min.css";
 import {render} from "react-dom";
 import {hashHistory, Route, Router} from "react-router";
 import {Provider} from "react-redux";
 
+import AppMenu from "./main/AppMenu";
 import BucketsPage from "./bucket/BucketsPage";
 import BucketDetail from "./bucket/BucketReport";
 import BucketForm from "./bucket/BucketForm";

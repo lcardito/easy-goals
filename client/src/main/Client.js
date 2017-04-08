@@ -1,6 +1,8 @@
+const BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001';
+
 /* eslint-disable no-undef */
 function search(query, cb) {
-    return fetch(`api/food?q=${query}`, {
+    return fetch(`${BASE}/api/food?q=${query}`, {
         accept: 'application/json',
     }).then(checkStatus)
         .then(parseJSON)
@@ -9,7 +11,7 @@ function search(query, cb) {
 }
 
 function login(user, cb) {
-    fetch('/login', {
+    fetch(`${BASE}/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -24,7 +26,7 @@ function login(user, cb) {
 }
 
 function getGoals(cb) {
-    fetch('/api/goals/', {
+    fetch(`${BASE}/api/goals/`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -37,7 +39,7 @@ function getGoals(cb) {
 }
 
 function getBuckets(cb) {
-    fetch('/api/bucket/', {
+    fetch(`${BASE}/api/bucket/`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -50,7 +52,7 @@ function getBuckets(cb) {
 }
 
 function getBucket(bucketId, cb) {
-    fetch(`api/bucket/${bucketId}`, {
+    fetch(`${BASE}/api/bucket/${bucketId}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -63,7 +65,7 @@ function getBucket(bucketId, cb) {
 }
 
 function addGoal(goal, cb) {
-    fetch('/api/goals/', {
+    fetch(`${BASE}/api/goals/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -77,7 +79,7 @@ function addGoal(goal, cb) {
 }
 
 function addPayment(payment, cb) {
-    fetch('/api/payment/', {
+    fetch(`${BASE}/api/payment/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -91,7 +93,7 @@ function addPayment(payment, cb) {
 }
 
 function editGoal(toEdit, cb) {
-    fetch('api/goals/', {
+    fetch(`${BASE}/api/goals/`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -105,7 +107,7 @@ function editGoal(toEdit, cb) {
 }
 
 function deleteGoal(goalId, cb) {
-    fetch(`api/goals/${goalId}`, {
+    fetch(`${BASE}/api/goals/${goalId}`, {
         method: 'DELETE',
         credentials: 'include'
     }).then(checkStatus)
@@ -113,7 +115,7 @@ function deleteGoal(goalId, cb) {
 }
 
 function deletePayment(paymentId, cb) {
-    fetch(`api/payment/${paymentId}`, {
+    fetch(`${BASE}/api/payment/${paymentId}`, {
         method: 'DELETE',
         credentials: 'include'
     }).then(checkStatus)
@@ -125,7 +127,7 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     }
-    const error = new Error(`HTTP Error ${response.statusText}`);
+    const error = new Error(`${BASE}/HTTP Error ${response.statusText}`);
     error.errorStatus = response.statusText;
     error.response = response;
 

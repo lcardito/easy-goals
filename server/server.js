@@ -4,8 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const auth = require('./authtMiddleware');
+const cors = require('cors');
 
-let env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV;
 console.log('Starting server in ' + env);
 
 const db = require('./db');
@@ -26,8 +28,22 @@ app.use(['/*'], session({
     }
 }));
 
-let auth = require('./authtMiddleware');
+if(env === 'production' || env === 'docker'){
+    let whitelist = ['http://localhost:3000', 'https://simple-goals.herokuapp.com'];
+    let corsOptions = {
+        origin: (origin, callback) => {
+            console.log(origin);
+            if (whitelist.indexOf(origin) !== -1) {
+                callback(null, true)
+            } else {
+                callback(new Error('Not allowed by CORS'))
+            }
+        },
+        credentials: true
+    };
 
+    app.use(cors(corsOptions));
+}
 app.use(auth.initialize());
 app.use(auth.session());
 
