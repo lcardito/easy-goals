@@ -30,7 +30,7 @@ app.use(['/*'], session({
 
 // Express only serves static assets in production
 if (env === 'production') {
-    app.use(express.static('client/build'));
+    app.use(express.static('../client/build'));
 }
 
 if (env === 'production' || env === 'docker') {
@@ -38,7 +38,10 @@ if (env === 'production' || env === 'docker') {
     let corsOptionsDelegate = (req, callback) => {
         let corsOptions;
         if (whitelist.indexOf(req.header('Origin')) !== -1) {
-            corsOptions = {origin: true};
+            corsOptions = {
+                origin: true,
+                credentials: true
+            };
         } else {
             corsOptions = {origin: false}
         }
@@ -76,6 +79,7 @@ api.use('/goals', require('./payment/goalApi'));
 
 app.use('/api', api);
 
+console.log('Running database migrations');
 db.migrate.latest()
     .then(() => {
         if (env === 'test') {

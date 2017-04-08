@@ -1,9 +1,8 @@
 #!/bin/bash
-npm i
 cd client
 npm i
-
 rm -rf node_modules/@types/react
 
-cd ..
+cd ../server
+npm i
 npm run-script dev-start
