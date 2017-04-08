@@ -1,4 +1,4 @@
-const BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001';
+const BASE = process.env.NODE_ENV === 'production' ? 'https://simple-goals.herokuapp.com' : 'http://localhost:3001';
 
 /* eslint-disable no-undef */
 function search(query, cb) {
