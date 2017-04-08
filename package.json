@@ -24,7 +24,7 @@
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "NODE_ENV=production node server/server.js",
+    "start": "NODE_ENV=production node server/src/server.js",
     "dev-start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server/server.js --exec babel-node",
     "client": "babel-node start-client.js",
