@@ -4,13 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const auth = require('./authtMiddleware');
+const auth = require('./config/authtMiddleware');
 const cors = require('cors');
 
 const env = process.env.NODE_ENV;
 console.log('Starting server in ' + env);
 
-const db = require('./db');
+const db = require('./config/db');
 
 const app = express();
 app.set('port', (process.env.PORT || 3001));
@@ -29,7 +29,7 @@ app.use(['/*'], session({
 }));
 
 if(env === 'production' || env === 'docker'){
-    let whitelist = ['http://localhost:3000', 'https://simple-goals.herokuapp.com'];
+    let whitelist = ['http://localhost:3000', 'simple-goals.herokuapp.com'];
     let corsOptions = {
         origin: (origin, callback) => {
             if (whitelist.indexOf(origin) !== -1) {

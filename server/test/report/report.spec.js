@@ -1,6 +1,6 @@
 "use strict";
 
-const budget = require('./report');
+const budget = require('./../../src/report/report');
 const moment = require('moment');
 const util = require("util");
 const _ = require("lodash");
@@ -190,8 +190,8 @@ describe('budget module', () => {
         });
 
         it('performance test', () => {
-            let payments = require('./performaceData').payments;
-            let bucket = require('./performaceData').bucket;
+            let payments = require('././performaceData').payments;
+            let bucket = require('././performaceData').bucket;
             const report = budget.buildReport(bucket,
                 payments.filter((p) => {return p.type === 'OUT'}),
                 payments.filter((p) => {return p.type === 'IN'}));

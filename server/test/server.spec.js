@@ -3,7 +3,7 @@
 const request = require('supertest');
 const util = require("util");
 const assert = require('chai').assert;
-const server = require('./server');
+const server = require('./../src/server');
 const superAgent = require('superagent');
 
 describe('integration tests', () => {

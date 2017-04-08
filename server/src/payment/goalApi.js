@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('../db');
+const db = require('../config/db');
 let goalApi = require('express').Router({mergeParams: true});
 
 const Moment = require('moment');

@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('../db');
+const db = require('../config/db');
 const reporter = require('../report/report');
 const bucketApi = require('express').Router({mergeParams: true});
 

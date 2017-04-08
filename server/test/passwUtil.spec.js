@@ -4,7 +4,7 @@ const util = require("util");
 const assert = require('chai').assert;
 
 describe('password encrypting module using bcrypt', () => {
-    let passwUtil = require('./passwUtil');
+    let passwUtil = require('./../src/config/passwUtil');
 
     it('should encrypt password', (done) => {
         passwUtil.cryptPassword('somePassword', (err, hash) => {
