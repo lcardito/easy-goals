@@ -33,21 +33,19 @@ if (env === 'production') {
     app.use(express.static('client/build'));
 }
 
-if(env === 'production' || env === 'docker'){
+if (env === 'production' || env === 'docker') {
     let whitelist = ['http://localhost:3000', 'https://simple-goals.herokuapp.com'];
-
-    let corsOptions = {
-        origin: (origin, callback) => {
-            if (whitelist.indexOf(origin) !== -1) {
-                callback(null, true)
-            } else {
-                callback(new Error(`${origin} is not allowed by CORS`));
-            }
-        },
-        credentials: true
+    let corsOptionsDelegate = (req, callback) => {
+        let corsOptions;
+        if (whitelist.indexOf(req.header('Origin')) !== -1) {
+            corsOptions = {origin: true};
+        } else {
+            corsOptions = {origin: false}
+        }
+        callback(null, corsOptions);
     };
 
-    app.use(cors(corsOptions));
+    app.use(cors(corsOptionsDelegate));
 }
 app.use(auth.initialize());
 app.use(auth.session());
