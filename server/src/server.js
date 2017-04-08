@@ -28,8 +28,17 @@ app.use(['/*'], session({
     }
 }));
 
+// Express only serves static assets in production
+if (env === 'production') {
+    app.use(express.static('client/build'));
+}
+
 if(env === 'production' || env === 'docker'){
-    let whitelist = ['http://localhost:3000', 'simple-goals.herokuapp.com'];
+    let whitelist = ['http://localhost:3000',
+        'simple-goals.herokuapp.com',
+        'http://simple-goals.herokuapp.com',
+        'https://simple-goals.herokuapp.com'];
+
     let corsOptions = {
         origin: (origin, callback) => {
             if (whitelist.indexOf(origin) !== -1) {
@@ -45,11 +54,6 @@ if(env === 'production' || env === 'docker'){
 }
 app.use(auth.initialize());
 app.use(auth.session());
-
-// Express only serves static assets in production
-if (env === 'production') {
-    app.use(express.static('client/build'));
-}
 
 app.post('/login',
     auth.authenticate('local', {failWithError: true}),
