@@ -3,7 +3,7 @@
     "node": ">= 7.5.0"
   },
   "scripts": {
-    "prestart": "cd server && npm install --production && cd ../client && npm install && npm run build",
+    "postinstall": "cd server && npm install --production && cd ../client && npm install && npm run build",
     "start": "cd server && npm start",
     "test": "cd server && npm test"
   }
