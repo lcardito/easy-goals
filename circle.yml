@@ -3,3 +3,7 @@ deployment:
     branch: master
     heroku:
       appname: simple-goals
+dependencies:
+  cache_directories:
+    - "server/node_modules"
+    - "client/node_modules"
