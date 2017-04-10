@@ -5,8 +5,8 @@ deployment:
       appname: simple-goals
 dependencies:
   pre:
-    - mkdir server/node_modules
-    - mkdir client/node_modules
+    - mkdir -p server/node_modules
+    - mkdir -p client/node_modules
   cache_directories:
     - "server/node_modules"
     - "client/node_modules"
