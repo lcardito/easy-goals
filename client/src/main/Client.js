@@ -128,6 +128,29 @@ function deletePayment(paymentId, cb) {
 }
 
 
+function getPayments(category, cb) {
+    fetch(`${BASE}/api/payment?category=${category}`, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
+function updatePayment(toEdit, cb) {
+    fetch(`${BASE}/api/payment/`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(toEdit)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
@@ -158,7 +181,9 @@ const Client = {
     },
     payment: {
         save: addPayment,
-        remove: deletePayment
+        remove: deletePayment,
+        all: getPayments,
+        edit: updatePayment
     }
 };
 

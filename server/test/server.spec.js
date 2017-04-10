@@ -90,8 +90,8 @@ describe('integration tests', () => {
                 });
         });
 
-        it('user1 should see only own goals', (done) => {
-            user1.get(host + '/api/goals')
+        it('user1 should see only own payments', (done) => {
+            user1.get(host + '/api/payment')
                 .then((response) => {
                     assert.lengthOf(response.body, 6);
                     done();
@@ -99,8 +99,8 @@ describe('integration tests', () => {
 
         });
 
-        it('user2 should see only own goals', (done) => {
-            user2.get(host + '/api/goals')
+        it('user2 should see only own payments', (done) => {
+            user2.get(host + '/api/payment')
                 .then((response) => {
                     assert.lengthOf(response.body, 1);
                     done();
@@ -109,7 +109,7 @@ describe('integration tests', () => {
         });
 
         it('should add payment for the goal if its category does not exists', (done) => {
-            user1.post(host + '/api/goals')
+            user1.post(host + '/api/payment')
                 .send({
                     category: 'NewCategory',
                     label: 'Bike exhaust',
@@ -148,7 +148,7 @@ describe('integration tests', () => {
         });
 
         it('should save into database on post', (done) => {
-            user1.post(host + '/api/goals')
+            user1.post(host + '/api/payment')
                 .send({category: 'Vehicles', label: 'Bike exhaust', amount: 500, dueDate: '2017-06-30'})
                 .then(response => {
                     assert.equal(response.body[0].label, 'Bike exhaust', util.inspect(response.body, false, null));
@@ -157,7 +157,7 @@ describe('integration tests', () => {
         });
 
         it('should update into database on put', (done) => {
-            user1.put(host + '/api/goals')
+            user1.put(host + '/api/payment')
                 .send({id: 0, category: 'NewVehicles', label: 'Bike exhaust', amount: 500, dueDate: '2017-06-30'})
                 .then(response => {
                     assert.equal(response.body[0].id, 0, util.inspect(response, false, null));
@@ -173,13 +173,13 @@ describe('integration tests', () => {
                 .select()
                 .limit(1)
                 .then((result) => {
-                    user1.del(host + '/api/goals/' + result[0].id)
+                    user1.del(host + '/api/payment/' + result[0].id)
                         .then(() => {
                             knex('payment')
                                 .where('user_id', user1.id)
                                 .select()
-                                .then((goals) => {
-                                    assert.lengthOf(goals, 5);
+                                .then((payments) => {
+                                    assert.lengthOf(payments, 5);
                                     done();
                                 })
                         });
@@ -192,7 +192,8 @@ describe('integration tests', () => {
                     category: 'Personal',
                     label: 'Some extra cache',
                     amount: 100,
-                    dueDate: '2017-06-30'
+                    dueDate: '2017-06-30',
+                    type: 'IN'
                 })
                 .then((response) => {
                     assert.equal(response.body[0].type, 'IN', util.inspect(response.body, false, null));

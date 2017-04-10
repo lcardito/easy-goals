@@ -75,7 +75,6 @@ api.use((req, res, next) => {
 
 api.use('/bucket', require('./bucket/bucketApi'));
 api.use('/payment', require('./payment/paymentApi'));
-api.use('/goals', require('./payment/goalApi'));
 
 app.use('/api', api);
 
