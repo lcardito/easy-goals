@@ -1,5 +1,5 @@
 import React from "react";
-import Client from "../main/Client";
+import Client from "../../main/Client";
 import {Header, Icon, Table, Button, Confirm} from "semantic-ui-react";
 
 import update from "immutability-helper";
@@ -15,7 +15,8 @@ class BucketForm extends React.Component {
         this.state = {
             payments: [],
             sortingBy: '',
-            deleting: false
+            deleting: false,
+            title: ''
         };
 
         this.headers = [
@@ -41,7 +42,8 @@ class BucketForm extends React.Component {
             Client.bucket.one(this.props.params.bucketId, (bucket) => {
                 Client.payment.all(bucket.category, (payments) => {
                     this.setState({
-                        payments: payments
+                        payments: payments,
+                        title: bucket.category
                     });
                 });
             })
@@ -140,7 +142,7 @@ class BucketForm extends React.Component {
             <Header as='h2'>
                 <Icon name='target'/>
                 <Header.Content>
-                    Bucket SOME payments
+                    {this.state.title} payments
                     <Header.Subheader>
                         There are the current payments in the bucket
                     </Header.Subheader>
@@ -184,10 +186,11 @@ class BucketForm extends React.Component {
                     </Table.Row>
                 </Table.Footer>
             </Table>
+            <Button className="marginTopButton" type="button" onClick={() => this.context.router.goBack()}>Back</Button>
             <Confirm
                 open={this.state.deleting}
                 header='This operation can NOT be reverted'
-                content='Are you sure you want to delete this?'
+                content={`Are you sure you want to delete this?`}
                 onCancel={() => this.setState({deleting: false})}
                 onConfirm={() => this._deletePayment()}
             />

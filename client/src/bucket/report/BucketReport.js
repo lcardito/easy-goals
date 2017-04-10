@@ -1,5 +1,5 @@
 import React from "react";
-import Client from "../main/Client";
+import Client from "../../main/Client";
 import * as _ from "lodash";
 import {Button, Header, Icon} from "semantic-ui-react";
 import ReportTable from "./ReportTable";

@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Container, Header, List} from "semantic-ui-react";
 
-class Payments extends React.Component {
+class ReportPayments extends React.Component {
 
     constructor(props) {
         super();
@@ -54,9 +54,9 @@ class Payments extends React.Component {
     }
 }
 
-export default Payments;
+export default ReportPayments;
 
-Payments.propTypes = {
+ReportPayments.propTypes = {
     payments: React.PropTypes.array,
     deleteCallback: React.PropTypes.func
 };

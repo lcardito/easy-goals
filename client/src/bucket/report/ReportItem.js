@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatValue} from "../utils";
+import {formatValue} from "../../utils";
 import {Grid} from "semantic-ui-react";
 import _ from "lodash";
 

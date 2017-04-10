@@ -1,23 +1,21 @@
-import React from "react";
-import {formatInput, formatValue, getInputType} from "../utils";
-import {Button, Dropdown, Input, Table} from "semantic-ui-react";
+import React from 'react';
+import {formatInput, formatValue, getInputType} from "../../utils";
+import {Table, Button, Input, Dropdown} from 'semantic-ui-react';
 import update from "immutability-helper";
 
-class EditableGoalRow extends React.Component {
+class EditablePaymentRow extends React.Component {
 
     constructor(props) {
         super();
         this.state = {
             editing: props.editing,
-            goal: props.goal,
-            categories: props.categories
+            payment: props.payment,
         };
 
         this._startEditItem = this._startEditItem.bind(this);
         this._stopEditItem = this._stopEditItem.bind(this);
         this._updateItem = this._updateItem.bind(this);
         this._saveItem = this._saveItem.bind(this);
-        this._addCategory = this._addCategory.bind(this);
     }
 
     _startEditItem() {
@@ -31,59 +29,47 @@ class EditableGoalRow extends React.Component {
             editing: false
         });
 
-        this.props.undoCallback(this.state.goal);
+        this.props.undoCallback(this.state.payment);
     }
 
     _saveItem() {
         this.setState({
             editing: false
         });
-        this.props.saveCallback(this.state.goal);
+        this.props.saveCallback(this.state.payment);
     }
 
     _updateItem(event, {name, value}) {
         event.preventDefault();
-        let goalKey = name ? name : event.target.name;
-        let goalValue = value ? value : event.target.value;
+        let paymentKey = name ? name : event.target.name;
+        let paymentValue = value ? value : event.target.value;
         this.setState({
-            goal: update(this.state.goal, {
-                $merge: {[goalKey]: goalValue}
+            payment: update(this.state.payment, {
+                $merge: {[paymentKey]: paymentValue}
             })
         });
     }
 
-    _addCategory(e, {value}){
-        e.preventDefault();
-        let newCategories = this.state.categories;
-        newCategories.push(value);
-        this.setState({
-            categories: newCategories
-        });
-    }
-
-    _goalMapper = (goal, h, idx) => {
+    _paymentMapper = (h, idx) => {
         if (this.state.editing) {
-            let input;
-            if (h.key === 'category') {
-                let opt = this.state.categories.map((c, idx) => {
-                    return {key: `${c}_${idx}`, value: c, text: c}
-                });
-                input = <Dropdown fluid search selection
+            let input = null;
+            if (h.key === 'type') {
+                let opt = [{key: 'IN', value: 'IN', text: 'IN'}, {key: 'OUT', value: 'OUT', text: 'OUT'}];
+                input = <Dropdown
+                                  selection
+                                  defaultValue={this.state.payment[h.key]}
                                   size="small"
-                                  placeholder='Category'
-                                  allowAdditions={true}
-                                  name='category'
-                                  onAddItem={this._addCategory}
+                                  placeholder='Payment type'
+                                  name='type'
                                   onChange={this._updateItem}
                                   options={opt}/>;
             } else {
                 input = <Input
                     size="small"
-                    fluid
                     type={getInputType(h.key)}
                     onChange={this._updateItem}
                     name={h.key}
-                    value={formatInput(this.state.goal[h.key], h.key)}/>
+                    value={formatInput(this.state.payment[h.key], h.key)}/>
             }
             return (
                 <Table.Cell key={idx}>
@@ -93,7 +79,7 @@ class EditableGoalRow extends React.Component {
         } else {
             return (
                 <Table.Cell key={idx}>
-                    {formatValue(goal[h.key], h.key)}
+                    {formatValue(this.state.payment[h.key], h.key)}
                 </Table.Cell>
             )
         }
@@ -102,15 +88,15 @@ class EditableGoalRow extends React.Component {
 
     render() {
         return <Table.Row>
-            {this.props.goalKeys.map((h, idx) => {
-                return this._goalMapper(this.props.goal, h, idx);
+            {this.props.paymentKeys.map((h, idx) => {
+                return this._paymentMapper(h, idx);
             })}
             <Table.Cell collapsing textAlign="center">
                 {!this.state.editing &&
                 <Button.Group size="mini" basic compact>
                     <Button color="blue" icon="edit" onClick={this._startEditItem}/>
                     <Button negative icon="delete" onClick={() => {
-                        this.props.deleteCallback(this.state.goal)
+                        this.props.deleteCallback(this.state.payment)
                     }}/>
                 </Button.Group>
                 }
@@ -125,26 +111,21 @@ class EditableGoalRow extends React.Component {
     }
 }
 
-EditableGoalRow.propTypes = {
-    goalKeys: React.PropTypes.array,
-    goal: React.PropTypes.object,
-    categories: React.PropTypes.array,
+EditablePaymentRow.propTypes = {
+    paymentKeys: React.PropTypes.array,
+    payment: React.PropTypes.object,
     editing: React.PropTypes.bool,
     saveCallback: React.PropTypes.func,
     deleteCallback: React.PropTypes.func,
     undoCallback: React.PropTypes.func
 };
-EditableGoalRow.defaultProps = {
-    goalKeys: [],
-    goal: {},
-    categories: [],
+EditablePaymentRow.defaultProps = {
+    paymentKeys: [],
+    payment: {},
     editing: false,
-    deleteCallback: () => {
-    },
-    saveCallback: () => {
-    },
-    undoCallback: () => {
-    }
+    deleteCallback: () => {},
+    saveCallback: () => {},
+    undoCallback: () => {}
 };
 
-export default EditableGoalRow;
+export default EditablePaymentRow;

@@ -1,8 +1,8 @@
 import React from "react";
 import {Accordion, Confirm, Grid} from "semantic-ui-react";
-import Payments from "./Payments";
+import Payments from "./ReportPayments";
 import ReportItem from "./ReportItem";
-import Client from "../main/Client";
+import Client from "../../main/Client";
 import _ from "lodash";
 import update from "immutability-helper";
 

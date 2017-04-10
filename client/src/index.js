@@ -7,9 +7,8 @@ import {Provider} from "react-redux";
 
 import AppMenu from "./main/AppMenu";
 import BucketsPage from "./bucket/BucketsPage";
-import BucketDetail from "./bucket/BucketReport";
-import BucketForm from "./bucket/BucketForm";
-import GoalsPage from "./goal/GoalsPage";
+import BucketDetail from "./bucket/payment/BucketDetail";
+import BucketReport from "./bucket/report/BucketReport";
 import Dashboard from "./dashboard/DashboardPage";
 import EnsureLoggedInContainer from "./main/EnsureLoggedInContainer";
 
@@ -38,10 +37,9 @@ render((
                 <Route path="/login" component={LoginForm}/>
                 <Route component={EnsureLoggedInContainer}>
                     <Route path="/" component={Dashboard}/>
-                    <Route path="/goals" component={GoalsPage}/>
                     <Route path="/buckets" component={BucketsPage}/>
-                    <Route path="/buckets/:bucketId" component={BucketForm}/>
-                    <Route path="/buckets/:bucketId/report" component={BucketDetail}/>
+                    <Route path="/buckets/:bucketId" component={BucketDetail}/>
+                    <Route path="/buckets/:bucketId/report" component={BucketReport}/>
                 </Route>
             </Route>
         </Router>

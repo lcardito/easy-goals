@@ -35,10 +35,6 @@ class AppMenu extends React.Component {
                         <Link to="/">Dashboard</Link>
                     </Menu.Item>
                     <Menu.Item
-                        name='goals'>
-                        <Link to="/goals">Goals</Link>
-                    </Menu.Item>
-                    <Menu.Item
                         name='buckets'>
                         <Link to="/buckets">Buckets</Link>
                     </Menu.Item>
