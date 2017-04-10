@@ -1,8 +1,7 @@
-const BASE = process.env.NODE_ENV === 'production' ? 'https://simple-goals.herokuapp.com' : 'http://localhost:3001';
 
 /* eslint-disable no-undef */
 function login(user, cb) {
-    fetch(`${BASE}/login`, {
+    fetch(`/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -17,7 +16,7 @@ function login(user, cb) {
 }
 
 function getGoals(cb) {
-    fetch(`${BASE}/api/goals/`, {
+    fetch(`/api/goals/`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -30,7 +29,7 @@ function getGoals(cb) {
 }
 
 function getBuckets(cb) {
-    fetch(`${BASE}/api/bucket/`, {
+    fetch(`/api/bucket/`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -43,7 +42,7 @@ function getBuckets(cb) {
 }
 
 function getBucket(bucketId, cb) {
-    fetch(`${BASE}/api/bucket/${bucketId}`, {
+    fetch(`/api/bucket/${bucketId}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -56,7 +55,7 @@ function getBucket(bucketId, cb) {
 }
 
 function updateBucket(bucket, cb) {
-    fetch(`${BASE}/api/bucket`, {
+    fetch(`/api/bucket`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -70,7 +69,7 @@ function updateBucket(bucket, cb) {
 }
 
 function addBucket(bucket, cb) {
-    fetch(`${BASE}/api/bucket`, {
+    fetch(`/api/bucket`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -84,7 +83,7 @@ function addBucket(bucket, cb) {
 }
 
 function addGoal(goal, cb) {
-    fetch(`${BASE}/api/goals/`, {
+    fetch(`/api/goals/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -98,7 +97,7 @@ function addGoal(goal, cb) {
 }
 
 function addPayment(payment, cb) {
-    fetch(`${BASE}/api/payment/`, {
+    fetch(`/api/payment/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -112,7 +111,7 @@ function addPayment(payment, cb) {
 }
 
 function editGoal(toEdit, cb) {
-    fetch(`${BASE}/api/goals/`, {
+    fetch(`/api/goals/`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -126,7 +125,7 @@ function editGoal(toEdit, cb) {
 }
 
 function deleteGoal(goalId, cb) {
-    fetch(`${BASE}/api/goals/${goalId}`, {
+    fetch(`/api/goals/${goalId}`, {
         method: 'DELETE',
         credentials: 'include'
     }).then(checkStatus)
@@ -134,7 +133,7 @@ function deleteGoal(goalId, cb) {
 }
 
 function deletePayment(paymentId, cb) {
-    fetch(`${BASE}/api/payment/${paymentId}`, {
+    fetch(`/api/payment/${paymentId}`, {
         method: 'DELETE',
         credentials: 'include'
     }).then(checkStatus)
@@ -143,7 +142,7 @@ function deletePayment(paymentId, cb) {
 
 
 function getPayments(category, cb) {
-    fetch(`${BASE}/api/payment?category=${category}`, {
+    fetch(`/api/payment?category=${category}`, {
         method: 'GET',
         credentials: 'include'
     }).then(checkStatus)
@@ -152,7 +151,7 @@ function getPayments(category, cb) {
 }
 
 function updatePayment(toEdit, cb) {
-    fetch(`${BASE}/api/payment/`, {
+    fetch(`/api/payment/`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -169,7 +168,7 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     }
-    const error = new Error(`${BASE}/HTTP Error ${response.statusText}`);
+    const error = new Error(`HTTP Error ${response.statusText}`);
     error.errorStatus = response.statusText;
     error.response = response;
 

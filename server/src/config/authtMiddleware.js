@@ -33,12 +33,13 @@ auth.use(new LocalStrategy({
                     }
                 });
             }).catch((e) => {
-            console.error('Something went wrong ' + e);
+            winston.error('Something went wrong ' + e);
         });
     }
 ));
 
 auth.serializeUser((user, cb) => {
+
     cb(null, user.id);
 });
 
