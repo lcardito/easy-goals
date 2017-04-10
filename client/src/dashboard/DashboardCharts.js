@@ -1,6 +1,6 @@
 import React from 'react';
 import {Grid, List, Message} from "semantic-ui-react";
-import {formatValue} from "../utils";
+import {formatValue, hexToRgb} from "../utils";
 import Chart from 'chart.js';
 
 class GoalsLineChart extends React.Component {
@@ -61,19 +61,21 @@ class GoalsLineChart extends React.Component {
                 labels = tmpLabels;
             }
 
+            let rgbColor = hexToRgb(bu.color);
+
             pieLabels.push(bu.category);
             pieDatasets[0].data.push(sum);
-            pieDatasets[0].backgroundColor.push(bu.color);
-            pieDatasets[0].hoverBackgroundColor.push(bu.color);
+            pieDatasets[0].backgroundColor.push(`rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.1)`);
+            pieDatasets[0].hoverBackgroundColor.push(`rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 1)`);
 
             lineDataSets.push({
                 data: lineData,
                 label: bu.category,
                 fill: false,
                 lineTension: 0,
-                borderColor: bu.color,
-                pointBorderColor: bu.color,
-                pointBackgroundColor: bu.color,
+                borderColor: `rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.1)`,
+                pointBorderColor: `rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 1)`,
+                pointBackgroundColor: `rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 1)`,
             });
         });
 
