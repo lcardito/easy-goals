@@ -69,6 +69,20 @@ function updateBucket(bucket, cb) {
         .then(cb);
 }
 
+function addBucket(bucket, cb) {
+    fetch(`${BASE}/api/bucket`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bucket)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function addGoal(goal, cb) {
     fetch(`${BASE}/api/goals/`, {
         method: 'POST',
@@ -171,7 +185,8 @@ const Client = {
     bucket: {
         all: getBuckets,
         one: getBucket,
-        edit: updateBucket
+        edit: updateBucket,
+        save: addBucket
     },
     goal: {
         all: getGoals,

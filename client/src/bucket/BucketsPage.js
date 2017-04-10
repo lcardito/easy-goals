@@ -1,26 +1,21 @@
 import React from "react";
 import Client from "../main/Client";
-import {Button, Card, Header, Icon, Grid} from "semantic-ui-react";
+import {Button, Card, Header, Icon, Grid, Input, Form} from "semantic-ui-react";
 import {colorMap, formatValue} from "../utils";
 import _ from "lodash";
 import {TwitterPicker} from "react-color";
 import update from "immutability-helper";
+import moment from "moment";
 
 class BucketsPage extends React.Component {
     constructor() {
         super();
 
-        this.defaultBucket = {
-            category: '',
-            balance: 0,
-            monthly: 0,
-            report: []
-        };
-
         this.state = {
             buckets: [],
             showBucket: false,
-            selectedBucket: this.defaultBucket,
+            category: '',
+            balance: 0,
             sortingBy: '',
             colorPickerOpen: ''
         };
@@ -30,6 +25,7 @@ class BucketsPage extends React.Component {
         this._openPayment = this._openPayment.bind(this);
         this._openColorPicker = this._openColorPicker.bind(this);
         this._updateColor = this._updateColor.bind(this);
+        this._addNewBucket = this._addNewBucket.bind(this);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -81,6 +77,21 @@ class BucketsPage extends React.Component {
         });
     }
 
+    _addNewBucket() {
+        Client.bucket.save({
+            category: this.state.category,
+            balance: this.state.balance,
+            createdDate: moment().format('YYYY-MM-DD')
+        }, (saved) => {
+            let buckets = this.state.buckets;
+            buckets.push(saved);
+
+            this.setState({
+                buckets: buckets
+            });
+        });
+    }
+
     render() {
         return (
             <div>
@@ -116,15 +127,43 @@ class BucketsPage extends React.Component {
                                     </Button.Group>
                                 </Card.Content>
                             </Card>
-                            {this.state.colorPickerOpen === bucket.id ? <TwitterPicker
+                            {this.state.colorPickerOpen === bucket.id ? <div className="onTop"><TwitterPicker
                                 triangle="top-right"
                                 onChange={(color, event) => this._updateColor(bucket, color.hex)}
-                                colors={Object.keys(colorMap)}/> : null}
+                                colors={Object.keys(colorMap)}/></div> : null}
                         </Grid.Column>
                     ))}
+                    <Grid.Column>
+                        <Card fluid>
+                            <Card.Content>
+                                <Form.Group widths='equal'>
+                                    <Input
+                                        fluid
+                                        label="Category"
+                                        size="medium"
+                                        onChange={(e) => this.setState({
+                                            category: e.target.value
+                                        })}
+                                        type="text"/>
+                                    <Input
+                                        fluid
+                                        className="marginTopButton"
+                                        label="Initial balance"
+                                        size="small"
+                                        onChange={(e) => this.setState({
+                                            balance: e.target.value
+                                        })}
+                                        type="text"/>
+                                </Form.Group>
+                            </Card.Content>
+
+                            <Button basic compact icon="add circle" onClick={this._addNewBucket}/>
+
+                        </Card>
+                    </Grid.Column>
                 </Grid>
             </div>
-        )
+        );
     }
 }
 

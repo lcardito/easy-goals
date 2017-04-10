@@ -49,4 +49,16 @@ bucketApi.put('/', (req, res) => {
         });
 });
 
+bucketApi.post('/', (req, res) => {
+    let bucket = req.body;
+    bucket.user_id = req.user.id;
+
+    db('bucket')
+        .insert(bucket)
+        .then((id) => {
+            bucket.id = id;
+            res.json([bucket]);
+        });
+});
+
 module.exports = bucketApi;

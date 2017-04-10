@@ -68,6 +68,11 @@ body {
     float:right;
 }
 
+.onTop {
+    position: absolute !important;
+    z-index: 100;
+}
+
 canvas{
     width: 100% !important;
     height: auto !important;

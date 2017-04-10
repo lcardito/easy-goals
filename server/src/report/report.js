@@ -93,11 +93,13 @@ exports.getReport = (buckets, payments) => {
             let category = b.category;
             let paymentsOut = payments.filter((g) => g.category === category && g.type === 'OUT');
             let paymentsIn = payments.filter((p) => p.category === category && p.type === 'IN');
-            let report;
-            try {
-                report = this.buildReport(b, paymentsOut, paymentsIn);
-            } catch (e) {
-                reject();
+            let report = [];
+            if(paymentsOut.length > 0) {
+                try {
+                    report = this.buildReport(b, paymentsOut, paymentsIn);
+                } catch (e) {
+                    reject();
+                }
             }
             const current = _.find(report, (r) => {
                 return moment(r.date).isSame(now, 'month')
@@ -105,8 +107,8 @@ exports.getReport = (buckets, payments) => {
             });
 
             b.report = report;
-            b.balance = current.balance;
-            b.monthly = current.payIn;
+            b.balance = current ? current.balance : 0;
+            b.monthly = current ? current.payIn : 0;
 
             response.push(b);
         });
