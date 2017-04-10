@@ -104,7 +104,7 @@ class BucketsPage extends React.Component {
                         </Header.Subheader>
                     </Header.Content>
                 </Header>
-                <Grid columns={3} style={{width: '80%', height: '30%', margin: '1em auto'}}>
+                <Grid stackable={true} columns={3} style={{width: '80%', height: '30%', margin: '1em auto'}}>
                     {this.state.buckets.map((bucket, bucketIdx) => (
                         <Grid.Column key={bucketIdx}>
                             <Card color={colorMap[bucket.color]} fluid>
