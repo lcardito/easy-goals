@@ -15,9 +15,9 @@ class DashboardPage extends React.Component {
     }
 
     componentWillMount() {
-        Client.getBuckets((serverBuckets) => {
+        Client.bucket.all((serverBuckets) => {
             this._setBuckets(serverBuckets);
-        })
+        });
     }
 
     _setBuckets(serverBuckets) {

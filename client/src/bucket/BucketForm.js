@@ -30,7 +30,7 @@ class BucketForm extends React.Component {
 
     componentWillMount() {
         if (!isNaN(this.props.params.bucketId)) {
-            Client.getBucket(this.props.params.bucketId, (bucket) => {
+            Client.bucket.one(this.props.params.bucketId, (bucket) => {
                 this.setState({
                     payment: update(this.state.payment, {
                         $merge: {
@@ -44,7 +44,7 @@ class BucketForm extends React.Component {
 
     _saveBucket(payment) {
         payment.dueDate = moment().format('YYYY-MM-DD');
-        Client.addPayment(payment, () => {
+        Client.payment.save(payment, () => {
             this.context.router.goBack();
         })
     }

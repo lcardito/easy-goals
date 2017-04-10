@@ -21,7 +21,7 @@ class BucketReport extends React.Component {
 
     componentWillMount() {
         if (!isNaN(this.props.params.bucketId)) {
-            Client.getBuckets((serverBuckets) => {
+            Client.bucket.all((serverBuckets) => {
                 let bucket = _.find(serverBuckets, _.matchesProperty('id', parseInt(this.props.params.bucketId, 10)));
                 this.setState({
                     report: bucket.report,

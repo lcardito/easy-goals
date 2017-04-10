@@ -38,7 +38,7 @@ class BucketsPage extends React.Component {
     };
 
     componentWillMount() {
-        Client.getBuckets((serverBuckets) => {
+        Client.bucket.all((serverBuckets) => {
             this._getBuckets(serverBuckets);
         })
     }
@@ -71,7 +71,7 @@ class BucketsPage extends React.Component {
         newBucket.color = hex;
         let buckets = this.state.buckets;
 
-        Client.updateBucket(newBucket, (updatedBuckets) => {
+        Client.bucket.edit(newBucket, (updatedBuckets) => {
             this.setState({
                 buckets: update(buckets, {
                     $splice: [[idx, 1, updatedBuckets[0]]]

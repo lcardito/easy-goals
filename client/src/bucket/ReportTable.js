@@ -29,7 +29,7 @@ class ReportTable extends React.Component {
 
     _deletePayment(p) {
         if (this.state.deleting) {
-            Client.deletePayment(this.state.toBeDeleted.id);
+            Client.payment.remove(this.state.toBeDeleted.id);
             let reportItem = _.find(this.state.report, (ri) => {
                 return ri.payments.indexOf(this.state.toBeDeleted) !== -1;
             });

@@ -1,15 +1,6 @@
 const BASE = process.env.NODE_ENV === 'production' ? 'https://simple-goals.herokuapp.com' : 'http://localhost:3001';
 
 /* eslint-disable no-undef */
-function search(query, cb) {
-    return fetch(`${BASE}/api/food?q=${query}`, {
-        accept: 'application/json',
-    }).then(checkStatus)
-        .then(parseJSON)
-        .then(cb);
-
-}
-
 function login(user, cb) {
     fetch(`${BASE}/login`, {
         method: 'POST',
@@ -153,7 +144,22 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment, deletePayment, updateBucket
+    login: login,
+    bucket: {
+        all: getBuckets,
+        one: getBucket,
+        edit: updateBucket
+    },
+    goal: {
+        all: getGoals,
+        edit: editGoal,
+        remove: deleteGoal,
+        save: addGoal
+    },
+    payment: {
+        save: addPayment,
+        remove: deletePayment
+    }
 };
 
 export default Client;

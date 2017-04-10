@@ -31,7 +31,7 @@ class GoalsPage extends React.Component {
     }
 
     componentWillMount() {
-        Client.getGoals((serverGoals) => {
+        Client.goal.all((serverGoals) => {
             this._getGoals(serverGoals);
         })
     }
@@ -52,7 +52,7 @@ class GoalsPage extends React.Component {
 
     _deleteGoal(goal) {
         if (this.state.deleting) {
-            Client.deleteGoal(this.toBeDeleted.id);
+            Client.goal.remove(this.toBeDeleted.id);
             let idx = _.findIndex(this.state.goals, ['id', this.toBeDeleted.id]);
             this.setState({
                 goals: update(this.state.goals, {
@@ -70,7 +70,7 @@ class GoalsPage extends React.Component {
         let idx = _.findIndex(this.state.goals, goal);
 
         if (!goal.id) {
-            Client.addGoal(goal, (newGoal) => {
+            Client.goal.save(goal, (newGoal) => {
                 let goals = this.state.goals;
                 this.setState({
                     goals: update(goals, {
@@ -79,7 +79,7 @@ class GoalsPage extends React.Component {
                 })
             });
         } else {
-            Client.editGoal(goal, (updatedGoals) => {
+            Client.goal.edit(goal, (updatedGoals) => {
                 let goals = this.state.goals;
                 this.setState({
                     goals: update(goals, {
