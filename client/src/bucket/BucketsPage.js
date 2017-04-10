@@ -1,11 +1,11 @@
 import React from "react";
 import Client from "../main/Client";
-import {Button, Card, Header, Icon, Grid, Input, Form} from "semantic-ui-react";
+import {Button, Card, Header, Icon, Grid, Image} from "semantic-ui-react";
+import addNewImg from '../assets/add_new.png';
 import {colorMap, formatValue} from "../utils";
 import _ from "lodash";
 import {TwitterPicker} from "react-color";
 import update from "immutability-helper";
-import moment from "moment";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -77,19 +77,12 @@ class BucketsPage extends React.Component {
         });
     }
 
-    _addNewBucket() {
-        Client.bucket.save({
-            category: this.state.category,
-            balance: this.state.balance,
-            createdDate: moment().format('YYYY-MM-DD')
-        }, (saved) => {
-            let buckets = this.state.buckets;
-            buckets.push(saved);
-
-            this.setState({
-                buckets: buckets
-            });
-        });
+    _addNewBucket(bucket) {
+        if (bucket.id) {
+            this.context.router.push(`/buckets/${bucket.id}/edit`);
+        } else {
+            this.context.router.push(`/buckets/new`);
+        }
     }
 
     render() {
@@ -123,7 +116,7 @@ class BucketsPage extends React.Component {
                                     <Button.Group className="three" basic compact>
                                         <Button color="blue" icon="payment" onClick={() => this._openPayment(bucket)}/>
                                         <Button negative icon="table" onClick={() => this._openReport(bucket)}/>
-                                        <Button negative icon="edit" onClick={() => this._openColorPicker(bucket)}/>
+                                        <Button negative icon="edit" onClick={() => this._addNewBucket(bucket)}/>
                                     </Button.Group>
                                 </Card.Content>
                             </Card>
@@ -135,30 +128,12 @@ class BucketsPage extends React.Component {
                     ))}
                     <Grid.Column>
                         <Card fluid>
-                            <Card.Content>
-                                <Form.Group widths='equal'>
-                                    <Input
-                                        fluid
-                                        label="Category"
-                                        size="medium"
-                                        onChange={(e) => this.setState({
-                                            category: e.target.value
-                                        })}
-                                        type="text"/>
-                                    <Input
-                                        fluid
-                                        className="marginTopButton"
-                                        label="Initial balance"
-                                        size="small"
-                                        onChange={(e) => this.setState({
-                                            balance: e.target.value
-                                        })}
-                                        type="text"/>
-                                </Form.Group>
-                            </Card.Content>
-
-                            <Button basic compact icon="add circle" onClick={this._addNewBucket}/>
-
+                            <Image as="a"
+                                   verticalAlign="middle"
+                                   src={addNewImg}
+                                   onClick={this._addNewBucket}
+                                   size="small"
+                                   centered shape="circular"/>
                         </Card>
                     </Grid.Column>
                 </Grid>

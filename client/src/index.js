@@ -15,6 +15,7 @@ import EnsureLoggedInContainer from "./main/EnsureLoggedInContainer";
 import {createStore} from "redux";
 import LoginForm from "./main/LoginForm";
 import cookie from "react-cookie";
+import BucketForm from "./bucket/BucketForm";
 
 function login(state = {}, action) {
     switch (action.type) {
@@ -37,9 +38,11 @@ render((
                 <Route path="/login" component={LoginForm}/>
                 <Route component={EnsureLoggedInContainer}>
                     <Route path="/" component={Dashboard}/>
+                    <Route path="/buckets/new" component={BucketForm}/>
                     <Route path="/buckets" component={BucketsPage}/>
                     <Route path="/buckets/:bucketId" component={BucketDetail}/>
                     <Route path="/buckets/:bucketId/report" component={BucketReport}/>
+                    <Route path="/buckets/:bucketId/edit" component={BucketForm}/>
                 </Route>
             </Route>
         </Router>

@@ -68,9 +68,14 @@ body {
     float:right;
 }
 
+.paddingBottom {
+    padding-bottom: 5em;
+}
+
 .onTop {
     position: absolute !important;
     z-index: 100;
+    width: 33.33333333%;
 }
 
 canvas{
