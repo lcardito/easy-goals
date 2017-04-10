@@ -61,23 +61,19 @@ class GoalsLineChart extends React.Component {
                 labels = tmpLabels;
             }
 
-            let r = (Math.floor(Math.random() * 256));
-            let g = (Math.floor(Math.random() * 256));
-            let b = (Math.floor(Math.random() * 256));
-
             pieLabels.push(bu.category);
             pieDatasets[0].data.push(sum);
-            pieDatasets[0].backgroundColor.push(`rgba(${r}, ${g}, ${b}, 0.1)`);
-            pieDatasets[0].hoverBackgroundColor.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            pieDatasets[0].backgroundColor.push(bu.color);
+            pieDatasets[0].hoverBackgroundColor.push(bu.color);
 
             lineDataSets.push({
                 data: lineData,
                 label: bu.category,
                 fill: false,
                 lineTension: 0,
-                borderColor: `rgba(${r}, ${g}, ${b}, 0.1)`,
-                pointBorderColor: `rgba(${r}, ${g}, ${b}, 1)`,
-                pointBackgroundColor: `rgba(${r}, ${g}, ${b}, 1)`,
+                borderColor: bu.color,
+                pointBorderColor: bu.color,
+                pointBackgroundColor: bu.color,
             });
         });
 

@@ -101,7 +101,7 @@ class GoalsPage extends React.Component {
     }
 
     _addNewGoal() {
-        if (_.last(this.state.goals).id) {
+        if (this.state.goals.length === 0 || _.last(this.state.goals).id) {
             let goals = this.state.goals;
             this.setState({
                 goals: update(goals, {

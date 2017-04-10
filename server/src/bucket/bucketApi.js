@@ -32,5 +32,21 @@ bucketApi.get('/:bucketId', (req, res) => {
         });
 });
 
+bucketApi.put('/', (req, res) => {
+    let bucket = req.body;
+    let toUpdate = {
+        color: bucket.color
+    };
+
+    db('bucket')
+        .where({
+            'id': bucket.id,
+            'user_id': req.user.id
+        })
+        .update(toUpdate)
+        .then(() => {
+            res.json([bucket]);
+        });
+});
 
 module.exports = bucketApi;

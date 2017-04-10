@@ -64,6 +64,20 @@ function getBucket(bucketId, cb) {
         .then(cb);
 }
 
+function updateBucket(bucket, cb) {
+    fetch(`${BASE}/api/bucket`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bucket)
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(cb);
+}
+
 function addGoal(goal, cb) {
     fetch(`${BASE}/api/goals/`, {
         method: 'POST',
@@ -139,7 +153,7 @@ function parseJSON(response) {
 }
 
 const Client = {
-    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment, deletePayment
+    search, getBuckets, getGoals, addGoal, editGoal, deleteGoal, login, getBucket, addPayment, deletePayment, updateBucket
 };
 
 export default Client;

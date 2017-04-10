@@ -69,6 +69,7 @@ class EditableGoalRow extends React.Component {
                     return {key: `${c}_${idx}`, value: c, text: c}
                 });
                 input = <Dropdown fluid search selection
+                                  size="small"
                                   placeholder='Category'
                                   allowAdditions={true}
                                   name='category'
@@ -77,6 +78,7 @@ class EditableGoalRow extends React.Component {
                                   options={opt}/>;
             } else {
                 input = <Input
+                    size="small"
                     fluid
                     type={getInputType(h.key)}
                     onChange={this._updateItem}

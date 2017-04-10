@@ -26,7 +26,7 @@
   "scripts": {
     "start": "NODE_ENV=production node src/server.js",
     "dev-start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon src/server.js --exec babel-node",
+    "server": "NODE_ENV=docker nodemon src/server.js --exec babel-node",
     "client": "babel-node start-client.js",
     "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
     "lint": "eslint .",

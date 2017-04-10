@@ -23,3 +23,18 @@ module.exports.getInputType = (key) => {
     }
     return 'text';
 };
+
+module.exports.colorMap = {
+    '#008080': 'teal',
+    '#ff0000': 'red',
+    '#ffa500': 'orange',
+    '#ffff00': 'yellow',
+    '#808000': 'olive',
+    '#008000': 'green',
+    '#0000ff': 'blue',
+    '#ee82ee': 'violet',
+    '#800080': 'purple',
+    '#ffc0cb': 'pink',
+    '#a52a2a': 'brown',
+    '#000000': 'black'
+};

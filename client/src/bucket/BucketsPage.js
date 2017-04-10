@@ -1,8 +1,10 @@
 import React from "react";
 import Client from "../main/Client";
-import {Button, Header, Icon, Table} from "semantic-ui-react";
-import {formatValue} from "../utils";
+import {Button, Card, Header, Icon, Grid} from "semantic-ui-react";
+import {colorMap, formatValue} from "../utils";
 import _ from "lodash";
+import {TwitterPicker} from "react-color";
+import update from "immutability-helper";
 
 class BucketsPage extends React.Component {
     constructor() {
@@ -19,13 +21,15 @@ class BucketsPage extends React.Component {
             buckets: [],
             showBucket: false,
             selectedBucket: this.defaultBucket,
-            sortingBy: ''
+            sortingBy: '',
+            colorPickerOpen: ''
         };
 
         this._getBuckets = this._getBuckets.bind(this);
         this._openReport = this._openReport.bind(this);
         this._openPayment = this._openPayment.bind(this);
-        this._sortBy = this._sortBy.bind(this);
+        this._openColorPicker = this._openColorPicker.bind(this);
+        this._updateColor = this._updateColor.bind(this);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -55,29 +59,29 @@ class BucketsPage extends React.Component {
         this.context.router.push(path);
     }
 
-    _sortBy(prop) {
-        this.sortingOrder = (this.sortingOrder === 'asc') ? 'desc' : 'asc';
+    _openColorPicker(item) {
         this.setState({
-            items: _.orderBy(this.state.items, [prop], [this.sortingOrder]),
-            sortingBy: prop
-        })
+            colorPickerOpen: this.state.colorPickerOpen === item.id ? '' : item.id
+        });
+    }
+
+    _updateColor(item, hex) {
+        let idx = _.findIndex(this.state.buckets, item);
+        let newBucket = item;
+        newBucket.color = hex;
+        let buckets = this.state.buckets;
+
+        Client.updateBucket(newBucket, (updatedBuckets) => {
+            this.setState({
+                buckets: update(buckets, {
+                    $splice: [[idx, 1, updatedBuckets[0]]]
+                }),
+                colorPickerOpen: ''
+            });
+        });
     }
 
     render() {
-        const itemMapper = (item, h, idx) => {
-            return <Table.Cell
-                key={idx}>
-                {formatValue(item[h.key], h.key)}
-            </Table.Cell>
-        };
-
-        const headers = [
-            {key: 'category', value: 'Category'},
-            {key: 'balance', value: 'Balance'},
-            {key: 'monthly', value: 'This Month Due'},
-            {key: 'createdDate', value: 'Created'}
-        ];
-
         return (
             <div>
                 <Header as='h2'>
@@ -89,44 +93,36 @@ class BucketsPage extends React.Component {
                         </Header.Subheader>
                     </Header.Content>
                 </Header>
-                <Table celled
-                       padded
-                       sortable
-                       striped
-                       unstackable
-                       selectable>
-                    <Table.Header>
-                        <Table.Row>
-                            {headers.map((h, idx) => {
-                                let iconName = 'sort';
-                                if (this.state.sortingBy === h.key) {
-                                    iconName = this.sortingOrder === 'asc' ? 'sort ascending' : 'sort descending'
-                                }
-
-                                return <Table.HeaderCell key={idx} onClick={() => this._sortBy(h.key)}>
-                                    <Icon name={iconName}/> {h.value}
-                                </Table.HeaderCell>
-                            })}
-                            <Table.HeaderCell />
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {this.state.buckets.map((item, itemIdx) => (
-                            <Table.Row
-                                key={itemIdx}>
-                                {headers.map((h, idx) => {
-                                    return itemMapper(item, h, idx);
-                                })}
-                                <Table.Cell collapsing textAlign="center">
-                                    <Button.Group size="mini" basic compact>
-                                        <Button color="blue" icon="edit" onClick={() => this._openPayment(item)}/>
-                                        <Button negative icon="table" onClick={() => this._openReport(item)}/>
+                <Grid columns={3} style={{width: '80%', height: '30%', margin: '1em auto'}}>
+                    {this.state.buckets.map((bucket, bucketIdx) => (
+                        <Grid.Column key={bucketIdx}>
+                            <Card color={colorMap[bucket.color]} fluid>
+                                <Card.Content>
+                                    <Card.Header>
+                                        {bucket.category}
+                                    </Card.Header>
+                                    <Card.Meta>
+                                        Current balance: {bucket.balance}
+                                    </Card.Meta>
+                                    <Card.Description>
+                                        Created in: <strong>{formatValue(bucket.createdDate, 'date')}</strong>
+                                    </Card.Description>
+                                </Card.Content>
+                                <Card.Content extra>
+                                    <Button.Group className="three" basic compact>
+                                        <Button color="blue" icon="payment" onClick={() => this._openPayment(bucket)}/>
+                                        <Button negative icon="table" onClick={() => this._openReport(bucket)}/>
+                                        <Button negative icon="edit" onClick={() => this._openColorPicker(bucket)}/>
                                     </Button.Group>
-                                </Table.Cell>
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table>
+                                </Card.Content>
+                            </Card>
+                            {this.state.colorPickerOpen === bucket.id ? <TwitterPicker
+                                triangle="top-right"
+                                onChange={(color, event) => this._updateColor(bucket, color.hex)}
+                                colors={Object.keys(colorMap)}/> : null}
+                        </Grid.Column>
+                    ))}
+                </Grid>
             </div>
         )
     }
